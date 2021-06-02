@@ -1,5 +1,5 @@
 {
-let binary_search=function(arr,target){
+const binary_search=function(arr,target){
     
 
     let l=0;
@@ -7,7 +7,7 @@ let binary_search=function(arr,target){
     
     while(l<=h){
         let mid=Math.floor(l+(h-l)/2);
-        // console.log(mid);
+        
         if(arr[mid]==target){
             return true;
         }
@@ -22,7 +22,7 @@ let binary_search=function(arr,target){
     return false;
 }
 
-let arr=[2,3,6,8,34,56,78,89,105];
+const arr=[2,3,6,8,34,56,78,89,105];
 console.log(binary_search(arr,6));
 console.log(binary_search(arr,4));
 console.log(binary_search(arr,56));

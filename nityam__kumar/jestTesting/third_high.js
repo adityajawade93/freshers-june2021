@@ -2,14 +2,27 @@
 
 
 
-let third_highest_number=function(arr){
+const third_highest_number=function(arr){
+
+    if(arr===undefined){
+        return "invalid";
+    }
+
+    if(arr===NaN){
+        return "invalid";
+    }
+
+    if(!Array.isArray(arr)){
+        return "invalid";
+    }
+
 
 let mina=-Infinity;
 let mina2=-Infinity;
 let mina3=-Infinity;
 
 if(arr.length<3){
-    console.log("not found");
+    return "not found";
 }
 else{
     for(let i in arr){
@@ -32,20 +45,23 @@ else{
     }
     
     if(mina3===-Infinity){
-        console.log("not found");
+        return "not found";
     }
     
     else{
         console.log(`third highest number :: ${mina3}`);
+        return "success";
     }
 }
 
 }
 
-let arr=[9,8,7,6,5,4,3,2,1];
-let arr2=[1,1.7,2.78,6.89];
+const arr=[9,8,7,6,5,4,3,2,1];
+const arr2=[1,1,2,6];
+
 third_highest_number(arr2);
 
+module.exports={third_highest_number};
 
 
 

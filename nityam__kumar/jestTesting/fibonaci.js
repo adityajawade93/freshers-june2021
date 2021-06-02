@@ -1,18 +1,28 @@
 //to find fibonacci upto n terms
 
-let fibonacci_series=function(n){
+const fibonacci_series=function(n){
 
-    if(n==0){
-        
-        return;
+    if(n===undefined){
+        return "invalid";
+    }
+
+    if(isNaN(n)){
+        return "invalid";
+    }
+
+
+    if(n<=0){  
+        return "invalid input";
     }
 
     if(n==1){
         console.log(0);
+        return "success";
     }
     else if(n==2){
         console.log(0);
         console.log(1);
+        return "success";
     }
     else{
         console.log(0);
@@ -28,8 +38,10 @@ let fibonacci_series=function(n){
             a=b;
             b=t;
         }
-        
+        return "success";
     }
 }
 
-fibonacci_series(4);
+fibonacci_series(0);
+
+module.exports={fibonacci_series};

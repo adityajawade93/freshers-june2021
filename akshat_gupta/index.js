@@ -2,7 +2,7 @@ function binarySearch(start, end, target){
     while(start<=end) {
         let mid=Math.floor((start+end)/2);
 
-        if(v[mid]==target)
+        if(v[mid]===target)
             return true;
         else if(v[mid]>target)
             end=mid-1
@@ -13,7 +13,7 @@ function binarySearch(start, end, target){
 }
 
 let v=[1,2,3,4,5,6,7,8,9,10]
-let target=7
+let target=20
 
 let start=0, end=v.length-1
 let answer=binarySearch(start,end,target);

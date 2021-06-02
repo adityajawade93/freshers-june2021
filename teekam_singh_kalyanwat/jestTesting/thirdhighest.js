@@ -1,8 +1,8 @@
-//considering array has 3 or more elements
-var arr=[1,2,3,4,5,6,8,7,9,15,21,12]
+function third_highest(arr){
 var fst=-1000000;
 var scd=fst,thd=fst;
 var len=arr.length;
+if(len<3) return 'Not enough elements';
 for(let i=0;i<len;i++)
 {
     var t=arr[i];
@@ -21,4 +21,12 @@ for(let i=0;i<len;i++)
         thd=t;
     }
 }
-console.log(thd);
+return thd;
+
+}
+
+var arr=[1,2,3,4,5,6,8,7,9,15,21,12]
+console.log(third_highest(arr));
+console.log(third_highest([1,2]));
+
+module.exports = third_highest;

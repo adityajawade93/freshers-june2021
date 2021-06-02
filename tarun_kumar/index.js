@@ -1,7 +1,7 @@
 let arr=[1,2,3,4,5,6,7,8,9,10,11,12]
 let lo=0
 let hi=arr.length-1
-let key=4
+let key=55
 
 function binarySearch(lo,hi,key){
     while(lo<=hi){

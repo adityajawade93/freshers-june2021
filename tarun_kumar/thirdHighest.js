@@ -1,40 +1,37 @@
-function thirdHighest(arr, arr_size)
-{
+function thirdHighest(arr) {
+    if(arr==null || Array.isArray(arr)===false){
+        return false;
+    }
+    let arr_size=arr.length
+    if(arr_size<=2){
+        return false; // 3rd highest not possible
+    }
     let first = arr[0], second = -1000000000, third = -1000000000
-    for (let i = 1; i < arr_size ; i ++)
-    {
-        
-        if (arr[i] > first)
-        {
+
+    for (let i = 1; i < arr_size; i++) {
+
+        if (arr[i] > first) {
             third = second
             second = first
             first = arr[i]
         }
- 
-       
-        else if (arr[i] > second)
-        {
+        else if (arr[i] > second) {
             third = second
             second = arr[i]
         }
- 
-       
         else if (arr[i] > third)
             third = arr[i]
     }
-    
-    return third
+    console.log("Third Highest element in array= " + third)
+
+    if(third!==-1000000000)
+    return true
+    else return false
 }
- 
 
-let arr = [10,9,8,7,6,5,4,3,2,1]
-let n = arr.length
-   if (n< 3){
-      console.log("Elements in array are less than 3 ")
-    }
-    else{
- 
-    let ans= thirdHighest(arr, n)
-    console.log("Third Highest element in array= "+ ans)
+let arr = [1,1,1,1,2,3]
+let finalAns = thirdHighest(arr)
 
-    }
+
+module.exports = { thirdHighest }
+

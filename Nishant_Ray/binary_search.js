@@ -1,5 +1,4 @@
 let arr=[1,2,3,4,5,6,7];
-arr.sort(function(a, b){return a-b}); // sort the array before binary search
 let len=arr.length; //length of the array
 let search_element=4; //element to be search
 let flag=0;// varaiable to check whether searched element is in the array or not

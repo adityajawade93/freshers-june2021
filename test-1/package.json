@@ -1,0 +1,14 @@
+{
+  "name": "test-1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "Himanshu agrawal",
+  "license": "ISC",
+  "dependencies": {
+    "jest": "^27.0.3"
+  }
+}

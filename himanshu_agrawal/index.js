@@ -20,3 +20,5 @@ function BinarySearch(arr,start,end,x){
 let arr = [1,2,3,4,6,9,11,17,18];
 let index = BinarySearch(arr,0,arr.length,11);
 console.log(index);
+
+

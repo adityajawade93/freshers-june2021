@@ -34,7 +34,7 @@ describe('find all duplicate number test cases', () => {
     test('should print all duplicate element', () => {
         let arr=[1,2,3,4,5,5,3,1]; 
         const found = find_all_duplicate(arr);
-        expect(found).toBe("success");
+        expect(found).toStrictEqual([1,3,5]);
     });
 
     test('should return invalid when input array is undefined', () => {

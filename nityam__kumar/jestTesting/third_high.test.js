@@ -40,7 +40,7 @@ describe('third highest number test cases', () => {
     test('should print third maximum element in case of valid input array', () => {
        let arr=[1,2,3,4,5];  
         const found = third_highest_number(arr);
-        expect(found).toBe("success");
+        expect(found).toBe(3);
     });
 
     test('should return invalid when input is not a array', () => {

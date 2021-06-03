@@ -41,11 +41,13 @@ if(ans.length===0){
     return "no duplicate";
 }
 
+let foo=[];
 for(let i=0;i<ans.length;i++){
     console.log(ans[i]);
+    foo.push(ans[i]);
 }
 
-return "success";
+return foo;
 
 }
 

@@ -35,9 +35,9 @@ describe('Fibonacci Series test cases', () => {
     
     test('should print all fibonaccci series upto n', () => {
        
-        let x = 6;
+        let x = 7;
         const found = fibonacci_series(x);
-        expect(found).toBe("success");
+        expect(found).toStrictEqual([0,1,1,2,3,5,8]);
     });
 
     

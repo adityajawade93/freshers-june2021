@@ -50,7 +50,7 @@ else{
     
     else{
         console.log(`third highest number :: ${mina3}`);
-        return "success";
+        return mina3;
     }
 }
 

@@ -14,19 +14,24 @@ const fibonacci_series=function(n){
     if(n<=0){  
         return "invalid input";
     }
-
+    let ans=[];
     if(n==1){
         console.log(0);
-        return "success";
+        ans.push(0);
+        return ans;
     }
     else if(n==2){
         console.log(0);
         console.log(1);
-        return "success";
+        ans.push(0);
+        ans.push(1);
+        return ans;
     }
     else{
         console.log(0);
         console.log(1);
+        ans.push(0);
+        ans.push(1);
         let a=0;
         let b=1;
         
@@ -35,13 +40,14 @@ const fibonacci_series=function(n){
         for(let i=2;i<n;i++){
             let t=a+b;
             console.log(a+b);
+            ans.push(a+b);
             a=b;
             b=t;
         }
-        return "success";
+        return ans;
     }
 }
 
-fibonacci_series(0);
+
 
 module.exports={fibonacci_series};

@@ -1,0 +1,15 @@
+{
+  "name": "animal_hierarchy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start":"node animal_hierarchy.js",
+    "test": "jest"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "jest": "^27.0.4"
+  }
+}

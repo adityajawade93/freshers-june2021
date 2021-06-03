@@ -1,6 +1,13 @@
-function printFibonacci(n) {
+module.exports = function(n) {
     let a=0, b=1
+    let ans=[]
+    if(n<0)
+        return null
+    if(n===0)
+        return ans
     ans.push(a)
+    if(n===1)
+        return ans
     ans.push(b)
     for(let i=3;i<=n;i++) {
         let c=a+b
@@ -8,9 +15,5 @@ function printFibonacci(n) {
         a=b
         b=c
     }
-    console.log(ans)
+    return ans
 }
-
-var n = 10
-var ans = []
-printFibonacci(n)

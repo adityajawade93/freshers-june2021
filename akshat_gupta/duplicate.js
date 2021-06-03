@@ -1,6 +1,8 @@
-function dupli() {
+module.exports = function(input) {
+    if(input.length===0)
+        return null
     let v = input.sort(function(a, b){return a-b})
-    console.log(v)
+    let ans=[]
     for(let i=0;i<v.length-1;i++) {
         if(v[i]===v[i+1]) {
             ans.push(v[i])
@@ -9,9 +11,5 @@ function dupli() {
             }
         }
     }
-    console.log(ans)
+    return ans
 }
-
-var input = [1,2,3,4,44,5,6,7,7]
-var ans = []
-dupli()

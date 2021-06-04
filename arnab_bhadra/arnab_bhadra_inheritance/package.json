@@ -1,0 +1,14 @@
+{
+  "name": "flatten",
+  "version": "1.0.0",
+  "description": "",
+  "main": "flatten.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "Arnab Bhadra",
+  "license": "ISC",
+  "dependencies": {
+    "jest": "^27.0.4"
+  }
+}

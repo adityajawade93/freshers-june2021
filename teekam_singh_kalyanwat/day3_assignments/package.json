@@ -1,0 +1,14 @@
+{
+  "name": "day3_test",
+  "version": "1.0.0",
+  "description": "flatten array testing",
+  "main": "flat_array.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "jest": "^27.0.4"
+  }
+}

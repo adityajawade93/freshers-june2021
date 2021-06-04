@@ -28,10 +28,15 @@ function Animal(type, family) {
     this.family = family;
 }
 
-function Dog(type, family, species, color) {
+Animal.prototype.getType = function() {
+    return this.type
+}
+
+function Dog(type, family, species, color, age) {
     Animal.call(this,type,family)
     this.species = species;
     this.color = color;
+    this.age=age
 }
 
 Dog.prototype = Object.create(Animal.prototype)
@@ -42,10 +47,23 @@ Object.defineProperty(Dog.prototype, 'constructor', {
   writable: true 
 });
 
-function Cat(type, family, species, color) {
+Dog.prototype.getSpecies = function() {
+    return this.species
+}
+
+Dog.prototype.sayHello = function() {
+    return "bark...woof...bark..!!"
+}
+
+Dog.prototype.getAge = function() {
+    return this.age
+}
+
+function Cat(type, family, species, color,age) {
     Animal.call(this,type,family)
     this.species = species;
     this.color = color;
+    this.age=age
 }
 
 Cat.prototype = Object.create(Animal.prototype)
@@ -56,7 +74,16 @@ Object.defineProperty(Cat.prototype, 'constructor', {
   writable: true 
 });
 
-let a = new Animal("dog","cats") 
-console.log(a)
-let c = new Cat("cat","canine","labrador","black")
-console.log(c)
+Cat.prototype.getSpecies = function() {
+    return this.species
+}
+
+Cat.prototype.sayHello = function() {
+    return "meow?!"
+}
+
+Cat.prototype.getAge = function() {
+    return this.age
+}
+
+module.exports = {Animal,Dog,Cat}

@@ -7,3 +7,5 @@ test("subtact  5 from 3",()=>
 {
     expect(sub(5,3)).toBe(2);
 })
+
+var a=5;

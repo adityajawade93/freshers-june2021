@@ -4,4 +4,4 @@ const sum=function(a, b) {
 
   module.exports = sum;
 
-  console.log(sum(1,5.5))
+//   console.log(sum(1,5.5))

@@ -1,0 +1,16 @@
+{
+  "name": "callbacknpromises",
+  "version": "1.0.0",
+  "description": "",
+  "main": "callbackApiCall.js.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "promise": "^8.1.0",
+    "request": "^2.88.2"
+  }
+}

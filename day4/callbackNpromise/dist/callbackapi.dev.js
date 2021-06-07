@@ -17,14 +17,12 @@ request(option1, function (err, res, body) {
     console.log(err);
   } else {
     console.log(JSON.parse(body));
-    setTimeout(function () {
-      request(option2, function (err, res, body) {
-        if (err) {
-          console.log(err);
-        } else {
-          console.log(JSON.parse(body));
-        }
-      });
-    }, 4000);
+    request(option2, function (err, res, body) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log(JSON.parse(body));
+      }
+    });
   }
 });

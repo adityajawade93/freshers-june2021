@@ -16,14 +16,10 @@ var option2 ={
 axios(option1)
 .then((response)=>{
     console.log(response.data);
-}).then(axios(option2)
-    .then((response)=>{
-        console.log(response.data);
-    })
-    .catch((err)=>{
-        console.log(err);
-    })
-)
+    return axios(option2);
+}).then((response)=>{
+    console.log(response.data);
+})
 .catch((err)=>{
     console.log(err);
 })

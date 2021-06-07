@@ -14,10 +14,9 @@ var option2 = {
 };
 axios(option1).then(function (response) {
   console.log(response.data);
-}).then(axios(option2).then(function (response) {
+  return axios(option2);
+}).then(function (response) {
   console.log(response.data);
 })["catch"](function (err) {
-  console.log(err);
-}))["catch"](function (err) {
   console.log(err);
 });

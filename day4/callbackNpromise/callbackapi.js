@@ -17,7 +17,6 @@ request(option1, function(err,res,body){
         console.log(err);
     }else{
         console.log(JSON.parse(body));
-        setTimeout(()=>{
             request(option2,function(err,res,body){
                 if(err){
                     console.log(err);
@@ -25,6 +24,5 @@ request(option1, function(err,res,body){
                     console.log(JSON.parse(body));
                 }
             })
-        },4000)
     }
 })

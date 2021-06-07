@@ -14,13 +14,10 @@ var options = {
 axios(options)
 .then(function (response) {
   console.log(response.data);
-  axios(options1)
-  .then(function(response){
-     console.log(response.data);
-  })
-  .catch(function(error){
-        console.log(error);
-  });
+  return axios(options1);
+})
+.then(function(response){
+  console.log(response.data);
 })
 .catch(function (error) {
   console.log(error);

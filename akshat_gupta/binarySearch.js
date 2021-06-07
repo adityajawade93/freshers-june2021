@@ -1,5 +1,5 @@
 module.exports = function(v, target){
-    if(v.length===0 || Number.isInteger(target)===false)
+    if(Array.isArray(v) === false || v.length===0 || Number.isInteger(target)===false)
         return null
     let start=0, end=v.length-1
     while(start<=end) {

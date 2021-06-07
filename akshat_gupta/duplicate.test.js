@@ -26,3 +26,9 @@ test('should return null if array is empty', () => {
     const found=duplicate(v)
     expect(found).toBe(null)
 });
+
+test('should return null if argument passed is not an array', () => {
+    let v={"hi":1}
+    const found=duplicate(v)
+    expect(found).toBe(null)
+});

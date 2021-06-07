@@ -12,7 +12,7 @@ test('should return empty array if number of terms is 0', () => {
     expect(found.length).toBe(0)
 });
 
-test('should return empty array if number of terms is <0', () => {
+test('should return null if number of terms is <0', () => {
     const found=fibonacci(-4)
-    expect(found.length).toBe(null)
+    expect(found).toBe(null)
 });

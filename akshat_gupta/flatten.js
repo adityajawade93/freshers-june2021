@@ -1,3 +1,11 @@
+module.exports = function(v) {
+    if(Array.isArray(v) === false)
+        return null
+    ans=[]
+    flattenRecur(v,ans)
+    return ans
+}
+
 const flattenRecur = function(v,ans) {
     for(let i=0;i<v.length;i++) {
         if(Array.isArray(v[i]) !== true)
@@ -6,8 +14,3 @@ const flattenRecur = function(v,ans) {
             flattenRecur(v[i],ans)
     }
 }
-
-var v=[1,2,3,4,[6,7,[8]],10,[5,7]]
-var ans=[]
-flattenRecur(v,ans)
-console.log(ans)

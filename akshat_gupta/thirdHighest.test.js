@@ -26,3 +26,9 @@ test('should return null if size of array <3', () => {
     expect(found).toBe(null)
     expect(found2).toBe(null)
 });
+
+test('should return null if argument passed is not an array', () => {
+    let v={"hi":1}
+    const found=thirdHighest(v)
+    expect(found).toBe(null)
+});

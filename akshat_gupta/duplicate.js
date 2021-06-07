@@ -1,5 +1,5 @@
 module.exports = function(input) {
-    if(input.length===0)
+    if(Array.isArray(input) === false || input.length===0)
         return null
     let v = input.sort(function(a, b){return a-b})
     let ans=[]

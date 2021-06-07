@@ -21,8 +21,8 @@ test('should return null when array is empty', () => {
     expect(found).toBe(null);
 });
 
-test('should return null when target is not an integer', () => {
-    let v=[1,2,3,4,5]
+test('should return null when target is not an integer or array is not passed', () => {
+    let v={1:"gsd"}
     let target="hi"
     const found=binarySearch(v,target)
     expect(found).toBe(null);

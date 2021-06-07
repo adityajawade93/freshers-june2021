@@ -1,6 +1,6 @@
 const binary_search=require("./Binary_search")
 
-test('subtact 3-1 to equal 2', () => {
+test('should be not sorted', () => {
     let arr=[4,6,2];
     expect(binary_search(arr,0,arr.length-1,2)).toBe("Not Sorted");
 });

@@ -1,0 +1,17 @@
+{
+  "name": "day5",
+  "version": "1.0.0",
+  "description": "",
+  "main": "day5.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "csvtojson": "^2.0.10",
+    "uniqid": "^5.3.0",
+    "uuid": "^8.3.2"
+  }
+}

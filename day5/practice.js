@@ -62,3 +62,4 @@ const loadStaticFiles = (req, res) => {
         res.end(data);
     });
     // fs.createReadStream(path).pipe(res);
+}

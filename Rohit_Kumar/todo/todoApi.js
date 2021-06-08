@@ -78,7 +78,7 @@ let handleRequest = (req, res) => {
 
         let id = req.body.id;
         var i = 0;
-        for (i = 0; i < taskList.length; i++) {
+        for (i = 0; i < apiArray.length; i++) {
             if (apiArray[i].id == id)
                 break;
         }

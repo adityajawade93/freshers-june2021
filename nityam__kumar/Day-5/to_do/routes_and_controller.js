@@ -38,6 +38,7 @@ module.exports.createTask = async (req, res) => {
         }
         let task = new Task(new Date(), req.body.title, req.body.content);
         taskList.push(task);
+        console.log(task);
         res.writeHead(200, { 'Content-Type': 'text/html' });
         res.write('Task Created');
         res.end();
@@ -86,6 +87,7 @@ module.exports.updateTask = async (req, res) => {
             taskList[i].title = req.body.title;
             if (req.body.content)
             taskList[i].content = req.body.content;
+            console.log(taskList[i]);
             res.writeHead(200, { 'Content-Type': 'text/html' });
             res.write('Task Updated Successfully');
             res.end();
@@ -146,10 +148,29 @@ let attachBody = (req, res) => {
                 req.body = JSON.parse(body);
                 resolve('request body attached successfully')
             } else {
-                reject("request body not attached")
+                console.log('Request Body of other mime types');
             }
+                
+
 
         });
 
     });
 }
+
+// const loadStaticFiles = (req, res) => {
+//     const path = __dirname + '/public' + req.url;
+//     // console.log(req.url, path);
+//     fs.readFile(path, function (err, data) {
+//         if (err) {
+//             res.writeHead(404);
+//             res.end(JSON.stringify(err));
+//             return;
+//         }
+//         data = data.toString();
+//         res.writeHead(200); // set status code
+//         res.end(data);
+//     });
+    
+// }
+

@@ -21,9 +21,10 @@ const port = 3000;
 
 http.createServer((req, res) => {
     if (req.method == 'POST' && parse(req.url, true).pathname == '/todo/createTask')
+    
         createTask(req, res);
     if (req.method == 'GET' && parse(req.url, true).pathname == '/todo/getTask') {
-        console.log("go");
+        // console.log("go");
         getTask(req, res);
     }
     if (req.method == 'PUT' && parse(req.url, true).pathname == '/todo/updateTask') {

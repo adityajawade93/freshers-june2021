@@ -1,19 +1,19 @@
 let http = require('http');
-
-const uuid = require('uniqid');
+const parse = require('url-parse');
+const uniqid = require('uniqid');
 
 const port = 3001;
+
 var taskList = []
 
-function Task(title, content, completed) {
-    this.id = uuid();
+function Task(title,completed) {
+    this.id = uniqid();
     this.date = new Date();
     this.title = title;
-    this.content = content;
     this.completed = completed;
 }
 
-let task1= new Task('maths','algebra',false);
+let task1 = new Task('maths', false);
 taskList.push(task1);
 
 http.createServer((req, res) => { // all request will have req, res
@@ -26,31 +26,59 @@ http.createServer((req, res) => { // all request will have req, res
     console.log("server started at port", port);
 });
 
-let handleRequest = (req, res) => {
-    console.log("Got request =>", { method: req.method, path: req.url, contentType: req.headers['content-type'], body: req.body });
-    if (req.method === 'POST' && req.url === '/createtask') {
 
-        let task = new Task(req.body.title, req.body.content, req.body.completed);
+function findTask(id){
+    var i = 0;
+    for (i = 0; i < taskList.length; i++) {
+        if (taskList[i].id == id)
+            break;
+    }
+    if (i == taskList.length) return -1;
+    else return i;
+
+}
+
+
+let handleRequest = (req, res) => {
+    console.log("Got request =>", {
+        method: req.method,
+        path: req.url,
+        contentType: req.headers['content-type'],
+        body: req.body
+    });
+    if (req.method === 'POST' && req.url === '/todo') {
+
+        let task = new Task(req.body.title, req.body.completed);
         taskList.push(task);
         res.writeHead(200, { 'Content-Type': 'text/html' });
         res.write('Notes Created');
         res.end();
 
-    } else if (req.method === 'GET' && req.url === '/readtask') {
+    } else if (req.method === 'GET' && req.url === '/todo') {
 
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(taskList, null, 2));
 
 
-    } else if (req.method === 'PUT' && req.url === '/updatetask') {
-       
-        let id = req.body.id;
-        var i = 0;
-        for (i = 0; i < taskList.length; i++) {
-            if (taskList[i].id == id)
-                break;
+    } else if (req.method === 'GET' && req.url.match("/todo/+").length > 0) {
+        const id = req.url.split('/')[2];
+        let i=findTask(id);
+        if (i === -1) {
+            res.writeHead(404, { 'Content-Type': 'text/html' });
+            res.write('Notes Not Found');
+            res.end();
         }
-        if (i == taskList.length) {
+        else {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            //res.write('Notes deleted');
+            res.end(JSON.stringify(taskList[i]));
+        }
+
+    } else if (req.method === 'PUT' && req.url.match("/todo/+").length > 0) {
+
+        let id = req.url.split('/')[2];
+        let i=findTask(id);
+        if (i === -1) {
             res.writeHead(404, { 'Content-Type': 'text/html' });
             res.write('Notes Not Found');
             res.end();
@@ -58,8 +86,7 @@ let handleRequest = (req, res) => {
         else {
             if (req.body.title)
                 taskList[i].title = req.body.title;
-            if (req.body.content)
-                taskList[i].content = req.body.content;
+
             taskList[i].completed = req.body.completed;
 
             res.writeHead(200, { 'Content-Type': 'text/html' });
@@ -67,15 +94,11 @@ let handleRequest = (req, res) => {
             res.end();
         }
 
-    } else if (req.method === 'DELETE' && req.url === '/deletetask') {
+    } else if (req.method === 'DELETE' &&  req.url.match("/todo/+").length > 0) {
 
-        let id = req.body.id;
-        var i = 0;
-        for (i = 0; i < taskList.length; i++) {
-            if (taskList[i].id == id)
-                break;
-        }
-        if (i == taskList.length) {
+        const id = req.url.split('/')[2];
+        let i=findTask(id);
+        if (i === -1) {
             res.writeHead(404, { 'Content-Type': 'text/html' });
             res.write('Notes Not Found');
             res.end();
@@ -112,7 +135,7 @@ let attachBodyToRequest = (req, res, callback) => {
 }
 
 
-    
+
 
 
 

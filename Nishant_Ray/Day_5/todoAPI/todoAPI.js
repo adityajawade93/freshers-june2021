@@ -42,8 +42,7 @@ let handleRequest = (req, res) => {
     res.write('task added')
     res.end()
     } else if ( req.method === "PUT" && req.url ==='/updatetask' ) {
-        let query= url.parse(req.url,true).query;
-        let id= query.id;
+        let id=req.body.id;
         for(let i=0;i<task_array;i++){
             if(task_array[i].id===id)
             {

@@ -71,7 +71,9 @@ let handleRequest = (req, res) => {
         }
         else errorResponse(res, '<h2>Invalid Data</h2>');
     } 
-    else if (req.method === 'PUT' && req.url.match("/todo/+").length > 0 && req.headers['content-type'] === 'application/json') {
+    else if (req.method === 'PUT' && !!req.url.match("/todo/+") 
+        && req.url.match("/todo/+").length > 0 && req.headers['content-type'] === 'application/json') {
+
         const id = req.url.split('/')[2];
         todoIndex = getTodoIndex(id);
 
@@ -81,7 +83,9 @@ let handleRequest = (req, res) => {
                 let dateParts = req.body.createdDate.split("/");
                 // month is 0-based, that's why we need dataParts[1] - 1
                 let dateObject = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
-                todos[todoIndex].createdDate = dateObject;
+
+                if (!isNaN(dateObject.getTime())) 
+                    todos[todoIndex].createdDate = dateObject;
             }
             if (req.body.hasOwnProperty("title")) {
                 todos[todoIndex].title = req.body.title;
@@ -104,7 +108,7 @@ let handleRequest = (req, res) => {
         if (todoIndex !== -1) successResponse(res, todos[todoIndex]);
         else errorResponse(res, '<h2>Invalid Data</h2>');
     }
-    else if (req.method === 'DELETE' && req.url.match("/todo/+").length > 0) {
+    else if (req.method === 'DELETE' && !!req.url.match("/todo/+") && req.url.match("/todo/+").length > 0) {
         const id = req.url.split('/')[2];
         todoIndex = getTodoIndex(id);
 

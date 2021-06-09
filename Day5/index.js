@@ -9,11 +9,11 @@ http.createServer((req,res)=>{
     {
         routes.getNotes(req,res);
     }
-    if(req.method==='PUT'&&req.url.match('/todo').length>0)
+    if(req.method==='PUT'&&req.url.match('/todo/').length>0)
     {
         routes.updateNotes(req,res);
     }
-    if(req.method==='DELETE'&&req.url.match('/todo').length>0)
+    if(req.method==='DELETE'&&req.url.match('/todo/').length>0)
     {
         routes.deleteNotes(req,res);
     }

@@ -3,17 +3,17 @@ const routes = require('./routes');
 
 http.createServer((req,res)=>{
 
-    if(req.method==='POST'&&req.url==='/createNotes')
+    if(req.method==='POST'&&req.url==='/todo')
       routes.createNotes(req,res);
-    if(req.method==='GET'&&req.url==='/getNotes')  
+    if(req.method==='GET'&&req.url==='/todo')  
     {
         routes.getNotes(req,res);
     }
-    if(req.method==='PUT'&&req.url.match('/updateNotes').length>0)
+    if(req.method==='PUT'&&req.url.match('/todo').length>0)
     {
         routes.updateNotes(req,res);
     }
-    if(req.method==='DELETE'&&req.url.match('/deleteNotes').length>0)
+    if(req.method==='DELETE'&&req.url.match('/todo').length>0)
     {
         routes.deleteNotes(req,res);
     }

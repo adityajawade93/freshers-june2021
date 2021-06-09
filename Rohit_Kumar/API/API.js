@@ -102,9 +102,19 @@ let handleRequest = (req, res) => {
     else if (req.method === 'DELETE' && req.url.match(/\/todo\/.+/))
     {
 
+<<<<<<< HEAD:Rohit_Kumar/API/API.js
         var id=req.url.substring(6);
         let i = getId(id);
         if (i === -1) {
+=======
+        let id = req.body.id;
+        var i = 0;
+        for (i = 0; i < apiArray.length; i++) {
+            if (apiArray[i].id == id)
+                break;
+        }
+        if (i == apiArray.length) {
+>>>>>>> 3d1063c11a054dea4a4882d2c4412324fe7d6393:Rohit_Kumar/todo/todoApi.js
             res.writeHead(404, { 'Content-Type': 'text/html' });
             res.write(' Not Found');
             res.end();

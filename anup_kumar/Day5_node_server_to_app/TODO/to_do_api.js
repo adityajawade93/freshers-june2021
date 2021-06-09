@@ -59,16 +59,15 @@ http.createServer((req, res) =>
 
 
 let handleRequest = (req, res) => {
-
     //print the data
-    // console.log("Got request =>", {
-    //     method: req.method,
-    //     path: req.url,
-    //     contentType: req.headers['content-type'],
-    //     body: req.body
-    // });
-    // console.log(req);
-    // console.log(url.parse(req.url,true));
+    
+    console.log("Got request =>", {
+        method: req.method,
+        path: req.url,
+        contentType: req.headers['content-type'],
+        body: req.body
+    });
+    
 
     //Get method
     if(req.method==="GET")

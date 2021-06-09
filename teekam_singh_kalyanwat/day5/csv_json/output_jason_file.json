@@ -1,0 +1,37 @@
+[
+    {
+        "student_name": "piyush",
+        "age": "22",
+        "branch": "EE"
+    },
+    {
+        "student_name": "akshat",
+        "age": "21",
+        "branch": "ME"
+    },
+    {
+        "student_name": "sujit",
+        "age": "22",
+        "branch": "CE"
+    },
+    {
+        "student_name": "vinay",
+        "age": "23",
+        "branch": "CS"
+    },
+    {
+        "student_name": "mohit",
+        "age": "24",
+        "branch": "GT"
+    },
+    {
+        "student_name": "nishant",
+        "age": "25",
+        "branch": "ECE"
+    },
+    {
+        "student_name": "gaurav",
+        "age": "12",
+        "branch": "CS"
+    }
+]

@@ -14,3 +14,6 @@ csvtojson()
     })
 
 })
+.catch((err)=>{
+    console.log(err);
+})

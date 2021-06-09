@@ -6,167 +6,205 @@ let uniq = require("uniqid")
 let port = 3001
 
 //creating some tasks
-var task = []
+var todoArr = []
 
-const createTask = function (info) {
+const createTodo = function (info,completed) {
     this.id = uniq();
     this.date = new Date();
     this.info = info;
+    this.completed=completed;
 }
-let task1 = new createTask('Assingment1');
-let task2 = new createTask("Assignment2");
-let task3 = new createTask("Assignment3");
-task.push(task1);
-task.push(task2);
-task.push(task3);
-// console.log(task)
+
+let todo1= new createTodo('Assingment1',true);
+let todo2 = new createTodo("Assignment2",true);
+let todo3 = new createTodo("Assignment3",true);
+todoArr.push(todo1);
+todoArr.push(todo2);
+todoArr.push(todo3);
+console.log(todoArr)
 
 //finding task by id
-const findTaskByID = function (id) {
+const findId = function (id) {
     var i = 0;
-    for (i = 0; i < task.length; i++) {
-        if (task[i].id == id)
+    for (i = 0; i < todoArr.length; i++) {
+        if (todoArr[i].id === id)
             return i;
     }
     return "no";
 }
 
+function deleteTodo(uuid){
+    todoArr = todoArr.filter(function(obj){
+        return obj.id != uuid;
+    });
+    // delete todo_list[id];
+}
 
-//Starting the server at port 3001
+// //Starting the server at port 3001
 
-http.createServer((req, res) => { // all request will have req, res
-    if (req.method === 'GET') {
-        handleRequest(req, res);
-    } else {
-        attachBodyToRequest(req, res, handleRequest)
+http.createServer((req, res) =>
+{
+    if(req.method==="GET" || req.method==="POST" || req.method==="DELETE" || req.method==="PUT"){
+        handleRequest(req,res);
+    }
+    else{
+        console.log("Error occured");
+        res.writeHead(404);
+        res.end("bad request");
     }
 }).listen(port, () => {
     console.log("server started at port", port);
 });
 
 
+
 let handleRequest = (req, res) => {
+
     //print the data
-    console.log("Got request =>", {
-        method: req.method,
-        path: req.url,
-        contentType: req.headers['content-type'],
-        body: req.body
-    });
+    // console.log("Got request =>", {
+    //     method: req.method,
+    //     path: req.url,
+    //     contentType: req.headers['content-type'],
+    //     body: req.body
+    // });
+    // console.log(req);
+    // console.log(url.parse(req.url,true));
 
     //Get method
-    if(req.method === "GET")
+    if(req.method==="GET")
     {
 
-        if (req.url === "/gettask") 
+        if (req.url==="/todo")
         {
-            res.writeHead(200);
-            res.end(JSON.stringify(task, null, 2));
+            res.writeHead(200);//ok status
+            res.end(JSON.stringify(todoArr));//response
         }
-        else if (req.url.match("/gettask/+").length > 0) {
-            var id = req.url.split("/")[2];
-            let taskId = findTaskByID(id);
-            if (taskId == "no") 
-            {
-                res.writeHead(404);
-                res.write('Task Not Found');
-                res.end();
-            }
-         else
-         {
-            res.writeHead(200);
-            res.end(JSON.stringify(task[taskId]));
-         }
-        }
-    }    
-
-    //Post method
-
-    else if (req.method === 'POST' && req.url === '/post') {
-
-        let new_task = new createTask(req.body.title);
-        task.push(new_task);
-        res.writeHead(200);
-        res.write('Task created');
-        res.end();
-    }
-
-    //put method
-    else if (req.method === 'PUT')
-    {
-        if(req.url.match("/updatetask/+").length > 0)
+        else if (req.url.match(/\/todo\/.+/))
         {
-            var id = req.url.split("/")[2];
-            let taskId = findTaskByID(id);
-            if (taskId == "no") 
+            var id=req.url.substring(6);
+            console.log(req.url,id);
+            if(id==="")
             {
-                res.writeHead(404);
-                res.write('Task Not Found');
-                res.end();
+                // console.log("In empty",id);
+                res.writeHead(200, { 'Content-Type': 'text/plain' });
+                res.end("No Id provided");         
             }
             else
             {
-                if (req.body.info)
-                task[taskId].info = req.body.info;
-                res.writeHead(200);
-                res.write('Task Updated');
-                res.end();
-
+                let index = findId(id);
+                if (index ==="no") 
+                {
+                    res.writeHead(404);//status
+                    res.write('todo Not Found');
+                    res.end();
+                }
+                else
+                {
+                    res.writeHead(200);
+                    res.end(JSON.stringify(todoArr[index]));
+                }
             }
         }
-        else 
-        {
-            res.writeHead(404);
-             res.write('Task Not Found');
-             res.end();
-        }
-        
     }
-     
-    //delete method
 
-    else if(req.method==="DELETE")
+    //Post method
+
+    else if (req.method==="POST" && req.url==="/todo" && req.headers['content-type'] === 'application/json')
     {
-        if(req.url.match("/deletetask/+").length>0)
+        body = '';
+        req.on('data', (data) =>
         {
-            let id = req.url.split('/')[2];
-            let taskId = findTask(id);
-            if (taskId === "no") {
-                res.writeHead(404);
-                res.write('task Not Found');
-                res.end();
-            }
-            else {
-                task.splice(taskId, 1);
-                res.writeHead(200);
-                res.write('Task deleted');
-                res.end();
-            }
-        }
-        else 
-        {
-            res.writeHead(404);
-            res.write('task Not Found');
-            res.end();
-        }
-    }
-   
- }
-
-    let attachBodyToRequest = (req, res, callback) => {
-        let body = '';
-        //let count = 0;
-        req.on('data', (data) => {
-            //  count++;
-            //  console.log('count', count);
             body += data;
+            console.log(body);
         });
+        
         req.on("end", _any => {
             if (req.headers['content-type'] === 'application/json') {
                 req.body = JSON.parse(body);
             } else {
                 console.log('Request Body of other mime types');
             }
-            callback(req, res);
+            console.log(req.body);
+            let newTodo= new createTodo(req.body.info, req.body.completed);
+            todoArr.push(newTodo);
+            res.writeHead(200); // set status code
+            return res.end(JSON.stringify(todoArr))
         });
     }
+
+    //put method
+    else if (req.method==="PUT" && req.url.match(/\/todo\/.+/)  && req.headers['content-type'] === 'application/json')
+    {
+        var id=req.url.substring(6);
+        
+        if(id===null)
+        {
+            res.writeHead(200, { 'Content-Type': 'text/plain' });
+            res.write("No Id");  
+            res.end();
+        }
+        else
+            {
+                let index=findId(id);
+                if(index==="no")
+                {
+                    res.writeHead(404);
+                    res.write('This todo not found');
+                    res.end();
+                }
+                else 
+                {
+                    body = '';
+                    req.on('data', (data) =>
+                    {
+                    body += data;
+                    console.log(body);
+                    });
+                
+                req.on("end", _any => {
+                    if (req.headers['content-type'] === 'application/json') {
+                        req.body = JSON.parse(body);
+                    } else {
+                        console.log('Request Body of other mime types');
+                    }
+                    console.log(req.body);
+                    todoArr[index].info=req.body.info;
+                    todoArr[index].completed=req.body.completed
+                    res.writeHead(200); // set status code
+                    return res.end(JSON.stringify(todoArr[index]))
+                 });
+                }
+            }
+               
+    }
+     
+    //delete method
+    else if(req.method==="DELETE" && req.url.match(/\/todo\/.+/))
+    {
+        var id=req.url.substring(6);
+        if(id==="")
+        {
+            res.writeHead(200, { 'Content-Type': 'text/plain' });
+            res.write("No Id given");
+            res.end();
+        }
+        else 
+        {
+                if(findId(id)==="no")
+                {
+                    res.writeHead(404);
+                    res.write('no such id found');
+                    res.end();
+                }
+                else 
+                {
+                    deleteTodo(id);
+                    res.writeHead(200); // set status code
+                    console.log(todoArr);
+                    return res.end("deleted successfully");
+                }
+        }
+    }
+
+}
+

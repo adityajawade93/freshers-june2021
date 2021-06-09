@@ -2,7 +2,7 @@ let http = require('http');
 
 const uuid = require('uniqid');
 
-const port = 4000;
+const port = 4001;
 
 var apiArray = []
 
@@ -14,8 +14,11 @@ function Task(title, content, completed) {
     this.completed = completed;
 }
 
-let task1= new Task('maths','algebra',false);
+let task1 = new Task('maths', 'algebra', false);
 apiArray.push(task1);
+
+let task2 = new Task('Physics', 'Mechanics', true);
+apiArray.push(task2);
 
 http.createServer((req, res) => { // all request will have req, res
     if (req.method === 'GET') {
@@ -27,39 +30,60 @@ http.createServer((req, res) => { // all request will have req, res
     console.log("server started at port", port);
 });
 
+function getId(id) {
+    var i = 0;
+    for (i = 0; i < apiArray.length; i++) {
+        if (apiArray[i].id == id)
+            break;
+    }
+    if (i == apiArray.length)
+        return -1;
+    else
+        return i;
+
+
+}
+
 let handleRequest = (req, res) => {
-    console.log("Got request =>", { 
-        method: req.method, 
-        path: req.url, 
+    console.log("Got request =>", {
+        method: req.method,
+        path: req.url,
         contentType: req.headers['Content-type'],
-         body: req.body
-        });
+        body: req.body
+    });
+    if (req.method === 'GET' && req.url === '/todo') {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(apiArray, null, 2));
+    }
 
-    if (req.method === 'POST' && req.url === '/posttodo') {
-
-        let task = new Task(req.body.title , req.body.content, req.body.completed);
+    else if (req.method === 'POST' && req.url === '/todo') {
+        let task = new Task(req.body.title, req.body.content, req.body.completed);
         apiArray.push(task);
         res.writeHead(200, { 'Content-Type': 'text/html' });
         res.write('Notes Created');
         res.end();
 
-    } else if (req.method === 'GET' && req.url === '/gettodo') {
-
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify(apiArray, null, 2));
-
-
-    } else if (req.method === 'PUT' && req.url === '/puttodo') {
-       
-        let id = req.body.id;
-        var i = 0;
-        for (i = 0; i < apiArray.length; i++) {
-            if (apiArray[i].id == id)
-                break;
-        }
-        if (i == apiArray.length) {
+    }
+    else if (req.method === 'GET' && req.url.match(/\/todo\/.+/)) {
+        var id = req.url.substring(6);
+        let i = getId(id);
+        if (i === -1) {
             res.writeHead(404, { 'Content-Type': 'text/html' });
-            res.write('Notes Not Found');
+            res.write('Not Found');
+            res.end();
+        }
+        else {
+            res.writeHead(200, {'Content-Type': 'application/json'});
+        res.end(JSON.stringify(apiArray[i]));
+        }
+    } 
+    else if (req.method === 'PUT' && req.url.match(/\/todo\/.+/)) {
+
+        var id=req.url.substring(6);
+        let i = getId(id);
+        if (i === -1) {
+            res.writeHead(404, { 'Content-Type': 'text/html' });
+            res.write('Not Found');
             res.end();
         }
         else {
@@ -74,17 +98,15 @@ let handleRequest = (req, res) => {
             res.end();
         }
 
-    } else if (req.method === 'DELETE' && req.url === '/deltodo') {
+    } 
+    else if (req.method === 'DELETE' && req.url.match(/\/todo\/.+/))
+    {
 
-        let id = req.body.id;
-        var i = 0;
-        for (i = 0; i < taskList.length; i++) {
-            if (apiArray[i].id == id)
-                break;
-        }
-        if (i == apiArray.length) {
+        var id=req.url.substring(6);
+        let i = getId(id);
+        if (i === -1) {
             res.writeHead(404, { 'Content-Type': 'text/html' });
-            res.write('Notes Not Found');
+            res.write(' Not Found');
             res.end();
         }
         else {
@@ -95,7 +117,8 @@ let handleRequest = (req, res) => {
         }
 
     }
-    else {
+    else
+    {
         res.writeHead(404, { 'Content-Type': 'text/html' });
         res.write('<h2>Not Found2</h2>');
         res.end();

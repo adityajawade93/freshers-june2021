@@ -15,7 +15,7 @@ class Notes{
 
 var list = [];
 
-exports.createNotes = async(req,res)=>{
+exports.createtodo = async(req,res)=>{
 
      try{
           await attachBody(req,res);
@@ -44,14 +44,14 @@ exports.createNotes = async(req,res)=>{
 }
 
 
-exports.getNotes = async(req,res)=>{
+exports.gettodo= async(req,res)=>{
 
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify(list));
        
 }
 
-exports.updateNotes = async(req,res)=>{
+exports.updatetodo = async(req,res)=>{
 
       
       try{
@@ -91,7 +91,7 @@ exports.updateNotes = async(req,res)=>{
 
 }
 
-exports.deleteNotes = async(req,res)=>{
+exports.deletetodo = async(req,res)=>{
 
     try{
        

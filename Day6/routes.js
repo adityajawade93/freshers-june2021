@@ -19,6 +19,12 @@ exports.convert = async(req,res)=>{
                let data = await csvtoJSON().fromFile(path);
                res.writeHead(200, { 'Content-Type': 'application/json' });
                res.end(JSON.stringify(data));
+               fs.writeFile('data.json', JSON.stringify(data), (err) => {
+                if (err) {
+                    throw err;
+                }
+                console.log("JSON array is saved.");
+            });
        
 
            }

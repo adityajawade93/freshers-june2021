@@ -4,18 +4,18 @@ const routes = require('./routes');
 http.createServer((req,res)=>{
 
     if(req.method==='POST'&&req.url==='/todo')
-      routes.createNotes(req,res);
+      routes.createtodo(req,res);
     if(req.method==='GET'&&req.url==='/todo')  
     {
-        routes.getNotes(req,res);
+        routes.gettodo(req,res);
     }
     if(req.method==='PUT'&&req.url.match('/todo/').length>0)
     {
-        routes.updateNotes(req,res);
+        routes.updatetodo(req,res);
     }
     if(req.method==='DELETE'&&req.url.match('/todo/').length>0)
     {
-        routes.deleteNotes(req,res);
+        routes.deletetodo(req,res);
     }
 
 }).listen(3000,()=>{

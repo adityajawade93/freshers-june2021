@@ -1,0 +1,72 @@
+[
+    {
+        "Make": "Toyota",
+        "Colour": "White",
+        "Odometer (KM)": "150043",
+        "Doors": "4",
+        "Price": "$4,000.00"
+    },
+    {
+        "Make": "Honda",
+        "Colour": "Red",
+        "Odometer (KM)": "87899",
+        "Doors": "4",
+        "Price": "$5,000.00"
+    },
+    {
+        "Make": "Toyota",
+        "Colour": "Blue",
+        "Odometer (KM)": "32549",
+        "Doors": "3",
+        "Price": "$7,000.00"
+    },
+    {
+        "Make": "BMW",
+        "Colour": "Black",
+        "Odometer (KM)": "11179",
+        "Doors": "5",
+        "Price": "$22,000.00"
+    },
+    {
+        "Make": "Nissan",
+        "Colour": "White",
+        "Odometer (KM)": "213095",
+        "Doors": "4",
+        "Price": "$3,500.00"
+    },
+    {
+        "Make": "Toyota",
+        "Colour": "Green",
+        "Odometer (KM)": "99213",
+        "Doors": "4",
+        "Price": "$4,500.00"
+    },
+    {
+        "Make": "Honda",
+        "Colour": "Blue",
+        "Odometer (KM)": "45698",
+        "Doors": "4",
+        "Price": "$7,500.00"
+    },
+    {
+        "Make": "Honda",
+        "Colour": "Blue",
+        "Odometer (KM)": "54738",
+        "Doors": "4",
+        "Price": "$7,000.00"
+    },
+    {
+        "Make": "Toyota",
+        "Colour": "White",
+        "Odometer (KM)": "60000",
+        "Doors": "4",
+        "Price": "$6,250.00"
+    },
+    {
+        "Make": "Nissan",
+        "Colour": "White",
+        "Odometer (KM)": "31600",
+        "Doors": "4",
+        "Price": "$9,700.00"
+    }
+]

@@ -50,7 +50,7 @@ let handleRequest = (req, res) => {
         body: req.body 
     });
 
-    if (req.method === 'GET' && !!req.url.match("/csvtojson/.+") && req.url.match("/csvtojson/.+").length > 0) {
+    if (req.method === 'GET' && !!req.url.match("/csvtojson/.+")) {
         const filename = req.url.split('/')[2];
         const path = `./${filename}`;
 

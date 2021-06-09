@@ -71,8 +71,8 @@ let handleRequest = (req, res) => {
         }
         else errorResponse(res, '<h2>Invalid Data</h2>');
     } 
-    else if (req.method === 'PUT' && !!req.url.match("/todo/+") 
-        && req.url.match("/todo/+").length > 0 && req.headers['content-type'] === 'application/json') {
+    else if (req.method === 'PUT' && !!req.url.match("/todo/.+") 
+        && req.headers['content-type'] === 'application/json') {
 
         const id = req.url.split('/')[2];
         todoIndex = getTodoIndex(id);
@@ -101,14 +101,14 @@ let handleRequest = (req, res) => {
     else if (req.method === 'GET' && req.url === '/todo') {
         successResponse(res, todos);
     }
-    else if (req.method === 'GET' && req.url.match("/todo/+").length > 0) {
+    else if (req.method === 'GET' && !!req.url.match("/todo/.+")) {
         const id = req.url.split('/')[2];
         todoIndex = getTodoIndex(id);
 
         if (todoIndex !== -1) successResponse(res, todos[todoIndex]);
         else errorResponse(res, '<h2>Invalid Data</h2>');
     }
-    else if (req.method === 'DELETE' && !!req.url.match("/todo/+") && req.url.match("/todo/+").length > 0) {
+    else if (req.method === 'DELETE' && !!req.url.match("/todo/.+")) {
         const id = req.url.split('/')[2];
         todoIndex = getTodoIndex(id);
 

@@ -42,21 +42,20 @@ http.createServer((req,res)=>{
 })
 
 let handlerequests = function(req,res){
-    if(req.method==='POST' && req.url==='/posttodo'){
+    if(req.method==='POST' && req.url==='/todo'){
         let newtodo= new todo(req.body.title, req.body.content,req.body.done);
         todolist.push(newtodo);
         res.writeHead(200,{'Content-type': 'text/html'}); //if the response from the HTTP server is supposed to be displayed as HTML, you should include an HTTP header with the correct content type:
         res.write('todo created');
         res.end();
     }
-    else if(req.method==='GET' && req.url==='/gettodo'){
+    else if(req.method==='GET' && req.url==='/todo'){
         res.writeHead(200,{'Content-type' : 'application/json'});//when another page is calling the php script, so that the other page can automatically parse the result as json.
         res.end(JSON.stringify(todolist,null,2));
     }
-    else if(req.method==='PUT' && url.parse(req.url).pathname==='/updatetodo'){
+    else if(req.method==='PUT' && req.url.match('/todo/+').length>0){
 
-        let query= url.parse(req.url,true).query;
-        let id= query.id;
+        let id= req.url.substring(6);
         //console.log(id);
         var i=0;
         for(i=0;i<todolist.length;i++){
@@ -80,10 +79,10 @@ let handlerequests = function(req,res){
             res.end();
         }
     }
-    else if(req.method==='DELETE' && url.parse(req.url).pathname==='/deletetodo'){
-        let query= url.parse(req.url,true).query;
-        let id= query.id;
-        console.log(id);
+    else if(req.method==='DELETE' && req.url.match('/todo/+').length>0){
+        
+        let id= req.url.substring(6);
+        //console.log(id);
         var i=0;
         for(i=0;i<todolist.length;i++){
             if(todolist[i].id==id){

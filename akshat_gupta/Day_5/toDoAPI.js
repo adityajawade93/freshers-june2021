@@ -5,11 +5,11 @@ var toDoList = []
 
 http.createServer((req, res) => { // all request will have req, res
     console.log("Got request =>", { method: req.method, path: req.url, contentType: req.headers['content-type'], body: req.body });
-    if (req.method === 'GET') {
-        if(req.url.substr(0,5) !== '/todo') {
-            res.writeHead(404)
-            res.end('Bad Request!')
-        }
+    if(req.url.substr(0,5) !== '/todo') {
+        res.writeHead(404)
+        res.end('Bad Request!')
+    }
+    else if (req.method === 'GET') {
         if (req.url.length === 5)
             getAll(req,res);
         else

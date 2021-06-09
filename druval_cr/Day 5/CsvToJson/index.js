@@ -1,4 +1,4 @@
-const csv=require('csvtojson')
+const csv = require('csvtojson')
 const fs = require('fs')
 
 const csvFilePath='./userDetails.csv'

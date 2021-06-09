@@ -1,6 +1,5 @@
 const http = require('http');
 const routes = require('./routes');
-const url = require('url');
 
 http.createServer((req,res)=>{
 
@@ -10,11 +9,11 @@ http.createServer((req,res)=>{
     {
         routes.getNotes(req,res);
     }
-    if(req.method==='PUT'&&url.parse(req.url,true).pathname==='/updateNotes')
+    if(req.method==='PUT'&&req.url.match('/updateNotes').length>0)
     {
         routes.updateNotes(req,res);
     }
-    if(req.method==='DELETE'&&url.parse(req.url,true).pathname==='/deleteNotes')
+    if(req.method==='DELETE'&&req.url.match('/deleteNotes').length>0)
     {
         routes.deleteNotes(req,res);
     }

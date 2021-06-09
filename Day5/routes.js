@@ -55,8 +55,8 @@ exports.updateNotes = async(req,res)=>{
 
       
       try{
-        let query = url.parse(req.url,true).query;
-        let id = query.id;
+        let id = req.url.substring(13);
+        console.log(id);
         var i=0;
         for(i=0;i<list.length;i++)
         {
@@ -95,8 +95,10 @@ exports.deleteNotes = async(req,res)=>{
 
     try{
        
-        let query = url.parse(req.url,true).query;
-        let id = query.id;
+        
+        let id = req.url.substring(13);
+        console.log(id);
+        //let id = query.id;
         var i=0;
         for(i=0;i<list.length;i++)
         {

@@ -4,11 +4,11 @@ const Path = require('path');
 const { converter } = require('./read_file');
 const port = 4000;
 
-async function createFile(req, res) {
+function createFile(req, res) {
     let filename = req.url.substring(6);
     let name = req.url.substring(6) + '.csv';
     let paths = Path.join('./csv_files/', name);
-    await fs.access(paths, fs.F_OK, (err) => {
+     fs.access(paths, fs.F_OK, (err) => {
         if (err) {
             console.log("File does not exist.")
             //   console.log(name,typeof(name));

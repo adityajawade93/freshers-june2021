@@ -44,9 +44,9 @@ let handleRequest = (req, res) => {
         res.end(JSON.stringify(task_list, null, 2));
 
     }
-    else if(req.method === 'GET' && req.url === '/todo/'){
+    else if(req.method === 'GET' && req.url.match("/todo/+").length>0){
 
-        let req_id = req.body.id;
+        let req_id = req.url.substring(6);
         var len = task_list.length;
         var i=0;
         for(i=0;i<len;i++){
@@ -59,12 +59,12 @@ let handleRequest = (req, res) => {
             res.end();
         }
         else{
-            res.writeHead(404, { 'Content-Type': 'text/html' });
+            res.writeHead(404, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify(task_list[i]));
         }
     }
-    else if(req.method === 'PUT' && req.url === '/todo/'){
-        let req_id = req.body.id;
+    else if(req.method==="PUT" && req.url.match("/todo/+").length>0){
+        let req_id = req.url.substring(6);
         var len = task_list.length;
         var i=0;
         for(i=0;i<len;i++){
@@ -86,8 +86,8 @@ let handleRequest = (req, res) => {
             res.end();
         }
     }
-    else if(req.method === 'DELETE' && req.url === '/todo/'){
-        let req_id = req.body.id;
+    else if(req.method==="DELETE" && req.url.match("/todo/+").length>0){
+        let req_id = req.url.substring(6);
         var len = task_list.length;
         var i=0;
         for(i=0;i<len;i++){
@@ -117,20 +117,20 @@ let handleRequest = (req, res) => {
 }
 
 
-var attachbodytorequest = (req,res,callback) =>{
-    let body =''
+var attachBodyToRequest = (req,res,callback) =>{
+    let body ='';
 
     req.on('data' ,(data) =>{
-        body +=data
+        body +=data;
     })
     req.on('end',() =>{
         
         if(req.headers['content-type']==='application/json'){
-            req.body = JSON.parse(body)
+            req.body = JSON.parse(body);
         }else{
             console.log('requested data is of other mime types')
         }
-        callback(req,res)
+        callback(req,res);
     })
     
 }

@@ -8,7 +8,7 @@ csvtojson()
 .then((jsonobj) =>{
     console.log(jsonobj)
 
-    fs.writeFile('jsonfile.js',JSON.stringify(jsonobj),'utf8',
+    fs.writeFile('jsonfile.json',JSON.stringify(jsonobj),'utf8',
     (error) =>{
         console.log(error)
     })

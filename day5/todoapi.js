@@ -10,7 +10,7 @@ function todo(todotask,taskstatus){
     this.todotask=todotask
     this.taskstatus=taskstatus
 }
-const port =8080
+const port =8001
 
 let todo1 = new todo('read a book',false)
 todolist.push(todo1)
@@ -38,58 +38,26 @@ var handlerequest =(req,res) =>{
         body:req.body
     })
 
-    if(req.method==='GET'&& req.url ==='/gettask'){
-        res.writeHead(200,{'content-type':'application/json'})
-        res.end(JSON.stringify(todolist,null,2))
+    if(req.method==='GET'&& req.url ==='/todo'){
+        gettodo(req,res)
 
-    }else if(req.method==='POST' && req.url ==='/posttask'){
-        let task = new todo(req.body.todotask,req.body.taskstatus)
-        todolist.push(task);
-        console.log(task)
-        res.writeHead(200,{'content-type':'text/html'})
-        res.write('task added to the todo list')
-        res.end()
-    }else if(req.method==='PUT' && req.url ==='/puttask'){
-        let id = req.body.id
-        let i
-        for(i =0;i<todolist.length;i++){
-            if(todolist[i].id===id){
-                todolist[i].todotask = req.body.todotask
-                todolist[i].taskstatus =req.body.taskstatus
-                break;
-            }
-        }
-        if(i==todolist.length){
-            res.writeHead(402,{'content-type':'text/html'})
-            res.write('<h1>task not found</h1>')
-            res.end()
-        }else{
-            res.writeHead(200,{'content-type':'text/html'})
-            res.write('task updated successfully')
-            res.end()
-        }
+    }else if(req.method==='GET'&& req.url.match("/todo/+")){
+        let id = req.url.substring(6)
+        gettodobyid(req,res,id)
 
-    }else if(req.method==='DELETE' && req.url ==='/deletetask'){
-        let id = req.body.id
-        let l =todolist.length
-        let i;
+    }else if(req.method==='POST' && req.url ==='/todo'){
+        createtodo(req,res)
+        
+    }else if(req.method==='PUT' && req.url.match("/todo/+").length>0){
+        let id = req.url.substring(6)
+        //console.log(req.url,id)
+        updatetodo(req,res,id)
+        
 
-        for(i=0;i<todolist.length;i++){
-            if(todolist[i].id===id){
-                todolist.splice(i,1)
-                break
-            }
-        }
-
-        if(todolist.length==l){
-            res.writeHead(402,{'content-type':'text/html'})
-            res.write('task not found')
-            res.end()
-        }else{
-            res.writeHead(402,{'content-type':'text/html'})
-            res.write('task deleted successfully')
-            res.end()
-        }
+    }else if(req.method==='DELETE' && req.url.match("/todo/+").length>0){
+        let id = req.url.substring(6)
+        deletetodo(req,res,id)
+        
     }else{
         res.writeHead(404,{'content-type':'text/html'})
         res.write('page not found')
@@ -114,3 +82,80 @@ var attachbodytorequest = (req,res,callback) =>{
     })
     
 }
+
+var gettodo = (req,res) =>{
+
+    res.writeHead(200,{'content-type':'application/json'})
+    res.end(JSON.stringify(todolist,null,2))
+}
+
+var gettodobyid = (req,res,id) =>{
+    let i
+    for(i =0;i<todolist.length;i++){
+        if(todolist[i].id === id){
+            res.writeHead(200,{'content-type':'application/json'})
+            res.end(JSON.stringify(todolist[i],null,2))
+            break
+        }
+    }
+    if(i==todolist.length){
+        res.writeHead(404,{'content-type':'text/html'})
+        res.write('task not found')
+        res.end()
+    }
+}
+
+
+var createtodo = (req,res) =>{
+    let task = new todo(req.body.todotask,req.body.taskstatus)
+        todolist.push(task);
+        console.log(task)
+        res.writeHead(200,{'content-type':'text/html'})
+        res.write('task created to the todo list')
+        res.end()
+}
+
+var updatetodo = (req,res,id) =>{
+    let i
+        for(i =0;i<todolist.length;i++){
+            if(todolist[i].id===id){
+                todolist[i].todotask = req.body.todotask
+                todolist[i].taskstatus =req.body.taskstatus
+                break;
+            }
+        }
+        if(i==todolist.length){
+            res.writeHead(404,{'content-type':'text/html'})
+            res.write('task not found')
+            res.end()
+        }else{
+            res.writeHead(200,{'content-type':'text/html'})
+            res.write('task updated successfully')
+            res.end()
+        }
+}
+
+var deletetodo = (req,res,id) =>{
+
+        let todolength =todolist.length
+        let i;
+
+        for(i=0;i<todolist.length;i++){
+            if(todolist[i].id===id){
+                todolist.splice(i,1)
+                break
+            }
+        }
+
+        if(todolist.length==todolength){
+            res.writeHead(404,{'content-type':'text/html'})
+            res.write('task not found')
+            res.end()
+        }else{
+            res.writeHead(200,{'content-type':'text/html'})
+            res.write('task deleted successfully')
+            res.end()
+        }
+
+}
+

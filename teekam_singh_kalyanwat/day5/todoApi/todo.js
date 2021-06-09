@@ -17,10 +17,10 @@ let first_task = new task('send docs',false);
 task_list.push(first_task);
 
 http.createServer((req, res) => { // all request will have req, res
-    if (req.method === 'GET') {
+    if (req.method === 'GET' && req.url === '/todo') {
         handleRequest(req, res);
     } else {
-        attachBodyToRequest(req, res, handleRequest)
+        attachBodyToRequest(req, res, handleRequest);
     }
 }).listen(port, () => {
     console.log("server started at port", port);
@@ -29,7 +29,7 @@ http.createServer((req, res) => { // all request will have req, res
 let handleRequest = (req, res) => {
     console.log("Got request =>", { method: req.method, path: req.url, contentType: req.headers['content-type'], body: req.body });
 
-    if(req.method === 'Post' && req.url === '/todo'){
+    if(req.method === 'POST' && req.url === '/todo'){
 
         let new_task = new task(req.body.title, req.body.status);
         task_list.push(new_task);
@@ -44,7 +44,7 @@ let handleRequest = (req, res) => {
         res.end(JSON.stringify(task_list, null, 2));
 
     }
-    else if(req.method === 'GET' && req.url === '/todo/:id'){
+    else if(req.method === 'GET' && req.url === '/todo/'){
 
         let req_id = req.body.id;
         var len = task_list.length;
@@ -63,7 +63,7 @@ let handleRequest = (req, res) => {
             res.end(JSON.stringify(task_list[i]));
         }
     }
-    else if(req.method === 'PUT' && req.url === '/todo/:id'){
+    else if(req.method === 'PUT' && req.url === '/todo/'){
         let req_id = req.body.id;
         var len = task_list.length;
         var i=0;
@@ -86,7 +86,7 @@ let handleRequest = (req, res) => {
             res.end();
         }
     }
-    else if(req.method === 'DELETE' && req.url === '/todo/:id'){
+    else if(req.method === 'DELETE' && req.url === '/todo/'){
         let req_id = req.body.id;
         var len = task_list.length;
         var i=0;

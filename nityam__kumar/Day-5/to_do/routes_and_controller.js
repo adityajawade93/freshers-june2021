@@ -2,12 +2,18 @@ const uuid = require('uniqid');
 const parse = require('url-parse');
 let taskList = [
     {
-        id:"56",
-        date:new Date,
-        title:"sop",
-        content:"soc",
-        completed:true
+        id: "56",
+        date: new Date,
+        title: "sop",
+        content: "soc",
+        completed: true
 
+    }, {
+        id: "1234",
+        date: new Date,
+        title: "study",
+        content: "book",
+        completed: true
     }
 ];
 
@@ -34,7 +40,7 @@ module.exports.createTask = async (req, res) => {
             res.writeHead(404, { 'Content-Type': 'text/html' });
             res.write('Title not found');
             res.end();
-            
+
         }
         let task = new Task(new Date(), req.body.title, req.body.content);
         taskList.push(task);
@@ -56,12 +62,63 @@ module.exports.createTask = async (req, res) => {
 module.exports.getTask = async (req, res) => {
 
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    if(taskList.length==0)res.end("No task");
-    else{
+    if (taskList.length == 0) res.end("No task");
+    else {
         console.log(JSON.stringify(taskList));
         res.end(JSON.stringify(taskList));
     }
-    
+
+
+}
+
+
+module.exports.getTaskById = async (req, res) => {
+
+    try {
+        let id = req.url.substring(6);
+        // console.log(id);
+
+        if (id === "") {
+            // console.log("enter valid id",id);
+            res.writeHead(200, { 'Content-Type': 'text/plain' });
+            res.write("please enter id");
+            res.end();
+        }
+        else {
+
+            let i = 0;
+            for (; i < taskList.length; i++) {
+                if (id == taskList[i].id) {
+                    break;
+                }
+            }
+            if (i == taskList.length) {
+                res.writeHead(200, { 'Content-Type': 'text/plain' });
+                res.write("Data provided is not availabe");
+                res.end();
+            }
+            else {
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                console.log(taskList[i]);
+                res.write(JSON.stringify(taskList[i]));
+                res.end();
+            }
+
+        }
+    }
+    catch (err) {
+        console.log(err);
+        res.writeHead(401, { 'Content-Type': 'text/html' });
+        res.write('error occured');
+        res.end();
+    }
+
+
+
+
+
+
+
 
 }
 
@@ -69,29 +126,37 @@ module.exports.updateTask = async (req, res) => {
 
 
     try {
-        let query = parse(req.url, true).query;
-        let id = query.id;
-        let i = 0;
-        for (;i < taskList.length; i++) {
-            if (taskList[i].id == id)
-                break;
-        }
-        if (i == taskList.length) {
-            res.writeHead(404, { 'Content-Type': 'text/html' });
-            res.write('Task Not Found');
+        let id = req.url.substring(6);
+        if (id === "") {
+            // console.log("enter valid id",id);
+            res.writeHead(200, { 'Content-Type': 'text/plain' });
+            res.write("please enter id");
             res.end();
         }
         else {
-            await attachBody(req, res);
-            if (req.body.title)
-            taskList[i].title = req.body.title;
-            if (req.body.content)
-            taskList[i].content = req.body.content;
-            console.log(taskList[i]);
-            res.writeHead(200, { 'Content-Type': 'text/html' });
-            res.write('Task Updated Successfully');
-            res.end();
+            let i = 0;
+            for (; i < taskList.length; i++) {
+                if (taskList[i].id == id)
+                    break;
+            }
+            if (i == taskList.length) {
+                res.writeHead(404, { 'Content-Type': 'text/html' });
+                res.write('Task Not Found');
+                res.end();
+            }
+            else {
+                await attachBody(req, res);
+                if (req.body.title)
+                    taskList[i].title = req.body.title;
+                if (req.body.content)
+                    taskList[i].content = req.body.content;
+                console.log(taskList[i]);
+                res.writeHead(200, { 'Content-Type': 'text/html' });
+                res.write('Task Updated Successfully');
+                res.end();
+            }
         }
+
     }
     catch (err) {
         console.log(err);
@@ -105,24 +170,32 @@ module.exports.updateTask = async (req, res) => {
 module.exports.deleteTask = async (req, res) => {
 
     try {
-
-        const query = parse(req.url, true).query;
-        const  id = query.id;
-        let i = 0;
-        for (;i < taskList.length; i++) {
-            if (taskList[i].id === id)
-                break;
-        }
-        if (i == taskList.length) {
-            res.writeHead(404, { 'Content-Type': 'text/html' });
-            res.write('Task Not Found');
+        let id = req.url.substring(6);
+        if (id === "") {
+            // console.log("enter valid id",id);
+            res.writeHead(200, { 'Content-Type': 'text/plain' });
+            res.write("please enter id");
             res.end();
         }
         else {
-            taskList.splice(i, 1);
-            res.writeHead(200, { 'Content-Type': 'text/html' });
-            res.write('Task deleted successfully');
-            res.end();
+            let i = 0;
+            for (; i < taskList.length; i++) {
+                if (taskList[i].id === id)
+                    break;
+            }
+            if (i == taskList.length) {
+                res.writeHead(404, { 'Content-Type': 'text/html' });
+                res.write('Task Not Found');
+                res.end();
+            }
+            else {
+                // const temp = taskList[i];
+                taskList.splice(i, 1);
+                res.writeHead(200, { 'Content-Type': 'text/html' });
+                res.write('Task deleted successfully');
+                res.end();
+            }
+
         }
 
     }
@@ -150,7 +223,7 @@ let attachBody = (req, res) => {
             } else {
                 console.log('Request Body of other mime types');
             }
-                
+
 
 
         });
@@ -171,6 +244,6 @@ let attachBody = (req, res) => {
 //         res.writeHead(200); // set status code
 //         res.end(data);
 //     });
-    
+
 // }
 

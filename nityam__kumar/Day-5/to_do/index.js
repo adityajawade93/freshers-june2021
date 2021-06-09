@@ -14,23 +14,30 @@
 let http = require('http');
 let fs = require('fs');
 const uuid = require('uniqid');
-const {createTask,getTask,updateTask,deleteTask} = require('./routes_and_controller.js');
+const {createTask,getTask,updateTask,deleteTask,getTaskById} = require('./routes_and_controller.js');
 const parse = require('url-parse');
 const port = 3000;
 
 
 http.createServer((req, res) => {
-    if (req.method == 'POST' && parse(req.url, true).pathname == '/todo/createTask')
+    if (req.method == 'POST' && req.url==="/todo" && req.headers['content-type'] === 'application/json')
     
         createTask(req, res);
-    if (req.method == 'GET' && parse(req.url, true).pathname == '/todo/getTask') {
+    else if (req.method == 'GET' &&  req.url==="/todo") {
         // console.log("go");
         getTask(req, res);
     }
-    if (req.method == 'PUT' && parse(req.url, true).pathname == '/todo/updateTask') {
+
+    else if (req.method == 'GET' && req.url.match("/todo/+").length>0) {
+        // console.log("go");
+        // console.log(req.url);
+        getTaskById(req, res);
+    }
+
+    else if (req.method=="PUT" && req.url.match("/todo/+").length>0  && req.headers['content-type'] === 'application/json') {
         updateTask(req, res);
     }
-    if (req.method == 'DELETE' && parse(req.url, true).pathname == '/todo/deleteTask') {
+    else if (req.method == 'DELETE'  && req.url.match("/todo/+").length>0) {
         deleteTask(req, res);
     }
 }).listen(port, () => {

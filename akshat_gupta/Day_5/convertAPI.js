@@ -31,14 +31,17 @@ const convertToJSON = (req,res) => {
     }
 
     res.writeHead(200, { 'Content-Type': 'application/json' });
+    var json;
     CSVToJSON().fromFile(csvFileName)
     .then(users => {
-        var json = JSON.stringify(users);
+        json = JSON.stringify(users);
         fs.writeFile(newFileName + '.json', json, 'utf8', (err) => {
             if (err) {
                 throw err;
             }
         })
+        // res.write("Conversion Successful!");
+        // res.end(json);
     })
     .catch(err => {
         console.log(err);

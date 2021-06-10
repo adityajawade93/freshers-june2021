@@ -1,0 +1,14 @@
+{
+  "name": "test1",
+  "version": "1.0.0",
+  "description": "practice",
+  "main": "program.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "jatin",
+  "license": "ISC",
+  "dependencies": {
+    "jest": "^27.0.3"
+  }
+}

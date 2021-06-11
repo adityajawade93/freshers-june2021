@@ -66,7 +66,10 @@ async function addTodo(ctx) {
     todos.push(todo);
 
     ctx.body = todo;
-  } else ctx.body = 'Invalid data';
+  } else {
+    ctx.status = 404;
+    ctx.body = 'Invalid data';
+  }
 }
 
 async function updateTodo(ctx) {
@@ -87,7 +90,10 @@ async function updateTodo(ctx) {
       todos[todoIndex].completed = data.completed;
     }
     ctx.body = todos[todoIndex];
-  } else ctx.body = `ToDo with id: ${id} not found`;
+  } else {
+    ctx.status = 404;
+    ctx.body = `ToDo with id: ${id} not found`;
+  }
 }
 
 async function getToDos(ctx) {
@@ -100,7 +106,10 @@ async function getToDo(ctx) {
   const todoIndex = getTodoIndex(id);
 
   if (todoIndex !== -1) ctx.body = todos[todoIndex];
-  else ctx.body = `ToDo with id: ${id} not found`;
+  else {
+    ctx.status = 404;
+    ctx.body = `ToDo with id: ${id} not found`;
+  }
 }
 
 async function deleteToDo(ctx) {
@@ -111,7 +120,10 @@ async function deleteToDo(ctx) {
   if (todoIndex !== -1) {
     todos.splice(todoIndex, 1);
     ctx.body = `ToDo with id: ${id} is deleted`;
-  } else ctx.body = `ToDo with id: ${id} not found`;
+  } else {
+    ctx.status = 404;
+    ctx.body = `ToDo with id: ${id} not found`;
+  }
 }
 
 // routes
@@ -122,6 +134,7 @@ router.get('/todo/:id', getToDo);
 router.delete('/todo/:id', deleteToDo);
 
 app.use(async (ctx) => {
+  ctx.status = 404;
   ctx.body = 'Page not found';
 });
 

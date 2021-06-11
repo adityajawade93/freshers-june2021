@@ -17,6 +17,9 @@ router.delete('/todo/:id',todoController.deletetodo);
 
 app.use(router.routes());
 
-app.listen(port,()=>{
+const server = app.listen(port,()=>{
    console.log("server is running on port "+port);
+   
 })
+
+module.exports=server;

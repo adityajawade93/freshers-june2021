@@ -50,7 +50,7 @@ exports.createtodo = async(ctx)=>{
 
 exports.gettodo= async(ctx)=>{
 
-    ctx.response.status=300;
+    ctx.response.status=200;
     ctx.response.type = 'application/json';
     ctx.body=JSON.stringify(list);
        
@@ -60,8 +60,17 @@ exports.updatetodo = async(ctx)=>{
 
       
       try{
-        let id = ctx.url.substring(6);
+        let id = ctx.request.params.id;
         var i=0;
+        if(typeof id !=='string' || id[0]!=='N')
+        {
+            ctx.response.status=404;
+            ctx.response.type = 'application/json';
+            ctx.body={
+                "msg": "Invalid Id"
+            }
+            return;
+        }
         for(i=0;i<list.length;i++)
         {
             if(list[i].id==id)
@@ -106,12 +115,21 @@ exports.deletetodo = async(ctx)=>{
     try{
        
         
-        let id = ctx.url.substring(6);
+        let id = ctx.request.params.id;
         var i=0;
         for(i=0;i<list.length;i++)
         {
             if(list[i].id==id)
              break;
+        }
+        if(typeof id !=='string' || id[0]!=='N')
+        {
+            ctx.response.status=404;
+            ctx.response.type = 'application/json';
+            ctx.body={
+                "msg": "Invalid Id"
+            }
+            return;
         }
         if(i==list.length)
         {

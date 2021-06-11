@@ -158,15 +158,29 @@ describe('Get all todos api', () => {
     const invalidTodo1 = {
       title: '',
     };
-    const responseValidTodo1 = await request(app.callback()).post('/todo').send(validTodo1);
-    const responseValidTodo2 = await request(app.callback()).post('/todo').send(validTodo2);
-    const responseInvalidTodo1 = await request(app.callback()).post('/todo').send(invalidTodo1);
 
-    const response = await request(app.callback()).get('/todo');
+    let responseValidTodo1 = null;
+    let responseValidTodo2 = null;
+    let responseInvalidTodo1 = null;
 
-    expect(response.body).toContainEqual(responseValidTodo1.body);
-    expect(response.body).toContainEqual(responseValidTodo2.body);
-    expect(response.body).not.toContainEqual(responseInvalidTodo1.body);
+    // better to use aysn here
+    Promise.all([
+      request(app.callback()).post('/todo').send(validTodo1),
+      request(app.callback()).post('/todo').send(validTodo2),
+      request(app.callback()).post('/todo').send(invalidTodo1),
+    ])
+    .then(response => {
+      responseValidTodo1 = response[0];
+      responseValidTodo2 = response[1];
+      responseInvalidTodo1 = response[2];
+
+      return request(app.callback()).get('/todo');
+    })
+    .then(response => {
+      expect(response.body).toContainEqual(responseValidTodo1.body);
+      expect(response.body).toContainEqual(responseValidTodo2.body);
+      expect(response.body).not.toContainEqual(responseInvalidTodo1.body);
+    })
   });
 });
 

@@ -9,33 +9,25 @@ const router = new koaRouter();
 
 const port = 3001;
 
-const taskList = [];
+const taskList = {};
 
 class Task {
   constructor(title, completed) {
     this.id = uniqid();
-    this.date = new Date();
+    this.date = new Date().toJSON().slice(0, 10);
     this.title = title;
     this.completed = completed;
   }
 }
 
 const task1 = new Task('maths', false);
-taskList.push(task1);
+taskList[task1.id.toString()]=task1;
 
 function validateData(data) {
   if (typeof data.title === 'string' && typeof data.completed === 'boolean' && data.title.trim() !== '') { return true; }
   return false;
 }
 
-function findTask(id) {
-  let i = 0;
-  for (i = 0; i < taskList.length; i++) {
-    if (taskList[i].id === id) { break; }
-  }
-  if (i === taskList.length) return -1;
-  return i;
-}
 
 function goodResponse(ctx, type, message) {
   ctx.response.status = 200;
@@ -50,14 +42,27 @@ function badResponse(ctx, type, message) {
 }
 
 router.get('/todo/welcome', (ctx) => { // welcome message
+  console.log('Got request =>', {
+    method: ctx.request.method,
+    path: ctx.request.url,
+    body: ctx.request.body,
+  });
   goodResponse(ctx, 'text/html', 'WELCOME TO TODO_API');
 });
 
 router.post('/todo', (ctx) => { // create new task
+  console.log('Got request =>', {
+    method: ctx.request.method,
+    path: ctx.request.url,
+    body: ctx.request.body,
+  });
+
   const req = ctx.request;
+
   if (validateData(req.body)) {
     const task = new Task(req.body.title, req.body.completed);
-    taskList.push(task);
+    id = task.id;
+    taskList[id.toString()] = task;
 
     goodResponse(ctx, 'application/json', task);
   } else {
@@ -66,48 +71,74 @@ router.post('/todo', (ctx) => { // create new task
 });
 
 router.get('/todo/:id', (ctx) => { // list by id
-  const { id } = ctx.params;
-  const i = findTask(id);
-  if (i === -1) {
-    badResponse(ctx, 'text/html', 'ID Not Found');
+  console.log('Got request =>', {
+    method: ctx.request.method,
+    path: ctx.request.url,
+    body: ctx.request.body,
+  });
+  const id = ctx.params.id;
+
+  if (Object.prototype.hasOwnProperty.call(taskList, id)) {
+    goodResponse(ctx, 'application/json', JSON.stringify(taskList[id]));
   } else {
-    goodResponse(ctx, 'application/json', JSON.stringify(taskList[i]));
+    badResponse(ctx, 'text/plain', 'task dosent exists');
   }
 });
 
 router.get('/todo', (ctx) => { // get alltasks
-  goodResponse(ctx, 'application/json', JSON.stringify(taskList, null, 2));
+  console.log('Got request =>', {
+    method: ctx.request.method,
+    path: ctx.request.url,
+    body: ctx.request.body,
+  });
+  if (Object.keys(taskList).length === 0) {
+    goodResponse(ctx, 'text/plain', 'No entries to display.');
+  } else {
+    goodResponse(ctx, 'application/json', JSON.stringify(taskList, null, 2));
+
+  }
+
+
 });
 
 router.put('/todo/:id', (ctx) => { // update by id
-  const { id } = ctx.params;
-  const i = findTask(id);
-  if (i === -1) {
-    badResponse(ctx, 'text/html', 'ID Not Found');
-  } else {
-    const req = ctx.request;
-    if (validateData(req.body)) {
-      taskList[i].title = req.body.title;
-      taskList[i].completed = req.body.completed;
+  const id = ctx.params.id;
+  
 
-      goodResponse(ctx, 'text/html', 'Update Successful');
-    } else {
-      badResponse(ctx, 'text/html', 'Task Update Failed, Provide Correct data');
-    }
+  if (Object.prototype.hasOwnProperty.call(taskList, id) === false) {
+    badResponse(ctx, 'text/plain', 'Entry dosent exists');
+    return;
   }
+
+  const req = ctx.request;
+  if (validateData(req.body)) {
+    taskList[id.toString()].title = req.body.title;
+    taskList[id.toString()].completed = req.body.completed;
+
+    goodResponse(ctx, 'text/html', 'Update Successful');
+  } else {
+    badResponse(ctx, 'text/html', 'Task Update Failed, Provide Correct data');
+  }
+
 });
 
 router.delete('/todo/:id', (ctx) => { // delete task
-  const { id } = ctx.params;
-  const i = findTask(id);
-  if (i === -1) {
-    ctx.response.status = 404;
-    ctx.response.type = 'text/html';
-    ctx.body = 'Task Not Found';
-  } else {
-    taskList.splice(i, 1);
-    goodResponse(ctx, 'text/html', 'Delete Successful');
+  console.log('Got request =>', {
+    method: ctx.request.method,
+    path: ctx.request.url,
+    body: ctx.request.body,
+  });
+
+  const id = ctx.params.id;
+
+  if (Object.prototype.hasOwnProperty.call(taskList, id) === false) {
+    badResponse(ctx, 'text/plain', 'Entry dosent exists');
+    return;
   }
+
+  delete taskList[id.toString()];
+  goodResponse(ctx, 'text/html', 'Delete Successful');
+
 });
 
 app.use(bodyParser());

@@ -10,9 +10,10 @@ test('POST ROUTE CHECK', async () => {
   const res = await request(app.callback()).post('/todo').send(task);
   expect(res.body.title).toMatch(task.title);
   expect(res.body.completed).toBe(true);
+ 
 });
 
-test('invalid data', async () => {
+test('check for invalid data', async () => {
   const task = {
     title: '    ',
     completed: true,
@@ -20,9 +21,10 @@ test('invalid data', async () => {
   const res = await request(app.callback()).post('/todo').send(task);
   expect(res.text).toEqual('Task Creation Failed, Provide Correct data');
   expect(res.body).toEqual({});
+ 
 });
 
-test('invalid data', async () => {
+test('check for invalid data', async () => {
   const task = {
     title: 'maths',
     completed: 123,
@@ -30,4 +32,5 @@ test('invalid data', async () => {
   const res = await request(app.callback()).post('/todo').send(task);
   expect(res.text).toEqual('Task Creation Failed, Provide Correct data');
   expect(res.body).toEqual({});
+
 });

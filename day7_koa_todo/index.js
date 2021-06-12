@@ -20,8 +20,8 @@ class Task {
   }
 }
 
-const task1 = new Task('maths', false);
-taskList[task1.id.toString()]=task1;
+// const task1 = new Task('maths', false);
+// taskList[task1.id]=task1;                       //commenting to test get all tasks
 
 function validateData(data) {
   if (typeof data.title === 'string' && typeof data.completed === 'boolean' && data.title.trim() !== '') { return true; }
@@ -62,9 +62,9 @@ router.post('/todo', (ctx) => { // create new task
   if (validateData(req.body)) {
     const task = new Task(req.body.title, req.body.completed);
     id = task.id;
-    taskList[id.toString()] = task;
+    taskList[id] = task;
 
-    goodResponse(ctx, 'application/json', task);
+    goodResponse(ctx, 'application/json',  task);
   } else {
     badResponse(ctx, 'text/html', 'Task Creation Failed, Provide Correct data');
   }
@@ -79,9 +79,9 @@ router.get('/todo/:id', (ctx) => { // list by id
   const id = ctx.params.id;
 
   if (Object.prototype.hasOwnProperty.call(taskList, id)) {
-    goodResponse(ctx, 'application/json', JSON.stringify(taskList[id]));
+    goodResponse(ctx, 'application/json', (taskList[id]));
   } else {
-    badResponse(ctx, 'text/plain', 'task dosent exists');
+    badResponse(ctx, 'text/html', 'task dosent exists');
   }
 });
 
@@ -92,9 +92,9 @@ router.get('/todo', (ctx) => { // get alltasks
     body: ctx.request.body,
   });
   if (Object.keys(taskList).length === 0) {
-    goodResponse(ctx, 'text/plain', 'No entries to display.');
+    goodResponse(ctx, 'text/html', 'No entries to display.');
   } else {
-    goodResponse(ctx, 'application/json', JSON.stringify(taskList, null, 2));
+    goodResponse(ctx, 'application/json',(taskList));
 
   }
 
@@ -106,16 +106,16 @@ router.put('/todo/:id', (ctx) => { // update by id
   
 
   if (Object.prototype.hasOwnProperty.call(taskList, id) === false) {
-    badResponse(ctx, 'text/plain', 'Entry dosent exists');
+    badResponse(ctx, 'text/html', 'Entry dosent exists');
     return;
   }
 
   const req = ctx.request;
   if (validateData(req.body)) {
-    taskList[id.toString()].title = req.body.title;
-    taskList[id.toString()].completed = req.body.completed;
+    taskList[id].title = req.body.title;
+    taskList[id].completed = req.body.completed;
 
-    goodResponse(ctx, 'text/html', 'Update Successful');
+    goodResponse(ctx, 'application/json', (taskList[id]));
   } else {
     badResponse(ctx, 'text/html', 'Task Update Failed, Provide Correct data');
   }
@@ -132,11 +132,11 @@ router.delete('/todo/:id', (ctx) => { // delete task
   const id = ctx.params.id;
 
   if (Object.prototype.hasOwnProperty.call(taskList, id) === false) {
-    badResponse(ctx, 'text/plain', 'Entry dosent exists');
+    badResponse(ctx, 'text/html', 'Entry dosent exists');
     return;
   }
 
-  delete taskList[id.toString()];
+  delete taskList[id];
   goodResponse(ctx, 'text/html', 'Delete Successful');
 
 });
@@ -147,6 +147,6 @@ app.use(async (ctx) => {
   ctx.body = 'Invalid URL';
 });
 
-app.listen(port, console.log('port on ', port));
+const server = app.listen(port, console.log('port on ', port));
 
-module.exports = app;
+module.exports = server;

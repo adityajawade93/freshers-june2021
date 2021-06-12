@@ -3,7 +3,6 @@ const Router = require('koa-router');
 const bodyParser = require('koa-bodyparser');
 const uuid = require('uuid');
 const toDoList = {};
-let len = 0;
 
 const toDoApp = new Koa();
 const myRouter = new Router({
@@ -23,9 +22,9 @@ myRouter.get('/', (ctx) => {
 		body: ctx.request.body,
 	});
 	if (Object.keys(toDoList).length === 0) {
-		response(ctx, 200, 'text/plain', 'No entries to display.');
+		response(ctx, 200, 'application/json', {message: 'No entries to display.'});
 	} else {
-		response(ctx, 200, 'application/json', JSON.stringify(toDoList));
+		response(ctx, 200, 'application/json', {message: 'Request fulfiled.', content: toDoList});
 	}
 });
 
@@ -41,10 +40,9 @@ myRouter.get('/:id', (ctx) => {
 	//     ctx.body = "Id must be less than 8 chracters."
 	// }
 	if (Object.prototype.hasOwnProperty.call(toDoList, id)) {
-		response(ctx, 200, 'application/json', JSON.stringify(toDoList[id]));
+		response(ctx, 200, 'application/json', {message: 'Requested entry found.', content: toDoList[id]});
 	} else {
-		response(ctx, 404, 'text/plain',
-			'Entry with Id : ' + id + ' does not exist in database.');
+		response(ctx, 404, 'application/json', {message: 'Entry with Id : ' + id + ' does not exist in database.'});
 	}
 });
 
@@ -57,24 +55,22 @@ myRouter.post('/', (ctx) => {
 	const title = ctx.request.body.title;
 	const completed = ctx.request.body.completed;
 	if (title === undefined || completed === undefined) {
-		response(ctx, 406, 'text/plain', 'Not enough details provided.');
+		response(ctx, 406, 'application/json', {message: 'Not enough details provided.'});
 		return;
 	} else if (typeof title !== 'string' || typeof completed !== 'boolean') {
-		response(ctx, 415, 'text/plain',
-			'Only Strings(title) and Boolean(completed) allowed.');
+		response(ctx, 415, 'application/json', {message: 'Only Strings(title) and Boolean(completed) allowed.'});
 		return;
 	}
-	const id = uuid.v4();
+	const Id = uuid.v4();
 	const date = new Date().toJSON().slice(0, 10);
 	const newItem = {
-		'id': id,
-		'createdDate': date,
-		'title': title,
-		'completed': completed,
+		id: Id,
+		createdDate: date,
+		title: title,
+		completed: completed,
 	};
-	toDoList[id.toString()] = newItem;
-	len++;
-	response(ctx, 201, 'text/plain', 'Entry added Successfully.');
+	toDoList[Id] = newItem;
+	response(ctx, 201, 'application/json', {message: 'Entry added Successfully.', content: newItem});
 });
 
 myRouter.put('/:id', (ctx) => {
@@ -85,18 +81,18 @@ myRouter.put('/:id', (ctx) => {
 	});
 	const id = ctx.params.id;
 	if (Object.prototype.hasOwnProperty.call(toDoList, id) === false) {
-		response(ctx, 404, 'text/plain',
-			'Entry with Id : ' + id + ' does not exist in database.');
+		response(ctx, 404, 'application/json',
+			{message: 'Entry with Id : ' + id + ' does not exist in database.'});
 		return;
 	}
 	const title = ctx.request.body.title;
 	const completed = ctx.request.body.completed;
-	if (title === undefined || completed === undefined) {
-		response(ctx, 406, 'text/plain', 'Not enough details provided.');
+	if (title === undefined && completed === undefined) {
+		response(ctx, 406, 'application/json', {message: 'Not enough details provided.'});
 		return;
 	} else if (typeof title !== 'string' || typeof completed !== 'boolean') {
-		response(ctx, 415, 'text/plain',
-			'Only Strings(title) and Boolean(completed) allowed.');
+		response(ctx, 415, 'application/json',
+			{'message':'Only Strings(title) and Boolean(completed) allowed.'});
 		return;
 	}
 	if (title !== undefined) {
@@ -105,7 +101,7 @@ myRouter.put('/:id', (ctx) => {
 	if (completed !== undefined) {
 		toDoList[id.toString()].completed = completed;
 	}
-	response(ctx, 202, 'text/plain', 'Entry updated Successfully.');
+	response(ctx, 202, 'application/json', {message:'Entry updated Successfully.', content: toDoList[id.toString()]});
 });
 
 myRouter.delete('/:id', (ctx) => {
@@ -116,19 +112,18 @@ myRouter.delete('/:id', (ctx) => {
 	});
 	const id = ctx.params.id;
 	if (Object.prototype.hasOwnProperty.call(toDoList, id) === false) {
-		response(ctx, 404, 'text/plain',
-			'Entry with Id : ' + id + ' does not exist in database.');
+		response(ctx, 404, 'application/json',
+			{message: 'Entry with Id : ' + id + ' does not exist in database.'});
 		return;
 	}
 	delete toDoList[id.toString()];
-	len--;
-	response(ctx, 202, 'text/plain', 'Entry deleted Successfully.');
+	response(ctx, 202, 'application/json', {message: 'Entry deleted Successfully.'});
 });
 
 toDoApp.use(bodyParser());
 toDoApp.use(myRouter.routes());
 toDoApp.use(async (ctx) => {
-	response(ctx, 400, 'text/plain', 'Page not found!');
+	response(ctx, 400, 'application/json', {message:'Page not found!'});
 });
 
 module.exports = toDoApp;

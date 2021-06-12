@@ -28,6 +28,12 @@
     },
     "overrides": [
         {
+            "files": [
+                    "**/__tests__ /**",
+                    "**/tests /**",
+                    "**/test /**",
+                    "**/*.{test,spec}.{js,jsx,ts,tsx,mdx}"
+            ],
             "env": {
                 "jest": true
             }

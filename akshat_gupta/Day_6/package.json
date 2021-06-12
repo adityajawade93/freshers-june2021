@@ -7,9 +7,6 @@
     "start": "node server.js",
     "test": "jest"
   },
-  "jest": {
-    "verbose": false
-  },
   "author": "",
   "license": "ISC",
   "dependencies": {

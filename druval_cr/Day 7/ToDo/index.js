@@ -138,8 +138,6 @@ app.use(async (ctx) => {
   ctx.body = 'Page not found';
 });
 
-app.listen(3000);
-
 module.exports = {
   app,
   validUserInputTodoData,

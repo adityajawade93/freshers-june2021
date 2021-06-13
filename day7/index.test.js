@@ -1,5 +1,4 @@
 const server = require('./index');
-const bodyParser = require("body-parser");
 const request = require('supertest');
 
 var id;

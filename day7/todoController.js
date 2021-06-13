@@ -1,5 +1,5 @@
 const uuid = require('uniqid');
-const url = require('url');
+
 
 class Notes{
 
@@ -13,7 +13,7 @@ class Notes{
     
 }
 
-var list = [];
+var todomap = new Map();
 
 exports.createtodo = async(ctx)=>{
 
@@ -29,7 +29,7 @@ exports.createtodo = async(ctx)=>{
             return;
            }
            let notes = new Notes(new Date(),req.body.title,req.body.content);
-           list.push(notes);
+           todomap.set(notes.id,notes);
            ctx.response.status=200;
            ctx.body={
                "msg": "Notes Created"
@@ -52,7 +52,10 @@ exports.gettodo= async(ctx)=>{
 
     ctx.response.status=200;
     ctx.response.type = 'application/json';
-    ctx.body=JSON.stringify(list);
+    let todoList =[];
+    for(let [key,value] of todomap)
+      todoList.push(value);
+    ctx.body=JSON.stringify(todoList);
        
 }
 
@@ -61,7 +64,6 @@ exports.updatetodo = async(ctx)=>{
       
       try{
         let id = ctx.request.params.id;
-        var i=0;
         if(typeof id !=='string' || id[0]!=='N')
         {
             ctx.response.status=404;
@@ -71,12 +73,7 @@ exports.updatetodo = async(ctx)=>{
             }
             return;
         }
-        for(i=0;i<list.length;i++)
-        {
-            if(list[i].id==id)
-             break;
-        }
-        if(i==list.length)
+        if(todomap.get(id)==null)
         {
             ctx.response.status=404;
             ctx.response.type = 'application/json';
@@ -84,13 +81,12 @@ exports.updatetodo = async(ctx)=>{
                 "msg": "Notes not found"
             }
         }
-        else
-        {
+        else{
             let req = ctx.request;
             if(req.body.title)
-             list[i].title=req.body.title;
+             todomap.get(id).title=req.body.title;
             if(req.body.content)
-            list[i].content=req.body.content; 
+            todomap.get(id).content=req.body.content;
             ctx.response.status=200;
             ctx.response.type = 'application/json';
             ctx.body={
@@ -116,12 +112,6 @@ exports.deletetodo = async(ctx)=>{
        
         
         let id = ctx.request.params.id;
-        var i=0;
-        for(i=0;i<list.length;i++)
-        {
-            if(list[i].id==id)
-             break;
-        }
         if(typeof id !=='string' || id[0]!=='N')
         {
             ctx.response.status=404;
@@ -131,17 +121,18 @@ exports.deletetodo = async(ctx)=>{
             }
             return;
         }
-        if(i==list.length)
+
+        if(todomap.get(id)==null)
         {
             ctx.response.status=404;
             ctx.response.type = 'application/json';
             ctx.body={
             "msg": "Notes not Found"
-        }  
+            }
         }
         else
         {
-            list.splice(i,1);
+            todomap.delete(id);
             ctx.response.status=200;
             ctx.response.type = 'application/json';
             ctx.body={
@@ -159,4 +150,50 @@ exports.deletetodo = async(ctx)=>{
             "msg": "Something wrong happens"
         }
     }
+}
+
+exports.gettodobyid = async(ctx)=>{
+
+    try{
+       
+        
+        let id = ctx.request.params.id;
+        if(typeof id !=='string' || id[0]!=='N')
+        {
+            ctx.response.status=404;
+            ctx.response.type = 'application/json';
+            ctx.body={
+                "msg": "Invalid Id"
+            }
+            return;
+        }
+
+        if(todomap.get(id)==null)
+        {
+            ctx.response.status=404;
+            ctx.response.type = 'application/json';
+            ctx.body={
+            "msg": "Notes not Found"
+            }
+        }
+        else
+        {
+            
+            ctx.response.status=200;
+            ctx.response.type = 'application/json';
+            ctx.body=todomap.get(id);
+        }
+
+    }
+    catch(e)
+    {
+        console.log(e.stack);
+        ctx.response.status=401;
+        ctx.response.type = 'application/json';
+        ctx.body={
+            "msg": "Something wrong happens"
+        }
+    }
+       
+
 }

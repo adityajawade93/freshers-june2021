@@ -14,6 +14,7 @@ router.post('/todo',todoController.createtodo);
 router.get('/todo',todoController.gettodo);
 router.put('/todo/:id',todoController.updatetodo);
 router.delete('/todo/:id',todoController.deletetodo);
+router.get('/todo/:id',todoController.gettodobyid);
 
 app.use(router.routes());
 

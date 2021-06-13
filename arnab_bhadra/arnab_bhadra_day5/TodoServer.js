@@ -8,7 +8,7 @@ http.createServer((req,res)=>{
     else{
         console.log("Incorrect method");
         res.writeHead(400,{ 'Content-Type': 'text/plain' });
-        res.end("Incorrect Requesut");
+        res.end("Incorrect Request");
     }
 
 }).listen(3000,()=>{
@@ -49,6 +49,15 @@ var validateJOSN = (jsonbody) =>{
     return jsonobejct;
 }
 
+var noIdProvidedmessage=(req,res)=>{
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.write("No Id provided");  
+}
+
+var dataNotPresentMessage=(req,res)=>{
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.write("Data provided is not availabe");   
+}
 var createTodo= (req,res)=>{
     var jsonValidate=validateJOSN(req.body)
     if(jsonValidate===false){
@@ -57,13 +66,13 @@ var createTodo= (req,res)=>{
     }
     toDoArray.push(jsonValidate);
     res.writeHead(200, { 'Content-Type': 'text/plain' });
-    res.write("Successfully toDo is added");
+    res.write("Successfully toDo item is added");
 }
 
 var getTodoList =(req,res)=>{
     if(toDoArray.length>0){
-        //res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.writeHead(200, { 'Content-Type': 'text/plain' });
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        //res.writeHead(200, { 'Content-Type': 'text/plain' });
         res.write(JSON.stringify(toDoArray));    
     }
         
@@ -71,7 +80,7 @@ var getTodoList =(req,res)=>{
             res.writeHead(200, { 'Content-Type': 'text/plain' });
             res.write("No todo item");
     }
-        res.end();
+        
 }
 
 var getTodoById = (req,res)=>{
@@ -79,9 +88,7 @@ var getTodoById = (req,res)=>{
     var flag=false;
     //console.log("ABC",id);
     if(id===""){
-        console.log("In empty",id);
-        res.writeHead(200, { 'Content-Type': 'text/plain' });
-        res.write("No Id provided");            
+        noIdProvidedmessage(req,res);           
     }
     else{
         console.log("In loop",id);
@@ -94,19 +101,17 @@ var getTodoById = (req,res)=>{
             }
         });
         if(!flag){
-            res.writeHead(200, { 'Content-Type': 'text/plain' });
-            res.write("Data provided is not availabe"); 
+            dataNotPresentMessage(req,res);
             
         }
     }
-    res.end();
+    
 }
 
 var deleteToDoById= function(req,res){
     var id=req.url.substring(6);
     if(id===""){
-        res.writeHead(200, { 'Content-Type': 'text/plain' });
-        res.write("No Id provided");            
+        noIdProvidedmessage(req,res);               
     }
     var count =0;
     var index=-1;
@@ -121,12 +126,11 @@ var deleteToDoById= function(req,res){
         count++;
     });
     if(index==-1){
-        res.writeHead(200, { 'Content-Type': 'text/plain' });
-        res.write("Data provided not available "); 
+        dataNotPresentMessage(req,res);
     }   
     else{
-        //toDoArray.slice(index,1);
-        toDoArray=dummyList;
+        toDoArray.splice(index,1);
+        //toDoArray=dummyList;
         console.log(index,toDoArray);
         res.writeHead(200, { 'Content-Type': 'text/plain' });
         res.write(" Delete successfully "); 
@@ -139,8 +143,7 @@ var updateTodoByid = function(req,res){
     
 
     if(id===""){
-        res.writeHead(200, { 'Content-Type': 'text/plain' });
-        res.write("No Id provided");            
+        noIdProvidedmessage(req,res);            
     }
     else{
         toDoArray.forEach((data)=>{
@@ -164,8 +167,7 @@ var updateTodoByid = function(req,res){
 
         });  
         if(!flag){
-            res.writeHead(200, { 'Content-Type': 'text/plain' });
-            res.write("Data provided not availabe ");                 
+            dataNotPresentMessage(req,res);                
         }         
     }
 

@@ -4,11 +4,8 @@ const fileName= "SampleCSVFile_2kb.csv";
 var csvData=[];
 
 var writetotxtFile = function(){
-    var contenTowrite="";
-    csvData.forEach((data)=>{
-        contenTowrite+=JSON.stringify(data)+"\n";
-    })
-    fs.writeFile("output.txt",contenTowrite,(err)=>{
+    var contenTowrite=JSON.stringify(csvData,null,4);
+    fs.writeFile("output.json",contenTowrite,(err)=>{
         if(err){
             console.log(err);
             return;

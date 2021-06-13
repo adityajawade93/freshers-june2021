@@ -16,7 +16,7 @@ http.createServer((req,res) => {
         return handlePutReq(req, res)
     }
     else{
-        res.end(`{"error": "${http.STATUS_CODES[404]}"}`)
+        res.end(`{"error occured": "${http.STATUS_CODES[404]}"}`)
     }
 })
 .listen(port, () => {

@@ -24,16 +24,45 @@ let handlerequest=(req,res)=>
 {
     if(req.method=="GET")
     {
-        if(req.url==="/")
+        if(req.url.match(/\/+/))
         {
-            res.writeHead(200); // set status code
-            res.end("Welcome to Server");
-        }
-        else if(req.url.match(/\/.+/))
-        {
-            var filename=req.url.substring(1);
-            path='./'+filename+'.csv';
-            console.log(req.url,path)
+            var filename = req.url.substring(1);
+
+            if(filename==="")
+            {
+                res.writeHead(200);
+                res.end("Please enter some file name");   
+            }
+            path = './' + filename +  '.csv';
+            console.log(req.url,path);
+            try {
+                if (fs.existsSync(path)) { 
+                    var data = "";               
+                    csvtojson()
+                    .fromFile(path)
+                    .then((jsonData) => {
+                        console.log(jsonData);
+                        data += JSON.stringify(jsonData);
+                        fs.writeFile(filename + '.json', data, (err) => {
+                            if (err) throw err;
+                        });
+                    });
+                    res.writeHead(200);
+                    return res.end(`${filename}.csv has been converted`);
+                }
+                else{
+                    res.writeHead(404);
+                    return res.end("error occured"); 
+                }
+            } catch(err) {
+                console.error(err)
+            }
         }
     }
+    else
+    {
+        res.writeHead(200);
+        res.end(`hey have not implemented ${req.method} method on this API`);
+    }
 }
+

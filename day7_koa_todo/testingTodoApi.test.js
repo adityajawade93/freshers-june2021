@@ -57,8 +57,6 @@ describe('basic route tests', () => {
       completed: true,
     };
     const res = await request(server).post('/todo').send((task));
-    // console.log('/////////2/////');
-    // console.log(res.body);
 
     expect(res.text).toEqual('Task Creation Failed, Provide Correct data');
     expect(res.body).toEqual({});
@@ -71,8 +69,6 @@ describe('basic route tests', () => {
       completed: 123,
     };
     const res = await request(server).post('/todo').send((task));
-    // console.log('/////////3/////');
-    // console.log(res.body);
 
     expect(res.text).toEqual('Task Creation Failed, Provide Correct data');
     expect(res.body).toEqual({});
@@ -86,9 +82,6 @@ describe('basic route tests', () => {
       completed: true
     };
     const res = await request(server).post('/todo').send((task));
-
-    // console.log('//////////4////');  
-    //   console.log(res.body);
 
     const id = res.body.id;
     let getRes = await request(server).get('/todo/' + id);
@@ -105,10 +98,6 @@ describe('basic route tests', () => {
     const res = await request(server).post('/todo').send((task));
     const id = res.body.id;
 
-
-    // console.log('//////////5.1////');  
-    //   console.log(res.body);
-
     const task2 = {
       title: 'geography',
       completed: true
@@ -116,8 +105,7 @@ describe('basic route tests', () => {
 
     let getRes = await request(server).put('/todo/' + id).send((task2));
 
-    // console.log('//////////5.2////');  
-    // console.log(getRes.body);
+    
 
     expect(getRes.body.title).toEqual(task2.title);
     expect(getRes.body.completed).toEqual(task2.completed);
@@ -125,7 +113,7 @@ describe('basic route tests', () => {
     expect(getRes.body.id).toEqual(res.body.id);
   });
 
-  test('checking DELETE task by ID ', async () => {
+  test('checking PUT/update task by ID  using invalid data', async () => {
     const task = {
       title: 'Histroy',
       completed: true
@@ -134,13 +122,54 @@ describe('basic route tests', () => {
     const res = await request(server).post('/todo').send((task));
     const id = res.body.id;
 
-    // console.log('//////////6////');  
-    // console.log(res.body);
+    const task2 = {
+      title: 'geography',
+      completed: 123
+    };
 
-    let getRes = await request(server).delete('/todo/' + id);
-    expect(getRes.text).toEqual('Delete Successful');
+    let getRes = await request(server).put('/todo/' + id).send((task2));
+
+    expect(getRes.text).toEqual('Task Update Failed, Provide Correct data');
+    expect(getRes.body).toEqual({});
+
   });
 
+  test('checking PUT/update task by ID  using invalid ID', async () => {
+    const task = {
+      title: 'Histroy',
+      completed: true
+    };
+
+    const res = await request(server).post('/todo').send((task));
+    const id = res.body.id;
+    
+    const task2 = {
+      title: 'geography',
+      completed: true
+    };
+
+    let getRes = await request(server).put('/todo/' + id + '1234').send((task2));
+    expect(getRes.text).toEqual('Entry dosent exists');
+    expect(getRes.body).toEqual({});
+
+  });
+
+
+
+  test('checking DELETE task by ID using invalid ID ', async () => {
+    const task = {
+      title: 'Histroy',
+      completed: true
+    };
+
+    const res = await request(server).post('/todo').send((task));
+    const id = res.body.id;
+
+    let getRes = await request(server).delete('/todo/' + id + '12345');
+
+    expect(getRes.text).toEqual('Entry dosent exists, Deletion not possible');
+    expect(getRes.body).toEqual({});
+  });
 
 
 });

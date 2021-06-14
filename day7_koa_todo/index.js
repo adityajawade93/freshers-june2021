@@ -132,7 +132,7 @@ router.delete('/todo/:id', (ctx) => { // delete task
   const id = ctx.params.id;
 
   if (Object.prototype.hasOwnProperty.call(taskList, id) === false) {
-    badResponse(ctx, 'text/html', 'Entry dosent exists');
+    badResponse(ctx, 'text/html', 'Entry dosent exists, Deletion not possible');
     return;
   }
 

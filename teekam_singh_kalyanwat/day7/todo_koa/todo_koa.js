@@ -5,12 +5,14 @@ const app = new koa();
 const router = new koarouter();
 
 var task_list = []
+let map = new Map();
 let first_task = {
     "id": 26,
     "title": "get haircut",
     "status": false
 }
 task_list.push(first_task);
+map.set(26,true);
 
 function getindex(idd) {
     let len = task_list.length;
@@ -26,9 +28,14 @@ router.get('/todo', (ctx) => {
 });
 
 router.get('/todo/:id', (ctx) => {
-    let id = ctx.params.id;
-    if (id.length == 0 || id.length > 5) {
+    let id = Number(ctx.params.id);
+    if (isNaN(id) || id<1 || id > 100000) {
         ctx.body = 'Please check your id';
+        return;
+    }
+
+    if(!map.has(id)){
+        ctx.body = 'No task is present with given id';
         return;
     }
 
@@ -49,15 +56,30 @@ router.post('/todo/', (ctx) => {
         ctx.body = 'Please enter values in correct format';
         return;
     }
+    
+    let id = file['id'];
+    if(map.has(id)){
+        ctx.body = 'This id already exists, Please enter another';
+        return;
+    }
+    if(id<1 || id > 10000){
+        ctx.body = 'id should be between 1 and 99999';
+        return;
+    }
 
     task_list.push(file);
+    map.set(id,true);
     ctx.body = 'task added';
 });
 
 router.put('/todo/:id', (ctx) => {
-    let id = ctx.params.id.trim();
+    let id = Number(ctx.params.id);
+    if (isNaN(id) || id<1 || id > 100000) {
+        ctx.body = 'Please check your id';
+        return;
+    }
     let ind = getindex(id);
-    if (ind === task_list.length) {
+    if (!map.has(id)) {
         ctx.body = 'No task is present with given id';
         return;
     }
@@ -75,18 +97,19 @@ router.put('/todo/:id', (ctx) => {
 });
 
 router.delete('/todo/:id', (ctx) => {
-    let id = ctx.params.id.trim();
-    if (id.length == 0 || id.length > 5 ) {
+    let id = Number(ctx.params.id);
+    if (isNaN(id) || id<1 || id > 100000) {
         ctx.body = 'Please check your id';
         return;
     }
     let ind = getindex(id);
-    if (ind === task_list.length) {
+    if (!map.has(id)) {
         ctx.body = 'No task is present with given id';
         return;
     }
 
     task_list.splice(ind, 1);
+    map.delete(id);
     ctx.body = 'task deleted';
 });
 

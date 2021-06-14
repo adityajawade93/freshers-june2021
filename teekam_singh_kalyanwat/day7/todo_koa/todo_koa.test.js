@@ -13,6 +13,17 @@ describe('POST /todo/', () =>{
         expect(response.text).toBe("Please enter values in correct format");
     })
 
+    test('should get error if a task is already present with given id ', async () => {
+        const response = await request(app.callback()).post('/todo/').send({ id:26, title: 'watch movie', status: true });
+        expect(response.text).toBe("This id already exists, Please enter another");
+    })
+
+    test('should get error if given id is out of range ', async () => {
+        const response = await request(app.callback()).post('/todo/').send({ id:753291, title: 'watch movie', status: true });
+        expect(response.text).toBe("id should be between 1 and 99999");
+    })
+
+
     test('post a task with correct details ', async () => {
         const response = await request(app.callback()).post('/todo/').send({ id:14 , title: 'watch movie', status: true });
         expect(response.status).toBe(200);
@@ -50,6 +61,11 @@ describe('PUT /todo/', () => {
     test('should get error if no task is present with given id', async () => {
         const response = await request(app.callback()).put('/todo/' + '40').send({ title: 'watch movie', status: true })
         expect(response.text).toBe("No task is present with given id");
+    })
+
+    test('should get error if given id is not an integer', async () => {
+        const response = await request(app.callback()).put('/todo/' + 'a35').send({ title: 'watch movie', status: true })
+        expect(response.text).toBe("Please check your id");
     })
 
     test('should get error if required details are empty', async () => {

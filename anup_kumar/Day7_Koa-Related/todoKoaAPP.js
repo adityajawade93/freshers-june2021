@@ -1,0 +1,150 @@
+//importing some library
+let fs = require("fs")
+let http = require("http")
+let url = require("url")
+let uniq = require("uniqid")
+const koa=require("koa")
+const koarouter=require("@koa/router")
+var parser=require("koa-bodyparser");
+// console.log("imported package");
+
+//creating some tasks
+var todoArr = []
+
+const createTodo = function (info,completed) {
+    this.id = uniq();
+    this.date = new Date();
+    this.info = info;
+    this.completed=completed;
+}
+
+let todo1= new createTodo('Assingment1',true);
+let todo2 = new createTodo("Assignment2",true);
+let todo3 = new createTodo("Assignment3",false);
+todoArr.push(todo1);
+todoArr.push(todo2);
+todoArr.push(todo3);
+console.log(todoArr)
+console.log("created some dummy todo");
+
+
+const findId = function (id) {
+    var i = 0;
+    for (i = 0; i < todoArr.length; i++) {
+        if (todoArr[i].id === id)
+            return i;
+    }
+    return "no";
+}
+
+function deleteTodo(uuid){
+    todoArr = todoArr.filter(function(obj){
+        return obj.id != uuid;
+    });
+}
+
+function validateId(id){
+    if(id.length!==18) return "invalid";
+}
+
+
+let app =new koa()
+let router=new koarouter()
+
+router.get("/welcome",(ctx,nect)=>{
+
+    ctx.body="welcome the todo app";
+    return ;
+});
+
+router.get("/todo",(ctx,next)=>
+{
+    console.log(todoArr);
+    ctx.body=todoArr;
+    return;
+});
+
+router.get("/todo/:id",(ctx,next)=>
+{
+    id=ctx.params.id;
+    var index=validateId(id);
+    if(index==="invalid")
+    {
+        ctx.body="invalid id ";
+        return ;
+    }
+    index=findId(id);
+    if(index=="no")
+    {
+        ctx.body="Given id is not present";
+        return ;
+    }
+    else
+    {
+        data=todoArr[id];
+            ctx.body=data;
+            return ;
+    }
+
+});
+
+router.post('/todo', (ctx,next) => {
+    console.log(ctx.request.body.info);
+    // console.log(ctx.request.body.info)  
+    // var newTodo=createTodo(ctx.request.body.info, ctx.request.body.completed);
+    // todoArr.push(newTodo);
+    ctx.body = todoArr;
+    return;
+})
+
+router.put('/todo/:id', (ctx,next) => {
+    id = ctx.params.id;
+    console.log(id , ctx.request.body);
+    if(validateId(id) === "invalid"){
+        ctx.body = "invalid id";
+        return;
+    }
+    index=findId(id);
+    if(index == "no"){
+        ctx.body = "No Such id is there";
+        return;
+    }
+    else{
+        todoArr[index].info=ctx.request.body.info;
+        todoArr[index].completed=ctx.request.body.completed
+        ctx.body = todoArr;
+        return;
+    }
+})
+
+router.delete('/todo/:id', (ctx,next) => {
+    id = ctx.params.id;
+    var index = validateId(id);
+    if(index === "invalid"){
+        ctx.body = "invalid id";
+        return;
+    }
+    index=findId(id);
+    if(index =="no"){
+        ctx.body = "No such id is there";
+        return;
+    }
+    else{
+        deleteTodo(id);
+        console.log(todoArr);
+        ctx.body = todoArr;
+        return;
+    }
+})
+
+
+app.use(router.routes())
+app.use(async ctx=>
+    {
+        ctx.body="page not found";
+    });
+
+app.listen(3001)
+
+
+module.exports = app;

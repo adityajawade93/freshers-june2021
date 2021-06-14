@@ -2,8 +2,8 @@ const Koa = require('koa');
 const Router = require('koa-router');
 const bodyParser = require('koa-bodyparser');
 const uuid = require('uuid');
-const toDoList = {};
 
+const toDoList = {};
 const toDoApp = new Koa();
 const myRouter = new Router({
 	prefix: '/todo',
@@ -96,12 +96,12 @@ myRouter.put('/:id', (ctx) => {
 		return;
 	}
 	if (title !== undefined) {
-		toDoList[id.toString()].title = title;
+		toDoList[id].title = title;
 	}
 	if (completed !== undefined) {
-		toDoList[id.toString()].completed = completed;
+		toDoList[id].completed = completed;
 	}
-	response(ctx, 202, 'application/json', {message:'Entry updated Successfully.', content: toDoList[id.toString()]});
+	response(ctx, 202, 'application/json', {message:'Entry updated Successfully.', content: toDoList[id]});
 });
 
 myRouter.delete('/:id', (ctx) => {

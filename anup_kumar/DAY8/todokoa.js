@@ -9,7 +9,7 @@ var parser=require("koa-bodyparser");
 // console.log("imported package");
 
 //creating some tasks
-var todoArr = []
+
 
 const createTodo = function (info,completed) {
     this.id = uniq();
@@ -17,6 +17,11 @@ const createTodo = function (info,completed) {
     this.info = info;
     this.completed=completed;
 }
+
+var todoArr = [{"id": "14x2wt2wvkpw4zbl8",
+"date": "2021-06-14T04:48:44.395Z",
+"info": "Assingment0",
+"completed": true}]
 
 let todo1= new createTodo('Assingment1',true);
 let todo2 = new createTodo("Assignment2",true);
@@ -44,12 +49,13 @@ function deleteTodo(uuid){
 }
 
 function validateId(id){
-    if(id.length!==18) return "invalid";
+    if(id.length!==17) return "invalid";
 }
 
 
 let app =new koa()
 let router=new koarouter()
+app.use(parser())
 
 router.get("/welcome",(ctx,nect)=>{
 
@@ -81,7 +87,7 @@ router.get("/todo/:id",(ctx,next)=>
     }
     else
     {
-        data=todoArr[id];
+        data=todoArr[index];
             ctx.body=data;
             return ;
     }
@@ -89,10 +95,10 @@ router.get("/todo/:id",(ctx,next)=>
 });
 
 router.post('/todo', (ctx,next) => {
-    console.log(ctx.request.body.info);
-    // console.log(ctx.request.body.info)  
-    // var newTodo=createTodo(ctx.request.body.info, ctx.request.body.completed);
-    // todoArr.push(newTodo);
+    console.log(ctx.request.body.info,ctx.request.body.completed);
+    var newTodo=new createTodo(ctx.request.body.info, ctx.request.body.completed);
+    console.log(newTodo);
+    todoArr.push(newTodo);
     ctx.body = todoArr;
     return;
 })
@@ -125,6 +131,7 @@ router.delete('/todo/:id', (ctx,next) => {
         return;
     }
     index=findId(id);
+    console.log(index);
     if(index =="no"){
         ctx.body = "No such id is there";
         return;

@@ -7,7 +7,7 @@ const bodyparser = require('koa-bodyparser')
 var app = new koa();
 var router = new koarouter();
 
-var todolist =[]
+var todomap = new Map()
 
 function todo(todotask, completed) {
     this.id = uniqid()
@@ -18,11 +18,15 @@ function todo(todotask, completed) {
 
 var task1 = new todo('read a book',false)
 var task2 = new todo('watch movie',false)
-todolist.push(task1)
-todolist.push(task2)
+
+todomap.set(task1.id,task1)
+todomap.set(task2.id,task2)
+
 router.get('/todo', (ctx,next) =>{
     console.log('got here')
-    ctx.body = JSON.stringify(todolist,null,2)
+
+    const obj = Object.fromEntries(todomap)
+    ctx.body = JSON.stringify(obj,null,2)
 })
 
 router.get('/todo/:id', (ctx,next) =>{
@@ -33,11 +37,11 @@ router.get('/todo/:id', (ctx,next) =>{
         return
     }
 
-    let i 
-    for(i =0;i<todolist.length;i++){
-        if(todolist[i].id == id){
-            ctx.body = JSON.stringify(todolist[i],null,2)
-        }
+    if(todomap.has(id)){
+        const obj = todomap.get(id)
+        ctx.body = JSON.stringify(obj,null,2)
+    }else{
+        ctx.body = 'error,id not found'
     }
 })
 
@@ -51,7 +55,7 @@ router.post('/todo' , (ctx ,next) =>{
         return
     }else{
         let task = new todo(reqtask,reqcomplete)
-        todolist.push(task)
+        todomap.set(task.id,task)
         ctx.body = task
     }
     
@@ -66,34 +70,29 @@ router.put('/todo/:id',(ctx,next) =>{
         return
     }
 
-    let i 
-    for(i =0;i<todolist.length;i++){
-        if(todolist[i].id===id){
-            let reqtask =  ctx.request.body.todotask
-            let reqcomplete = ctx.request.body.completed
+    if(todomap.has(id)){
+        let reqtask =  ctx.request.body.todotask
+        let reqcomplete = ctx.request.body.completed
 
-            if(reqtask ===null|| typeof reqtask != 'string'||typeof reqcomplete != 'boolean'){
-                ctx.body = 'please give a proper task'
-                return
-            }else if(reqtask.trim().length ==0){
-                ctx.body = 'please give a proper task'
-                return
+        if(reqtask ===null|| typeof reqtask != 'string'||typeof reqcomplete != 'boolean'){
+            ctx.body = 'please give a proper task'
+            return
+        }else if(reqtask.trim().length ==0){
+            ctx.body = 'please give a proper task'
+            return
 
-            }else{
-                todolist[i].todotask = reqtask
-                todolist[i].completed =reqcomplete
-            }
+        }else{
+            let task =todomap.get(id)
+            task.todotask = reqtask
+            task.completed=reqcomplete
+            todomap.set(id,task)
+            ctx.body = task
             
-            break
         }
-    }
-
-    if(i==todolist.length){
-        ctx.body ='404,task not found'
+        
     }else{
-        ctx.body =todolist[i]
+        ctx.body ='404,task not found'
     }
-
 })
 
 router.delete('/todo/:id',(ctx,next) =>{
@@ -105,20 +104,18 @@ router.delete('/todo/:id',(ctx,next) =>{
         return
     }
 
-    let todolength =todolist.length
-    let i;
+    let maplength = todomap.size
 
-    for(i=0;i<todolist.length;i++){
-        if(todolist[i].id===id){
-            todolist.splice(i,1)
-            break
-        }
-    }
-
-    if(todolist.length==todolength){
-        ctx.body ='404,task not found'
+    if(todomap.has(id)){
+        todomap.delete(id)
     }else{
-       ctx.body ='task deleted successfully'
+        ctx.body ='404,task not found'
+        return
+    }
+    if(todomap.size==maplength){
+        ctx.body ='404,task not deleted'
+    }else{
+        ctx.body ='task deleted successfully'
     }
 })
 

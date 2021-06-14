@@ -1,0 +1,22 @@
+{
+  "name": "myfirstserver",
+  "version": "1.0.0",
+  "description": "",
+  "main": "todo_koa.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "jest"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@koa/router": "^10.0.0",
+    "jest": "^27.0.4",
+    "koa": "^2.13.1",
+    "koa-body": "^4.2.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.28.0",
+    "supertest": "^6.1.3"
+  }
+}

@@ -1,6 +1,5 @@
 
 
-// const { test } = require('@jest/globals');
 const request = require('supertest');
 
 const server= require('./index.js');

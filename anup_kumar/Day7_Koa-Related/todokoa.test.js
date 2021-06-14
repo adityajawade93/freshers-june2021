@@ -13,3 +13,23 @@ test('Get test with some id', async () => {
     });
   });
   
+test('Post test as invalid info', async () => {
+    const todo = {
+      info: "",
+      completed:true,
+    };
+    const res = await request(app.callback()).post('/todo').send(todo);
+    // let result = await request(app.callback()).get('/todo');
+    expect(res.text).toEqual("Info can not be empty");
+  });
+
+  test('Post test as invalid Status data', async () => {
+    const todo = {
+      info: "Asssignment7",
+      completed:"true",
+    };
+    const res = await request(app.callback()).post('/todo').send(todo);
+    expect(res.text).toEqual("This fild sould be boolean");
+  });
+
+ 

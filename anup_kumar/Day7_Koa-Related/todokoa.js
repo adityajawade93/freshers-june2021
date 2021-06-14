@@ -95,7 +95,18 @@ router.get("/todo/:id",(ctx,next)=>
 });
 
 router.post('/todo', (ctx,next) => {
-    console.log(ctx.request.body.info,ctx.request.body.completed);
+    //if info is empty then return error
+    if(ctx.request.body.info=="")
+    {
+        ctx.body="Info can not be empty";
+        return ;
+    }
+    if(typeof(ctx.request.body.completed)!=="boolean")
+    {
+        ctx.body="This fild sould be boolean";
+        return;
+    }
+    console.log(typeof(ctx.request.body.completed));
     var newTodo=new createTodo(ctx.request.body.info, ctx.request.body.completed);
     console.log(newTodo);
     todoArr.push(newTodo);

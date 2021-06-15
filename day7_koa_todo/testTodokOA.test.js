@@ -1,6 +1,6 @@
 /* eslint-disable */
 const request = require('supertest');
-const server = require('./index');
+const server = require('./koaTODO');
 
 beforeAll(async () => {
   // do something before anything else runs

@@ -4,10 +4,7 @@ const json = require('koa-json');
 const koaroute = require('@koa/router');
 const bodyparser = require('koa-bodyparser');
 const todoController = require('./todoController');
-const port = 3000;
-const router = new koaroute();
-app.use(json());
-app.use(bodyparser());
+
 
 
 router.post('/todo',todoController.createtodo);

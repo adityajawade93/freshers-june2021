@@ -14,7 +14,7 @@ const fetchData = async()=>{
     let data = await axios(options);
     console.log(data);
     options.url = 'https://api.instantwebtools.net/v1/airlines/10'
-    let data2 = await axios(options);;
+    let data2 = await axios(options);co
     console.log(data2);
    }
    catch(e)

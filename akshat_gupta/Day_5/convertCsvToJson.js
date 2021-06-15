@@ -1,7 +1,7 @@
 const CSVToJSON = require('csvtojson');
 var fs = require('fs');
 
-CSVToJSON().fromFile('sample.csv')
+const convert = CSVToJSON().fromFile('sample.csv')
     .then(users => {
 
         var json = JSON.stringify(users);

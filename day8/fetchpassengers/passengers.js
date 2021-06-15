@@ -11,20 +11,17 @@ var fetch = (passengerdata) => {
             url: "https://api.instantwebtools.net/v1/passenger?page=" + `${pageno}` + "&size=500"
         }
 
-        let obj ={
-            pageno:0,
-            data:""
+        let obj = {
+            pageno: 0,
+            data: ""
         }
 
-            axios(options)
+        axios(options)
             .then((response) => {
 
-                //let obj = JSON.stringify(response.data.data)
-                //console.log(obj)
-                obj.pageno=pageno
-                obj.data=JSON.parse(JSON.stringify(response.data.data,null,2))
+                obj.pageno = pageno
+                obj.data = JSON.parse(JSON.stringify(response.data.data, null, 2))
                 passengerdata = passengerdata.concat(obj)
-                //console.log(jsonobj)
                 pageno++
                 fetch(passengerdata)
             })
@@ -33,15 +30,15 @@ var fetch = (passengerdata) => {
             })
 
     } else {
-        let jsondata =JSON.stringify(passengerdata,null,2)
-        fs.writeFileSync("passengers.json",jsondata,"utf8")
-        csvconverter.json2csv(passengerdata,(err,csv) =>{
-            if(err){
+        let jsondata = JSON.stringify(passengerdata, null, 2)
+        fs.writeFileSync("passengers.json", jsondata, "utf8")
+        csvconverter.json2csv(passengerdata, (err, csv) => {
+            if (err) {
                 console.log(err)
-            }else{
-                fs.writeFileSync("passengers.csv",csv,"utf8")
+            } else {
+                fs.writeFileSync("passengers.csv", csv, "utf8")
             }
-            
+
         })
     }
 

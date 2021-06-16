@@ -1,6 +1,7 @@
 
-
+const { expect, test } = require('@jest/globals');
 const request = require('supertest');
+const { describe } = require('yargs');
 
 const server= require('./index.js');
 
@@ -51,4 +52,26 @@ describe('Get route',()=>{
     })
    
 })
+
+// describe('Update route',()=>{
+//     test('should return status code 200', async()=>{
+//         const response= await request(server).put('/todo/'+id);
+//         expect(response.status).toBe(200);
+//         expect(response.body).toEqual({
+//             "msg" : "todo updated"
+//         })
+//     })
+
+//     test('should return error 404', async()=>{
+//         const response= await request(server).put('/todo/'+id);
+//         expect(response.status).toBe(404);
+//         expect(response.body).toEqual({
+//             "msg" : "todo not found"
+//         })
+//     })
+// })
+
+// describe('Delete route',()=>{
+//     test('')
+// })
 

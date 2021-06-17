@@ -38,7 +38,7 @@ todomap.set(task2.id, task2)
 router.get('/todo', (ctx:any, next:any) => {
     console.log('got here')
     //changed this obj in index.js file
-    //const obj = Object.fromEntries(todomap)
+    //var obj = Object.fromEntries(todomap)
     ctx.body = JSON.stringify(todomap, null, 2)
 })
 
@@ -96,10 +96,15 @@ router.put('/todo/:id', (ctx:any, next:any) => {
 
         } else {
             let task = todomap.get(id)
-            task.todotask = reqtask
-            task.completed = reqcomplete
-            todomap.set(id, task)
-            ctx.body = task
+
+            if(task!=null){
+                task.todotask = reqtask
+                task.completed = reqcomplete
+                todomap.set(id, task)
+                ctx.body = task
+            }
+            
+            
 
         }
 

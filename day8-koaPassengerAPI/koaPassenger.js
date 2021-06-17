@@ -68,11 +68,6 @@ router.get("/v1/passengers", (ctx) => {
 app.use(bodyParser());
 app.use(router.routes());
 app.use(async (ctx) => {
-  console.log("Got request =>", {
-    method: ctx.request.method,
-    path: ctx.request.url,
-    body: ctx.request.body,
-  });
   ctx.body = "Invalid URL";
 });
 

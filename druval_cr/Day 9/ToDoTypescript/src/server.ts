@@ -13,10 +13,10 @@ app
   .use(router.routes());
 
 interface ToDoReqI {
-  id: string;
-  createdDate: string;
-  title: string;
-  completed: boolean;
+  id?: string;
+  createdDate?: string;
+  title?: string;
+  completed?: boolean;
 }
 
 class ToDo{
@@ -49,7 +49,8 @@ function getTodoIndex(id: string) {
   return -1;
 }
 
-function constructDate(date: string) {
+function constructDate(date: string | undefined) {
+  if (!date) return null;
   const dateParts: string[] = date.split('/');
   try {
     const day: number = parseInt(dateParts[0]);
@@ -68,7 +69,8 @@ function constructDate(date: string) {
 async function addTodo(ctx: any) {
   const data: ToDoReqI = ctx.request.body;
 
-  if (validUserInputTodoData(data)) {
+  // ? remove data.title check
+  if (validUserInputTodoData(data) && data.title) {
     const id: string = uuidv4();
     const createdDate: Date = new Date();
     const title: string = data.title;
@@ -95,7 +97,7 @@ async function updateTodo(ctx: any) {
       const date: Date | null = constructDate(data.createdDate);
       if (date) todos[todoIndex].createdDate = date;
     }
-    if (Object.prototype.hasOwnProperty.call(data, 'title')) {
+    if (Object.prototype.hasOwnProperty.call(data, 'title') && data.title) {
       todos[todoIndex].title = data.title;
     }
     if (Object.prototype.hasOwnProperty.call(data, 'completed') && typeof data.completed === 'boolean') {

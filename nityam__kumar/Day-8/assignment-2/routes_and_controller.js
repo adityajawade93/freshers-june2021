@@ -9,6 +9,23 @@ function readFild(path) {
 
 module.exports.getPassengers = async (ctx) => {
   try {
+
+    if (
+      ctx.query.page === undefined ||
+      ctx.query.size === undefined ||
+      Number.isNaN(ctx.query.page) ||
+      Number.isNaN(ctx.query.size)
+    ) {
+      ctx.status = 400;
+      ctx.message = "Bad Request";
+      ctx.type = "text/html";
+      ctx.body = {
+        msg: "Bad Request",
+        status: "fail",
+      };
+      return;
+    }
+
     const page = parseInt(ctx.query.page);
     const size = parseInt(ctx.query.size);
 
@@ -20,7 +37,7 @@ module.exports.getPassengers = async (ctx) => {
     const max_size_limit = 500;
 
     if (
-      page < 0 ||
+      page <= 0 ||
       page > max_page_limit ||
       size < 0 ||
       size > max_size_limit

@@ -36,7 +36,7 @@ class ToDo{
 let todos: ToDo[] = [];
 
 // helper funtions
-function validUserInputTodoData(data: ToDoReqI) {
+function validUserInputTodoData(data: ToDoReqI): data is {title: string} {
   if (!data || !data.title || !data.title.trim()) return false;
   return true;
 }
@@ -69,8 +69,7 @@ function constructDate(date: string | undefined) {
 async function addTodo(ctx: any) {
   const data: ToDoReqI = ctx.request.body;
 
-  // ? remove data.title check
-  if (validUserInputTodoData(data) && data.title) {
+  if (validUserInputTodoData(data)) {
     const id: string = uuidv4();
     const createdDate: Date = new Date();
     const title: string = data.title;
@@ -81,7 +80,7 @@ async function addTodo(ctx: any) {
 
     ctx.body = todo;
   } else {
-    ctx.status = 404;
+    ctx.status = 400;
     ctx.body = 'Invalid data';
   }
 }
@@ -105,7 +104,7 @@ async function updateTodo(ctx: any) {
     }
     ctx.body = todos[todoIndex];
   } else {
-    ctx.status = 404;
+    ctx.status = 400;
     ctx.body = `ToDo with id: ${id} not found`;
   }
 }
@@ -121,7 +120,7 @@ async function getToDo(ctx: any) {
 
   if (todoIndex !== -1) ctx.body = todos[todoIndex];
   else {
-    ctx.status = 404;
+    ctx.status = 400;
     ctx.body = `ToDo with id: ${id} not found`;
   }
 }
@@ -135,7 +134,7 @@ async function deleteToDo(ctx: any) {
     todos.splice(todoIndex, 1);
     ctx.body = `ToDo with id: ${id} is deleted`;
   } else {
-    ctx.status = 404;
+    ctx.status = 400;
     ctx.body = `ToDo with id: ${id} not found`;
   }
 }

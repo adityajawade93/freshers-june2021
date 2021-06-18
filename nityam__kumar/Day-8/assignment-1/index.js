@@ -43,19 +43,11 @@ const getPassengerDetail = async () => {
 
       let arrayOfObjects = JSON.parse(dats);
 
-      // console.log(arrayOfObjects);
-
-      // pass_array = arrayOfObjects.passengers_data;
-
-      // console.log(pass_array);
-
       arrayOfObjects["passengers_data"].push(...jsonArray);
 
       await fs.writeFile(
         "passenger.json",
-        JSON.stringify(arrayOfObjects),
-        null,
-        4
+        JSON.stringify(arrayOfObjects, null, 4)
       );
 
       let passengers = [];

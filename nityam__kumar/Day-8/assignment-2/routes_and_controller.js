@@ -1,15 +1,44 @@
 const fs = require("fs").promises;
 
-const datas = require("./passenger.json");
+function readFild(path) {
+  return fs
+    .readFile(path)
+    .then((data) => data)
+    .catch(() => false);
+}
 
-module.exports.getTask = async (ctx) => {
+module.exports.getPassengers = async (ctx) => {
   try {
     const page = parseInt(ctx.query.page);
     const size = parseInt(ctx.query.size);
+
+    let dats = await readFild("./passenger.json");
+    let arrayOfObjects = JSON.parse(dats);
+    let total_no_details = arrayOfObjects["passengers_data"].length;
+    const max_page_limit = Math.ceil(total_no_details / size);
+    console.log(total_no_details, max_page_limit);
+    const max_size_limit = 500;
+
+    if (
+      page < 0 ||
+      page > max_page_limit ||
+      size < 0 ||
+      size > max_size_limit
+    ) {
+      ctx.status = 404;
+      ctx.message = "NOT FOUND!!";
+      ctx.type = "text/html";
+      ctx.body = {
+        msg: "NOT FOUND!!",
+        status: "fail",
+      };
+      return;
+    }
+
     const start_index = (page - 1) * size;
-    const end_index = page * size;
-    let dats = datas["passengers_data"];
-    let pass = dats.slice(start_index, end_index);
+    const end_index = Math.min(page * size, total_no_details);
+    let datas = arrayOfObjects["passengers_data"];
+    let filter_datas = datas.slice(start_index, end_index);
 
     ctx.status = 200;
     ctx.message = "passengers details";
@@ -17,7 +46,7 @@ module.exports.getTask = async (ctx) => {
     ctx.body = {
       msg: "requested passengers details",
       status: "success",
-      data: pass,
+      data: filter_datas,
     };
   } catch (err) {
     console.log(err);

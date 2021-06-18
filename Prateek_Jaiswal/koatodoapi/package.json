@@ -17,6 +17,7 @@
     "uniqid": "^5.3.0"
   },
   "devDependencies": {
+    "@types/node": "^15.12.2",
     "jest": "^27.0.4",
     "supertest": "^6.1.3"
   }

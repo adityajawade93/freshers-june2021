@@ -6,7 +6,7 @@ interface PassengerI {
   _id: string,
   name: string,
   trips: number,
-  airline: any[],
+  airline: any[] | {},
   __v: number
 }
 
@@ -16,14 +16,26 @@ interface PassengerApiRes {
   }
 }
 
-const passengers: PassengerI[] = [];
+function getTotalPages(totalData: number, batchSize: number) {
+  if (batchSize <= 0 || totalData <= 0) return 0;
+  return Math.ceil(totalData/batchSize);
+}
 
 function fetchPassengerData(url: string) {
   return axios.get(url);
 }
 
-function reductiveFetchPassenger(urls: string[]) {
+async function getTotalPassengers(baseUrl: string) {
+  const minLoad = { page: 0, size: 1 };
+  const response = await fetchPassengerData(`${baseUrl}?page=${minLoad.page}&size=${minLoad.size}`);
+  
+  return response.data.totalPassengers;
+}
+
+function reductiveFetchPassenger(urls: string[], passengers: PassengerI[]) {
   return urls.reduce((chain: Promise<any>, url: string) => chain.then((value: PassengerApiRes | void) => {
+    console.log(url);
+    
     // base condition promise won't have data
     if (value) passengers.push(...value.data.data);
     return fetchPassengerData(url);
@@ -32,17 +44,22 @@ function reductiveFetchPassenger(urls: string[]) {
   }), Promise.resolve());
 }
 
-function fetchPassenger() {
+async function fetchPassenger() {
+  const passengers: PassengerI[] = [];
   const urls: string[] = [];
   const baseUrl: string = 'https://api.instantwebtools.net/v1/passenger';
-  const totPages: number = 18;
-  const maxPageSize: number = 500;
+  const batchSize: number = 500;
 
-  for (let page: number = 0; page < totPages; page += 1) {
-    urls.push(`${baseUrl}?page=${page}&size=${maxPageSize}`);
+  const totalPassengers = await getTotalPassengers(baseUrl);
+  const totalPages = getTotalPages(totalPassengers, batchSize);
+
+  console.log(totalPassengers, totalPages);
+  
+  for (let page: number = 0; page < totalPages; page += 1) {
+    urls.push(`${baseUrl}?page=${page}&size=${batchSize}`);
   }
 
-  reductiveFetchPassenger(urls)
+  reductiveFetchPassenger(urls, passengers)
     .then((res: PassengerApiRes | void) => {
       if (res) passengers.push(...res.data.data);
 

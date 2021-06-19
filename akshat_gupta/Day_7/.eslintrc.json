@@ -32,12 +32,5 @@
             "error",
             "always"
         ]
-    },
-    "overrides": [
-    // typescript
-    {
-      "files": ["*.ts", "*.tsx"],
-      "excludedFiles": ["*.test.js", "*.js"],
     }
-]
 }

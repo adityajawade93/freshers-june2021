@@ -12,12 +12,3 @@ if(answer)
 else 
     console.log("Value does not exist in Array.")
 
-// Print Fibonacci
-let n=10
-fibonacci(n)
-
-// Find Duplicate
-duplicate(v)
-
-// Find 3rd Highest
-thirdHighest(v)

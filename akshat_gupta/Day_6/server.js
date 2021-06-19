@@ -1,4 +1,4 @@
-const toDoApp = require('./toDoKoa');
+const toDoApp = require('./toDoKoa.js');
 
 const port = 3000;
 const server = toDoApp.listen(port);

@@ -21,7 +21,7 @@ exports.createtodo = async(ctx)=>{
           let req = ctx.request;
           if(req.body.title==null)
            {
-            ctx.response.status=404;
+            ctx.response.status=400;
             ctx.response.type = 'application/json';
             ctx.body={
                 "msg": "Title is missing"
@@ -66,7 +66,7 @@ exports.updatetodo = async(ctx)=>{
         let id = ctx.request.params.id;
         if(typeof id !=='string' || id[0]!=='N')
         {
-            ctx.response.status=404;
+            ctx.response.status=400;
             ctx.response.type = 'application/json';
             ctx.body={
                 "msg": "Invalid Id"
@@ -97,7 +97,7 @@ exports.updatetodo = async(ctx)=>{
       catch(e)
       {
         console.log(e.stack);
-        ctx.response.status=401;
+        ctx.response.status=400;
         ctx.response.type = 'application/json';
         ctx.body={
             "msg": "Something wrong happens"
@@ -114,7 +114,7 @@ exports.deletetodo = async(ctx)=>{
         let id = ctx.request.params.id;
         if(typeof id !=='string' || id[0]!=='N')
         {
-            ctx.response.status=404;
+            ctx.response.status=400;
             ctx.response.type = 'application/json';
             ctx.body={
                 "msg": "Invalid Id"
@@ -144,7 +144,7 @@ exports.deletetodo = async(ctx)=>{
     catch(e)
     {
         console.log(e.stack);
-        ctx.response.status=401;
+        ctx.response.status=400;
         ctx.response.type = 'application/json';
         ctx.body={
             "msg": "Something wrong happens"
@@ -160,7 +160,7 @@ exports.gettodobyid = async(ctx)=>{
         let id = ctx.request.params.id;
         if(typeof id !=='string' || id[0]!=='N')
         {
-            ctx.response.status=404;
+            ctx.response.status=400;
             ctx.response.type = 'application/json';
             ctx.body={
                 "msg": "Invalid Id"
@@ -188,7 +188,7 @@ exports.gettodobyid = async(ctx)=>{
     catch(e)
     {
         console.log(e.stack);
-        ctx.response.status=401;
+        ctx.response.status=400;
         ctx.response.type = 'application/json';
         ctx.body={
             "msg": "Something wrong happens"

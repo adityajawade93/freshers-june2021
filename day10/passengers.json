@@ -1,0 +1,101 @@
+[
+  {
+    "_id": "5f1c59c9fa523c3aa793bf3c",
+    "name": "sujit kumar",
+    "trips": 700,
+    "airline": {
+      "id": 2,
+      "name": "korean airlines",
+      "country": "South korea",
+      "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/6/6b/Singapore_Airlines_Logo_2.svg/250px-Singapore_Airlines_Logo_2.svg.png",
+      "slogan": "A Great Way to Fly",
+      "head_quaters": "Airline House, 25 Airline Road, Singapore 819829",
+      "website": "www.singaporeair.com",
+      "established": "1947"
+    },
+    "__v": 0
+  },
+  {
+    "_id": "5f1c59cbfa523c3aa793c03a",
+    "name": "sujit",
+    "trips": 911,
+    "airline": {
+      "id": 1,
+      "name": "emirites",
+      "country": "los angeles",
+      "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/9/9b/Qatar_Airways_Logo.svg/300px-Qatar_Airways_Logo.svg.png",
+      "slogan": "Going Places Together",
+      "head_quaters": "Qatar Airways Towers, Doha, Qatar",
+      "website": "www.qatarairways.com",
+      "established": "1994"
+    },
+    "__v": 0
+  },
+  {
+    "_id": "5f1c59c9fa523c3aa793bf41",
+    "name": "Brett Jo-Ank",
+    "trips": 824,
+    "airline": {
+      "id": 7,
+      "name": "Deutsche Lufthansa AG",
+      "country": "Germany",
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Lufthansa_Logo_2018.svg/300px-Lufthansa_Logo_2018.svg.png",
+      "slogan": "Say yes to the world",
+      "head_quaters": "Cologne, Germany",
+      "website": "lufthansa.com",
+      "established": "1953"
+    },
+    "__v": 0
+  },
+  {
+    "_id": "5f1c59c9fa523c3aa793bf46",
+    "name": "Lyda Gladys",
+    "trips": 287,
+    "airline": [
+      {
+        "id": 4,
+        "name": "Emirates",
+        "country": "Dubai",
+        "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Emirates_logo.svg/150px-Emirates_logo.svg.png",
+        "slogan": "From Dubai to destinations around the world.",
+        "head_quaters": "Garhoud, Dubai, United Arab Emirates",
+        "website": "www.emirates.com/",
+        "established": "1985"
+      }
+    ],
+    "__v": 0
+  },
+  {
+    "_id": "5f1c59c9fa523c3aa793bf4b",
+    "name": "De Jemena",
+    "trips": 275,
+    "airline": {
+      "id": 1,
+      "name": "Quatar Airways",
+      "country": "Quatar",
+      "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/9/9b/Qatar_Airways_Logo.svg/300px-Qatar_Airways_Logo.svg.png",
+      "slogan": "Going Places Together",
+      "head_quaters": "Qatar Airways Towers, Doha, Qatar",
+      "website": "www.qatarairways.com",
+      "established": "1994"
+    },
+    "__v": 0
+  },
+  {
+    "_id": "b4kz4agkq5hlkq7",
+    "name": "sujit",
+    "trips": 835,
+    "airline": {
+      "id": 1,
+      "name": "Quatar Airways",
+      "country": "Quatar",
+      "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/9/9b/Qatar_Airways_Logo.svg/300px-Qatar_Airways_Logo.svg.png",
+      "slogan": "Going Places Together",
+      "head_quaters": "Qatar Airways Towers, Doha, Qatar",
+      "website": "www.qatarairways.com",
+      "established": "1994"
+    },
+    "_v": 0
+  }
+  
+]

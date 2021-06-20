@@ -1,13 +1,12 @@
-type A = Array<number | Array<number> |  Array<number | Array<number>>>;
-function flatten(v: A) {
+module.exports = function(v) {
     if(Array.isArray(v) === false)
         return null;
-    let ans: Array<number> = [];
+    let ans= [];
     flattenRecur(v,ans)
     return ans
 }
 
-const flattenRecur = function(v: A, ans: A) {
+const flattenRecur = function(v, ans) {
     for(let i=0;i<v.length;i++) {
         if(Array.isArray(v[i]) !== true)
             ans.push(v[i]);

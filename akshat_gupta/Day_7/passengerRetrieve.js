@@ -22,7 +22,7 @@ router.get('/', (ctx) => {
 		response(ctx, 406, 'application/json', {message: 'Not enough details provided.'});
 		return;
 	}
-	const pages = Math.round(totalpassengers/size) + 1;
+	const pages = Math.floor(totalpassengers/size) + 1;
 	if(page > pages) {
 		response(ctx, 416, 'application/json', {message: 'Query parameters out of range.'});
 		return;

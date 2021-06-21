@@ -62,9 +62,7 @@ describe('update todo', () =>{
     test('update a passengerdata' , async () =>{
 
         const response = await request(app.callback()).put('/v1/passengers/5f1c59c9fa523c3aa793bf3c').send(data)
-        expect(response.body.name).toBe("sujit kumar")
-        expect(response.body.airline.name).toBe("korean airlines")
-        expect(response.body.trips).toBe(700)
+        expect(response.text).toBe("passenger with 5f1c59c9fa523c3aa793bf3c updated successfully")
         expect(response.status).toBe(200)
     })
 

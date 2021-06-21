@@ -137,7 +137,7 @@ router.put('/v1/passengers/:id', (ctx: any, next: any) => {
             writefile(passengerdataarray)
 
             ctx.response.status = 200
-            ctx.body = data
+            ctx.body = 'passenger with '+id+' updated successfully'
             return
 
         } else {

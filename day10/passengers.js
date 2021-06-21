@@ -135,7 +135,7 @@ router.put('/v1/passengers/:id', function (ctx, next) {
             passengerdataarray[i] = data;
             writefile(passengerdataarray);
             ctx.response.status = 200;
-            ctx.body = data;
+            ctx.body = 'passenger with ' + id + ' updated successfully';
             return;
         }
         else {

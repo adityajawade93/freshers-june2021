@@ -1,0 +1,200 @@
+[
+    {
+        "_id": "5f1c59cbfa523c3aa793bff9",
+        "name": "Helaina Kerek",
+        "trips": 712,
+        "__v": 0,
+        "airline": [
+            {
+                "id": 12,
+                "name": "Sri Lankan Airways",
+                "country": "Sri Lanka",
+                "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/9/9b/Qatar_Airways_Logo.svg/sri_lanka.png",
+                "slogan": "From Sri Lanka",
+                "head_quaters": "Katunayake, Sri Lanka",
+                "website": "www.srilankaairways.com",
+                "established": "1990"
+            }
+        ]
+    },
+    {
+        "_id": "5f1c59cbfa523c3aa793c02e",
+        "name": "John Doe",
+        "trips": 119,
+        "__v": 0,
+        "airline": [
+            {
+                "id": 19,
+                "name": "Howell",
+                "country": "Togo",
+                "logo": "{{$randomImage}}",
+                "slogan": "Vitae et dolore sed nobis soluta minima voluptas doloremque.",
+                "head_quaters": "South Lourdesfort",
+                "website": "http://dario.info",
+                "established": "651"
+            }
+        ]
+    },
+    {
+        "_id": "5f1c59c9fa523c3aa793bf28",
+        "name": "Dode Rakia",
+        "trips": 314,
+        "__v": 0,
+        "airline": [
+            {
+                "id": 8,
+                "name": "Thai Airways",
+                "country": "Thailand",
+                "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/5/58/Thai_Airways_Logo.svg/200px-Thai_Airways_Logo.svg.png",
+                "slogan": "Smooth as Silk / I Fly THAI",
+                "head_quaters": "Jom Phol Subdistrict, Chatuchak, Bangkok, Thailand",
+                "website": "www.thaiairways.com",
+                "established": "1960"
+            }
+        ]
+    },
+    {
+        "_id": "5f1c59cbfa523c3aa793c032",
+        "name": "Karry Leonard",
+        "trips": 762,
+        "__v": 0,
+        "airline": [
+            {
+                "id": 2,
+                "name": "Singapore Airlines",
+                "country": "Singapore",
+                "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/6/6b/Singapore_Airlines_Logo_2.svg/250px-Singapore_Airlines_Logo_2.svg.png",
+                "slogan": "A Great Way to Fly",
+                "head_quaters": "Airline House, 25 Airline Road, Singapore 819829",
+                "website": "www.singaporeair.com",
+                "established": "1947"
+            }
+        ]
+    },
+    {
+        "_id": "5f1c59cbfa523c3aa793c001",
+        "name": "Roanne Barboza",
+        "trips": 515,
+        "__v": 0,
+        "airline": [
+            {
+                "id": 1,
+                "name": "Quatar Airways",
+                "country": "Quatar",
+                "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/9/9b/Qatar_Airways_Logo.svg/300px-Qatar_Airways_Logo.svg.png",
+                "slogan": "Going Places Together",
+                "head_quaters": "Qatar Airways Towers, Doha, Qatar",
+                "website": "www.qatarairways.com",
+                "established": "1994"
+            }
+        ]
+    },
+    {
+        "_id": "5f1c59ccfa523c3aa793c057",
+        "name": "Gregory Roy",
+        "trips": 784,
+        "__v": 0,
+        "airline": [
+            {
+                "id": 7,
+                "name": "Deutsche Lufthansa AG",
+                "country": "Germany",
+                "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Lufthansa_Logo_2018.svg/300px-Lufthansa_Logo_2018.svg.png",
+                "slogan": "Say yes to the world",
+                "head_quaters": "Cologne, Germany",
+                "website": "lufthansa.com",
+                "established": "1953"
+            }
+        ]
+    },
+    {
+        "_id": "5f1c59c9fa523c3aa793bf2d",
+        "name": "Marie Gold",
+        "trips": 595,
+        "__v": 0,
+        "airline": [
+            {
+                "id": 3,
+                "name": "Cathay Pacific",
+                "country": "Hong Kong",
+                "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/1/17/Cathay_Pacific_logo.svg/300px-Cathay_Pacific_logo.svg.png",
+                "slogan": "Move Beyond",
+                "head_quaters": "Cathay City, Hong Kong International Airport, Chek Lap Kok, Hong Kong",
+                "website": "www.cathaypacific.com",
+                "established": "1946"
+            }
+        ]
+    },
+    {
+        "_id": "aaccb9aa-2877-4e82-8965-46db0d80f22c",
+        "name": "Arnab Kumar Bhadra",
+        "trips": 1111,
+        "__v": 0,
+        "airline": [
+            {
+                "id": 12,
+                "name": "Sri Lankan Airways",
+                "country": "Sri Lanka",
+                "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/9/9b/Qatar_Airways_Logo.svg/sri_lanka.png",
+                "slogan": "From Sri Lanka",
+                "head_quaters": "Katunayake, Sri Lanka",
+                "website": "www.srilankaairways.com",
+                "established": "1990"
+            }
+        ]
+    },
+    {
+        "_id": "5fd0e614-62d7-421f-927a-0ed8365050a3",
+        "name": "Demo updated user",
+        "trips": 1765,
+        "__v": 0,
+        "airline": [
+            {
+                "id": 12,
+                "name": "Sri Lankan Airways",
+                "country": "Sri Lanka",
+                "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/9/9b/Qatar_Airways_Logo.svg/sri_lanka.png",
+                "slogan": "From Sri Lanka",
+                "head_quaters": "Katunayake, Sri Lanka",
+                "website": "www.srilankaairways.com",
+                "established": "1990"
+            }
+        ]
+    },
+    {
+        "_id": "c6b48842-88b6-46ce-828d-5cac817e2d23",
+        "name": "Arnab Kumar Bhadra",
+        "trips": 1111,
+        "__v": 0,
+        "airline": [
+            {
+                "id": 12,
+                "name": "Sri Lankan Airways",
+                "country": "Sri Lanka",
+                "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/9/9b/Qatar_Airways_Logo.svg/sri_lanka.png",
+                "slogan": "From Sri Lanka",
+                "head_quaters": "Katunayake, Sri Lanka",
+                "website": "www.srilankaairways.com",
+                "established": "1990"
+            }
+        ]
+    },
+    {
+        "_id": "4f65b045-18df-4232-a517-31e7490c4bc8",
+        "name": "Demo updated user",
+        "trips": 1765,
+        "__v": 0,
+        "airline": [
+            {
+                "id": 12,
+                "name": "Sri Lankan Airways",
+                "country": "Sri Lanka",
+                "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/9/9b/Qatar_Airways_Logo.svg/sri_lanka.png",
+                "slogan": "From Sri Lanka",
+                "head_quaters": "Katunayake, Sri Lanka",
+                "website": "www.srilankaairways.com",
+                "established": "1990"
+            }
+        ]
+    }
+]

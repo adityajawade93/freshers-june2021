@@ -87,6 +87,14 @@ exports.getPassengers = async (ctx: any) => {
 exports.createPassengers = async (ctx: any) => {
 
     let object = ctx.request.body;
+    if(!object.name||!object.trips||!object.airline||!object.__v)
+    {
+        ctx.response.status = 400;
+        ctx.response.type = 'application/json';
+        ctx.body = {
+            "msg": "Data missing"
+        };
+    }
     let newPassenger = new Passenger(object.name, object.trips, object.airline, object.__v);
     try {
 

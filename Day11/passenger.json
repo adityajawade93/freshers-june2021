@@ -82,5 +82,20 @@
             "established": "1994"
         },
         "__v": 0
+    },
+    {
+        "_id": "A5yu2u1f5lkq623m3x",
+        "name": "Cinderella Cath",
+        "airline": {
+            "id": 1,
+            "name": "Quatar Airways",
+            "country": "Quatar",
+            "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/9/9b/Qatar_Airways_Logo.svg/300px-Qatar_Airways_Logo.svg.png",
+            "slogan": "Going Places Together",
+            "head_quaters": "Qatar Airways Towers, Doha, Qatar",
+            "website": "www.qatarairways.com",
+            "established": "1994"
+        },
+        "__v": 0
     }
 ]

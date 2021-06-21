@@ -44,8 +44,8 @@ exports.getPassengers = async (ctx: any) => {
         return;
     }
 
-    let passengerdataszie: number = passengerData.length;
-    let totalpages: number = Math.ceil(passengerdataszie / 500);
+    let passengerdatasize: number = passengerData.length;
+    let totalpages: number = Math.ceil(passengerdatasize / size);
 
     if (page < 0 || page >= totalpages) {
         ctx.response.status = 400;
@@ -55,7 +55,7 @@ exports.getPassengers = async (ctx: any) => {
         }
         return;
     }
-    if (size <= 0 || size > 500) {
+    if (size <= 0 ) {
         ctx.response.status = 400;
         ctx.response.type = 'application/json';
         ctx.body = {
@@ -155,9 +155,9 @@ function getPassengersList(page: number, size: number) {
             const pipeline = fs.createReadStream('passenger.json').pipe(StreamArray.withParser());
             let response_body: Passenger[] = [];
             pipeline.on('data', (arr: any) => {
-                if (arr.key >= page * 500 && arr.key < page * 500 + size)
+                if (arr.key >= page * size && arr.key < page * size + size)
                     response_body.push(arr.value);
-                if (arr.key >= page * 500 + size)
+                if (arr.key >= page * size + size)
                     return;
             });
             pipeline.on('end', () => {

@@ -84,10 +84,10 @@ router.post('/v1/passengers', (ctx: any, next: any) => {
 })
 
 router.put('/v1/passengers/:id', (ctx: any, next: any) => {
-    let id :string= ctx.params.id
+    let id: string = ctx.params.id
     console.log(id)
-    if (id === "null" || typeof id != 'string'||id.trim().length==0) {
-        ctx.response.status =400
+    if (id === "null" || typeof id != 'string' || id.trim().length == 0) {
+        ctx.response.status = 400
         ctx.body = "please give a proper id"
         return
     }
@@ -98,18 +98,46 @@ router.put('/v1/passengers/:id', (ctx: any, next: any) => {
 
         if (passengerdataarray[i]._id == id) {
             console.log(i)
-            let data = passengerdataarray[i]
+            let data: passenger = passengerdataarray[i]
 
-            if (reqdata.name) { data.name = reqdata.name }
-            if (reqdata.trips) { data.trips = reqdata.trips }
-            if (reqdata.airline) { data.airline = reqdata.airline }
-            if (reqdata._v) { data.__v = reqdata._v }
+            if (reqdata.name) {
+                if ( typeof reqdata.name != 'string') {
+                    ctx.response.status = 400
+                    ctx.body = "please give a proper name"
+                    return
+                }
+                data.name = reqdata.name
+            }
+            if (reqdata.trips) {
+                if (typeof reqdata.trips != 'number' || reqdata.trips < 0) {
+                    ctx.response.status = 400
+                    ctx.body = "please give a proper trip number"
+                    return
+                }
+                data.trips = reqdata.trips
+            }
+            if (reqdata.airline) {
+                if (typeof reqdata.airline != 'object') {
+                    ctx.response.status = 400
+                    ctx.body = "please give a proper airline data"
+                    return
+                }
+                data.airline = reqdata.airline
+            }
+            if (reqdata._v) {
+                if(typeof reqdata._v != 'number'){
+                    ctx.response.status = 400
+                    ctx.body= "please give a proper __V"
+                    return
+                }
+                 data.__v = reqdata._v 
+                }
 
             passengerdataarray[i] = data
             writefile(passengerdataarray)
 
             ctx.response.status = 200
-            ctx.body =data
+            ctx.body = data
             return
 
         } else {
@@ -136,5 +164,5 @@ app.use(async (ctx: any) => {
 })
 app.listen(3001)
 
-module.exports = {app,passengerdataarray,passengersdata}
+module.exports = { app, passengerdataarray, passengersdata }
 

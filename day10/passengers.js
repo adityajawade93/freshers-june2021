@@ -101,15 +101,35 @@ router.put('/v1/passengers/:id', function (ctx, next) {
             console.log(i);
             var data = passengerdataarray[i];
             if (reqdata.name) {
+                if (typeof reqdata.name != 'string') {
+                    ctx.response.status = 400;
+                    ctx.body = "please give a proper name";
+                    return;
+                }
                 data.name = reqdata.name;
             }
             if (reqdata.trips) {
+                if (typeof reqdata.trips != 'number' || reqdata.trips < 0) {
+                    ctx.response.status = 400;
+                    ctx.body = "please give a proper trip number";
+                    return;
+                }
                 data.trips = reqdata.trips;
             }
             if (reqdata.airline) {
+                if (typeof reqdata.airline != 'object') {
+                    ctx.response.status = 400;
+                    ctx.body = "please give a proper airline data";
+                    return;
+                }
                 data.airline = reqdata.airline;
             }
             if (reqdata._v) {
+                if (typeof reqdata._v != 'number') {
+                    ctx.response.status = 400;
+                    ctx.body = "please give a proper __V";
+                    return;
+                }
                 data.__v = reqdata._v;
             }
             passengerdataarray[i] = data;

@@ -75,6 +75,16 @@ describe('update todo', () =>{
         expect(response.status).toBe(400)
     })
 
+    test('get error msg if name is not given properly' , async () => {
+      var id = "5f1c59c9fa523c3aa793bf3c"
+      const response = await request(app.callback()).put('/v1/passengers/'+id).send({
+        "name":100,
+        "trips":200
+      })
+      expect(response.text).toBe("please give a proper name")
+      expect(response.status).toBe(400)
+  })
+
     test('get error msg if the id is not in the passengerdata', async () => {
         const response = await request(app.callback()).put('/v1/passengers/bdhbjmgu9n4c74n').send(data)
         expect(response.text).toBe("id not found")

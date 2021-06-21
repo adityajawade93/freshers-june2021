@@ -96,6 +96,21 @@
       "established": "1994"
     },
     "_v": 0
+  },
+  {
+    "_id": "b4kz6f0kq620jse",
+    "name": "sujit kumar",
+    "trips": 500,
+    "airline": {
+      "id": 2,
+      "name": "Singapore Airlines",
+      "country": "Singapore",
+      "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/6/6b/Singapore_Airlines_Logo_2.svg/250px-Singapore_Airlines_Logo_2.svg.png",
+      "slogan": "A Great Way to Fly",
+      "head_quaters": "Airline House, 25 Airline Road, Singapore 819829",
+      "website": "www.singaporeair.com",
+      "established": "1947"
+    },
+    "__v": 0
   }
-  
 ]

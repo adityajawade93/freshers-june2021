@@ -60,81 +60,98 @@ function getindex(idd) {
     return i;
 }
 router.get('/todo', function (ctx) {
+    ctx.status = 200;
     ctx.body = task_list;
 });
 router.get('/todo/:id', function (ctx) {
     var id = Number(ctx.params.id);
     if (isNaN(id) || id < 1 || id > 100000) {
+        ctx.status = 415;
         ctx.body = 'Please check your id';
         return;
     }
     if (!map.has(id)) {
+        ctx.status = 415;
         ctx.body = 'No task is present with given id';
         return;
     }
     var ind = getindex(id);
+    ctx.status = 200;
     ctx.body = task_list[ind];
 });
 router.post('/todo/', function (ctx) {
     var file = ctx.request.body;
     if (file['title'].length === 0 || file['status'] === null || file['id'] === null) {
+        ctx.status = 415;
         ctx.body = 'please give all required values';
         return;
     }
     if (typeof (file['id']) != 'number' || typeof (file['title']) != 'string' || typeof (file['status']) != 'boolean') {
+        ctx.status = 415;
         ctx.body = 'Please enter values in correct format';
         return;
     }
     var id = file['id'];
     if (map.has(id)) {
+        ctx.status = 415;
         ctx.body = 'This id already exists, Please enter another';
         return;
     }
     if (id < 1 || id > 10000) {
+        ctx.status = 415;
         ctx.body = 'id should be between 1 and 99999';
         return;
     }
     var newtask = new task(file['id'], file['title'], file['status']);
     task_list.push(newtask);
     map.set(id, true);
+    ctx.status = 200;
     ctx.body = 'task added';
 });
 router.put('/todo/:id', function (ctx) {
     var id = Number(ctx.params.id);
     if (isNaN(id) || id < 1 || id > 100000) {
+        ctx.status = 415;
         ctx.body = 'Please check your id';
         return;
     }
     var ind = getindex(id);
     if (!map.has(id)) {
+        ctx.status = 415;
         ctx.body = 'No task is present with given id';
         return;
     }
     var file = ctx.request.body;
     if (file['title'].length === 0 || file['status'] === null) {
+        ctx.status = 415;
         ctx.body = 'please give all required values';
         return;
     }
     if (typeof (file['title']) != 'string' || typeof (file['status']) != 'boolean') {
+        ctx.status = 415;
         ctx.body = 'Please enter values in correct format';
         return;
     }
     Object.assign(task_list[ind], ctx.request.body);
+    ctx.status = 200;
     ctx.body = 'task updated';
 });
 router["delete"]('/todo/:id', function (ctx) {
     var id = Number(ctx.params.id);
     if (isNaN(id) || id < 1 || id > 100000) {
+        ctx.status = 415;
         ctx.body = 'Please check your id';
         return;
     }
     var ind = getindex(id);
     if (!map.has(id)) {
+        ctx.status = 415;
         ctx.body = 'No task is present with given id';
         return;
     }
     task_list.splice(ind, 1);
     map["delete"](id);
+    ctx.status = 200;
     ctx.body = 'task deleted';
 });
 app
@@ -143,6 +160,7 @@ app
     .use(router.routes());
 app.use(function (ctx) { return __awaiter(_this, void 0, void 0, function () {
     return __generator(this, function (_a) {
+        ctx.status = 404;
         ctx.body = 'Page not found';
         return [2 /*return*/];
     });

@@ -16,7 +16,7 @@ axios(op)
     .then((response) => {
         let csvArray:any[] = [];
         let promises: any[] = [];
-        for (let i : number = 0; i < 18; i++) {
+        for (let i : number = 0; i < 1; i++) {
             op.url = `https://api.instantwebtools.net/v1/passenger?page=${i}&size=${size}`;
             promises.push(
                 axios(op).then((response) => {

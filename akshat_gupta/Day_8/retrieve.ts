@@ -1,34 +1,30 @@
-const axios = require('axios');
-const fs = require('fs');
-const arrayToCSV = require('objects-to-csv');
+import axios from 'axios';
+import * as fs from 'fs-extra';
+import arrayToCSV from 'objects-to-csv';
 
-const url = 'https://api.instantwebtools.net/v1/passenger?page=0&size=500';
+let url = 'https://api.instantwebtools.net/v1/passenger?page=0&size=500';
 const urlprefix= url.split('?')[0];
 const size = 500;
 
-const constructString = (page, size) => {
+const constructString = (page: number, size: number) => {
 	return 'page=' + page.toString() + '&size=' + size.toString(); 
 };
 
-const options = {
-	'method': 'GET',
-	'url': urlprefix + '?' + constructString(0, size),
-};
-
-axios(options)
+axios.get(url)
 	.then((response) => {
 		return response.data.totalPages;
 	})
 	.then(async (totalPages) => {
-		let csv = [];
+		const csv: Array<any> = [];
 		for (let i = 0; i < totalPages ; i++) {
-			options.url = urlprefix + '?' + constructString(i, size);
-			await axios(options)
+			url = urlprefix + '?' + constructString(i, size);
+			await axios.get(url)
 				.then((response) => {
-					response.data.data.forEach((value) => {
+					response.data.data.forEach((value: any) => {
 						csv.push(value);
 					});
 				});
+                
 		}
 		const newCSV = new arrayToCSV(csv);
 		newCSV.toDisk('./passengers.csv');

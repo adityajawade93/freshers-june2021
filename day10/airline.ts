@@ -1,10 +1,10 @@
-import Koa from "koa";
-import koaRouter from "koa-router";
-import uniqid from "uniqid";
-import fs = require('fs');
+import Koa = require("koa");
+import koaRouter = require("koa-router");
+import uniqid = require("uniqid");
+import fs = require("fs");
 const passengers: Array<data> = require('./passengers.json');
 
-import bodyParser from "koa-bodyparser";
+import bodyParser = require("koa-bodyparser");
 
 const app = new Koa();
 const router = new koaRouter();
@@ -49,7 +49,7 @@ function checkIndividual(data: airLine): boolean {
         || data.established === undefined) {
         return false;
     }
-    if (typeof data.id !== 'number' || typeof data.name !== 'string' || typeof data.country !== 'string'
+    if (typeof data.id !== 'number' || typeof data.name !== 'string' || data.name.trim() === "" || typeof data.country !== 'string'
         || typeof data.logo !== 'string' || typeof data.slogan !== 'string' || typeof data.head_quaters !== 'string'
         || typeof data.website !== 'string' || typeof data.established !== 'string') {
         return false;
@@ -74,7 +74,7 @@ function checkData(data: Array<airLine> | airLine): boolean {
 function validateData1(data: Record<string, any>): boolean {
     if (data.name === undefined || data.trips === undefined || data.airline === undefined || data.__v === undefined)
         return false;
-    if (typeof data.name !== 'string' || typeof data.trips !== 'number' || typeof data.__v !== 'number' || !checkData(data.airline))
+    if (typeof data.name !== 'string' || data.name.trim() === "" || typeof data.trips !== 'number' || typeof data.__v !== 'number' || !checkData(data.airline))
         return false;
     return true;
 
@@ -87,7 +87,7 @@ function validateData2(page: number, size: number): boolean {
     return false;
 }
 
-router.get("/v1/passengers", (ctx: Koa.ParameterizedContext<any, koaRouter.IRouterParamContext<any, {}>, any>) => {
+router.get("/v1/passengers", (ctx) => {
     // list all airline data
     console.log("Got request =>", {
         method: ctx.request.method,
@@ -98,10 +98,12 @@ router.get("/v1/passengers", (ctx: Koa.ParameterizedContext<any, koaRouter.IRout
     const size = Number(ctx.request.query.size);
     //console.log(passengers.length);
     const totalPages: number = Math.round(passengers.length / size) + 1;
-    //console.log(totalPages);
-    //console.log(page);
-    if (page < totalPages) {
+    // console.log(totalPages);
+    // console.log(page);
+    if (page > totalPages) {
         badResponse(ctx, "text/html", "unable to fetch, page out of range");
+
+        return;
     }
 
     if (validateData2(page, size)) {
@@ -125,7 +127,7 @@ router.get("/v1/passengers", (ctx: Koa.ParameterizedContext<any, koaRouter.IRout
 });
 
 
-router.post("/v1/passengers", (ctx: Koa.ParameterizedContext<any, koaRouter.IRouterParamContext<any, {}>, any>) => {
+router.post("/v1/passengers", (ctx) => {
     //create and add new passenger to json
     console.log("Got request =>", {
         method: ctx.request.method,
@@ -149,15 +151,14 @@ router.post("/v1/passengers", (ctx: Koa.ParameterizedContext<any, koaRouter.IRou
 
     }
     else {
-        badResponse(ctx, "application/json", `Creation failed, Provide correct data`);
+        badResponse(ctx, "text/html", `Creation failed, Provide correct data`);
     }
 
 
 });
 
 
-
-router.put("/v1/passengers/:id", (ctx: Koa.ParameterizedContext<any, koaRouter.IRouterParamContext<any, {}>, any>) => {
+router.put("/v1/passengers/:id", (ctx) => {
     // update passenger by id
     console.log('Got request =>', {
         method: ctx.request.method,
@@ -166,6 +167,7 @@ router.put("/v1/passengers/:id", (ctx: Koa.ParameterizedContext<any, koaRouter.I
     });
 
     const id: string = ctx.params.id;
+
     const reqBody: any = ctx.request.body;
     if (validateData1(reqBody)) {
 
@@ -182,24 +184,26 @@ router.put("/v1/passengers/:id", (ctx: Koa.ParameterizedContext<any, koaRouter.I
 
         if (update === false) {
             badResponse(ctx, "application/json", `Passenger id not found in data base`);
-        }
-        fs.writeFile('passengers.json', JSON.stringify(passengers), 'utf8', (err) => {
-            if (err) {
-                throw err;
-            }
-        });
+            return;
+        } else {
+            fs.writeFile('passengers.json', JSON.stringify(passengers), 'utf8', (err) => {
+                if (err) {
+                    throw err;
+                }
+            });
 
-        goodResponse(ctx, "application/json", { message: `Passenger with id : ${reqBody._id} updated successfully.` })
+            goodResponse(ctx, "application/json", { message: `Passenger with id : ${reqBody._id} updated successfully.` });
+        }
 
     }
     else {
-        badResponse(ctx, "application/json", `Update failed, Provide correct data`);
+        badResponse(ctx, "text/html", `Update failed, Provide correct data`);
     }
 
 });
 app.use(bodyParser());
 app.use(router.routes()).use(router.allowedMethods());
-app.use(async (ctx: Koa.ParameterizedContext<Koa.DefaultState, Koa.DefaultContext, any>) => {
+app.use(async (ctx) => {
     ctx.body = "Invalid URL";
 });
 

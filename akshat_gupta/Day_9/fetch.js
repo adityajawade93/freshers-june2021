@@ -11,8 +11,11 @@ const options = {
 axios(options)
 	.then((response) => {
 		const csv = response.data.data;
-		const json = JSON.stringify(csv);
-		fs.writeFile('passengers.json', json, 'utf8', (err) => {
+		const json = {};
+		for(let i = 0 ; i < csv.length ; i++) {
+			json[csv[i]._id] = csv[i];
+		}
+		fs.writeFile('passengers.json', JSON.stringify(json), 'utf8', (err) => {
 			if (err) {
 				throw err;
 			}

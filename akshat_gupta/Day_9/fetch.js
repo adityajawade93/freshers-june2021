@@ -1,7 +1,7 @@
 const axios = require('axios');
 const fs = require('fs');
 
-const url = 'https://api.instantwebtools.net/v1/passenger?page=0&size=5';
+const url = 'https://api.instantwebtools.net/v1/passenger?page=1&size=5';
 
 const options = {
 	'method': 'GET',

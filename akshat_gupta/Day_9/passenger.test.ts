@@ -1,5 +1,7 @@
 import request from 'supertest';
 import { server } from './passenger';
+import pass from './passengers.json';
+const passengers: Record<string, any> = pass;
 
 beforeAll(async () => {
 	console.log('Testing, jest starting...');
@@ -61,7 +63,7 @@ describe('basic route tests', () => {
 		const response = await request(server).post('/v1/passengers/').send(newEntry);
 		expect(response.status).toEqual(201);
 		expect(response.body.message).toBe('Entry added Successfully.');
-		expect(response.body.content.trips).toBe(250);
+		expect(Object.prototype.hasOwnProperty.call(passengers, response.body.content._id)).toBe(true);
 	});
 
 	test('Trying to edit with wrong format data.', async () => {
@@ -83,12 +85,11 @@ describe('basic route tests', () => {
 	test('Updating existing entry.', async () => {
 		const response1 = await request(server).post('/v1/passengers/').send(newEntry);
 		// making legal changes
-		newEntry.__v += 1; 
 		newEntry.airline[0].id = 10;
 		const response = await request(server).put('/v1/passengers/' + response1.body.content._id).send(newEntry);
 		expect(response.status).toEqual(202);
 		expect(response.body.message).toBe('Entry updated Successfully.');
-		expect(response.body.content.airline[0].id).toBe(10);
+		expect(passengers[response1.body.content._id].airline[0].id).toBe(10);
 	});
 
 	test('Trying to get entries with missing query params...', async () => {
@@ -102,22 +103,22 @@ describe('basic route tests', () => {
 		newEntry.trips = 1;
 		await request(server).post('/v1/passengers/').send(newEntry);
 		newEntry.name = 'bane';
-		const response3 = await request(server).get('/v1/passengers').query({ page: 0, size: 3});
+		const response3 = await request(server).get('/v1/passengers').query({ page: 0, size: 3 });
 		const pages = response3.body.content.totalPages;
-		const response = await request(server).get('/v1/passengers').query({ page: pages + 1, size: 3});
+		const response = await request(server).get('/v1/passengers').query({ page: pages + 1, size: 3 });
 		expect(response.status).toEqual(416);
 		expect(response.body.message).toBe('Query parameters out of range.');
 	});
 
 	test('Trying to get entries...', async () => {
-		const responsei = await request(server).get('/v1/passengers').query({ page: 0, size: 3});
+		const responsei = await request(server).get('/v1/passengers').query({ page: 0, size: 3 });
 		await request(server).post('/v1/passengers/').send(newEntry);
 		await request(server).post('/v1/passengers/').send(newEntry);
 		await request(server).post('/v1/passengers/').send(newEntry);
 		await request(server).post('/v1/passengers/').send(newEntry);
 		const totalPassengers = responsei.body.content.totalPassengers + 4;
-		const pages = Math.floor(totalPassengers/3) + 1;
-		const response = await request(server).get('/v1/passengers').query({ page: 0, size: 3});
+		const pages = Math.floor(totalPassengers / 3) + 1;
+		const response = await request(server).get('/v1/passengers').query({ page: 0, size: 3 });
 		expect(response.status).toEqual(200);
 		expect(response.body.message).toBe('Request fulfiled.');
 		expect(response.body.content.totalPages).toBe(pages);

@@ -1,4 +1,8 @@
-day7/node_modules/
+node_modules/
 day8/assignment1/node_modules/
 day8/assignment1/dist/
-
+day8/assignment2/node_modules/
+day8/assignment2/dist/
+day10/node_modules/
+day10/dist/
+day10/__tests__/dist/

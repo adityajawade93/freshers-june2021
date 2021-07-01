@@ -185,4 +185,3 @@ select * from pg_available_extensions;
 create extension if not exists "uuid-ossp";
 
 select uuid_generate_v4();
-

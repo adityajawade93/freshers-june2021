@@ -1,5 +1,4 @@
 
-
 CREATE SCHEMA school;
 SET search_path TO school;
 
@@ -50,7 +49,7 @@ CREATE TABLE studies_in(
 
 );
 
-CREATE TABLE having_subject(
+CREATE TABLE Schedule(
   
   CLASSID varchar(255),
   SUBJECTID varchar(255),
@@ -59,7 +58,6 @@ CREATE TABLE having_subject(
   FOREIGN KEY (SUBJECTID) REFERENCES subject(SUBJECTID)
 
 );
-
 
 CREATE TABLE teacher_takes(
 

@@ -1,0 +1,96 @@
+
+
+CREATE SCHEMA school;
+SET search_path TO school;
+
+CREATE TABLE student(
+
+  SID varchar(255) UNIQUE NOT NULL,
+  NAME TEXT ,
+  GENDER varchar(255),
+  PHONE varchar(255),
+  PRIMARY KEY(SID)
+);
+
+CREATE TABLE class(
+
+	CLASSID varchar(255) UNIQUE NOT NULL,
+	ROOMNO varchar(255),
+	PRIMARY KEY(CLASSID)
+
+);
+
+CREATE TABLE subject(
+
+	SUBJECTID varchar(255) UNIQUE NOT NULL,
+	SUBJECTNAME varchar(255),
+	PRIMARY KEY (SUBJECTID)
+
+);
+
+CREATE TABLE teacher(
+
+  TID varchar(255) UNIQUE NOT NULL,
+  NAME TEXT ,
+  GENDER varchar(255),
+  PHONE varchar(255),
+  PRIMARY KEY(TID)
+
+);
+
+
+CREATE TABLE studies_in(
+
+   SID varchar(255) ,
+   CLASSID varchar(255) ,
+   PRIMARY KEY(SID),
+   FOREIGN KEY (SID) REFERENCES student(SID),
+   FOREIGN KEY (CLASSID) REFERENCES class(CLASSID)
+  
+
+);
+
+CREATE TABLE having_subject(
+  
+  CLASSID varchar(255),
+  SUBJECTID varchar(255),
+  PRIMARY KEY(CLASSID,SUBJECTID),
+  FOREIGN KEY (CLASSID) REFERENCES class(CLASSID),
+  FOREIGN KEY (SUBJECTID) REFERENCES subject(SUBJECTID)
+
+);
+
+
+CREATE TABLE teacher_takes(
+
+    TID varchar(255),
+    SUBJECTID varchar(255),
+    PRIMARY KEY(TID),
+    FOREIGN KEY (TID) REFERENCES teacher(TID),
+    FOREIGN KEY (SUBJECTID) REFERENCES subject(SUBJECTID)
+ 
+);
+
+CREATE TABLE result(
+
+  SUBJECTID varchar(255),
+  SID varchar(255) ,
+  marks INT,
+  PRIMARY KEY (SUBJECTID,SID),
+  FOREIGN KEY (SUBJECTID) REFERENCES subject(SUBJECTID),
+  FOREIGN KEY (SID) REFERENCES student(SID)
+
+);
+
+
+
+
+
+
+
+
+
+
+
+
+

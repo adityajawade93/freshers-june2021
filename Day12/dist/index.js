@@ -1,0 +1,36 @@
+"use strict";
+var Koa = require('koa');
+var app = new Koa();
+var json = require('koa-json');
+var koaroute = require('@koa/router');
+var bodyparser = require('koa-bodyparser');
+var port = 3000;
+var router = new koaroute();
+var studntController = require('./controllers/studentcontroller');
+var resultController = require('./controllers/resultContoller');
+app.use(json());
+app.use(bodyparser());
+router.get('/', function (ctx) {
+    ctx.body = "hello";
+});
+router.get('/student', studntController.getStudents);
+router.get('/teacher', studntController.getTeachers);
+router.get('/class', studntController.getClasses);
+router.get('/subject', studntController.getSubjects);
+router.get('/studentbyclass/:classId', studntController.getStudentsByClassId);
+router.get('/studentbysubject/:subjectId', studntController.getStudentsBySubjectId);
+router.get('/studentbyteacher/:teacherId', studntController.getStudentsByTeacherId);
+router.post('/student', studntController.addStudent);
+router.post('/subject', studntController.addSubject);
+router.post('/teacher', studntController.addTeacher);
+router.post('/schedule', studntController.addSchedule);
+router.post('/marks', resultController.addMarks);
+router.put('/marks', resultController.updateMarks);
+router.get('/marks/:studentId', resultController.getMarksByStudentId);
+router.get('/highestmarkspersubject/:classId', resultController.getHighestMarksPerSubject);
+router.get('/getTop10Marks/:classId', resultController.getTop10Marks);
+app.use(router.routes());
+var server = app.listen(port, function () {
+    console.log("server started successfully");
+});
+module.exports = server;

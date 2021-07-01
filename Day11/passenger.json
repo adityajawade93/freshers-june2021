@@ -1,1 +1,102 @@
-[{"_id":"5ef4a412aab3841847750ce8","name":"himanshu agrawal","trips":2500,"airline":[{"id":5,"name":"Eva Air","country":"Taiwan","logo":"https://upload.wikimedia.org/wikipedia/en/thumb/e/ed/EVA_Air_logo.svg/250px-EVA_Air_logo.svg.png","slogan":"Sharing the World, Flying Together","head_quaters":"376, Hsin-Nan Rd., Sec. 1, Luzhu, Taoyuan City, Taiwan","website":"www.evaair.com","established":"1989"}],"__v":0},{"_id":"A5yu2u8axkq4wzhoe","name":"Gustave Eiffel","trips":636,"airline":{"id":1,"name":"Quatar Airways","country":"Quatar","logo":"https://upload.wikimedia.org/wikipedia/en/thumb/9/9b/Qatar_Airways_Logo.svg/300px-Qatar_Airways_Logo.svg.png","slogan":"Going Places Together","head_quaters":"Qatar Airways Towers, Doha, Qatar","website":"www.qatarairways.com","established":"1994"},"__v":0},{"_id":"A5yu2u8b8kq4x0lfh","name":"Lyda Gladys","trips":287,"airline":[{"id":4,"name":"Emirates","country":"Dubai","logo":"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Emirates_logo.svg/150px-Emirates_logo.svg.png","slogan":"From Dubai to destinations around the world.","head_quaters":"Garhoud, Dubai, United Arab Emirates","website":"www.emirates.com/","established":"1985"}],"__v":0},{"_id":"A5yu2u8bdkq4x195v","name":"Lynna Tomas","trips":341,"airline":{"id":7,"name":"Deutsche Lufthansa AG","country":"Germany","logo":"https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Lufthansa_Logo_2018.svg/300px-Lufthansa_Logo_2018.svg.png","slogan":"Say yes to the world","head_quaters":"Cologne, Germany","website":"lufthansa.com","established":"1953"},"__v":0},{"_id":"A5yu2u8zmkq506fdu","name":"Cinderella Cath","trips":158,"airline":{"id":1,"name":"Quatar Airways","country":"Quatar","logo":"https://upload.wikimedia.org/wikipedia/en/thumb/9/9b/Qatar_Airways_Logo.svg/300px-Qatar_Airways_Logo.svg.png","slogan":"Going Places Together","head_quaters":"Qatar Airways Towers, Doha, Qatar","website":"www.qatarairways.com","established":"1994"},"__v":0},{"_id":"A5yu2u1fd9kq62ic6p","name":"Cinderella Cath","trips":158,"airline":{"id":1,"name":"Quatar Airways","country":"Quatar","logo":"https://upload.wikimedia.org/wikipedia/en/thumb/9/9b/Qatar_Airways_Logo.svg/300px-Qatar_Airways_Logo.svg.png","slogan":"Going Places Together","head_quaters":"Qatar Airways Towers, Doha, Qatar","website":"www.qatarairways.com","established":"1994"},"__v":0}]
+[
+    {
+        "_id": "5ef4a412aab3841847750ce8",
+        "name": "himanshu agrawal",
+        "trips": 2500,
+        "airline": [
+            {
+                "id": 5,
+                "name": "Eva Air",
+                "country": "Taiwan",
+                "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/e/ed/EVA_Air_logo.svg/250px-EVA_Air_logo.svg.png",
+                "slogan": "Sharing the World, Flying Together",
+                "head_quaters": "376, Hsin-Nan Rd., Sec. 1, Luzhu, Taoyuan City, Taiwan",
+                "website": "www.evaair.com",
+                "established": "1989"
+            }
+        ],
+        "__v": 0
+    },
+    {
+        "_id": "A5yu2u8axkq4wzhoe",
+        "name": "Gustave Eiffel",
+        "trips": 636,
+        "airline": {
+            "id": 1,
+            "name": "Quatar Airways",
+            "country": "Quatar",
+            "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/9/9b/Qatar_Airways_Logo.svg/300px-Qatar_Airways_Logo.svg.png",
+            "slogan": "Going Places Together",
+            "head_quaters": "Qatar Airways Towers, Doha, Qatar",
+            "website": "www.qatarairways.com",
+            "established": "1994"
+        },
+        "__v": 0
+    },
+    {
+        "_id": "A5yu2u8b8kq4x0lfh",
+        "name": "Lyda Gladys",
+        "trips": 287,
+        "airline": [
+            {
+                "id": 4,
+                "name": "Emirates",
+                "country": "Dubai",
+                "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Emirates_logo.svg/150px-Emirates_logo.svg.png",
+                "slogan": "From Dubai to destinations around the world.",
+                "head_quaters": "Garhoud, Dubai, United Arab Emirates",
+                "website": "www.emirates.com/",
+                "established": "1985"
+            }
+        ],
+        "__v": 0
+    },
+    {
+        "_id": "A5yu2u8bdkq4x195v",
+        "name": "Lynna Tomas",
+        "trips": 341,
+        "airline": {
+            "id": 7,
+            "name": "Deutsche Lufthansa AG",
+            "country": "Germany",
+            "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Lufthansa_Logo_2018.svg/300px-Lufthansa_Logo_2018.svg.png",
+            "slogan": "Say yes to the world",
+            "head_quaters": "Cologne, Germany",
+            "website": "lufthansa.com",
+            "established": "1953"
+        },
+        "__v": 0
+    },
+    {
+        "_id": "A5yu2u8zmkq506fdu",
+        "name": "Cinderella Cath",
+        "trips": 158,
+        "airline": {
+            "id": 1,
+            "name": "Quatar Airways",
+            "country": "Quatar",
+            "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/9/9b/Qatar_Airways_Logo.svg/300px-Qatar_Airways_Logo.svg.png",
+            "slogan": "Going Places Together",
+            "head_quaters": "Qatar Airways Towers, Doha, Qatar",
+            "website": "www.qatarairways.com",
+            "established": "1994"
+        },
+        "__v": 0
+    },
+    {
+        "_id": "A5yu2u1fd9kq62ic6p",
+        "name": "Cinderella Cath",
+        "trips": 158,
+        "airline": {
+            "id": 1,
+            "name": "Quatar Airways",
+            "country": "Quatar",
+            "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/9/9b/Qatar_Airways_Logo.svg/300px-Qatar_Airways_Logo.svg.png",
+            "slogan": "Going Places Together",
+            "head_quaters": "Qatar Airways Towers, Doha, Qatar",
+            "website": "www.qatarairways.com",
+            "established": "1994"
+        },
+        "__v": 0
+    }
+]

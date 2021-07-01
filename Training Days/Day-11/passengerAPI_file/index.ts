@@ -6,6 +6,8 @@ const {v4 : uuidv4} = require('uuid')
 const passengers = require('./passengers.json');
 var totalPassengers = passengers.length;
 
+import { Context } from "vm";
+
 const app = new koa();
 const router = new koarouter();
 
@@ -72,11 +74,11 @@ function validation(page: number, size: number): {status: number, message: strin
     if (typeof page !== "number" || typeof size !== "number") {
         return {status: 400,  message: "Invalid parameters"};
     }
-    if(page < 0 || size < 0){
+    if(page < 0 || size <= 0){
         return {status: 400, message: "Invalid parameters"};
     }
     var total_page = Math.ceil(passengers.length / size);
-    if(size > passengers.length){
+    if(size > passengers.length && page != total_page-1){
         return {status: 406, message: "Invalid size"};
     }
     if(page >= total_page){
@@ -87,7 +89,7 @@ function validation(page: number, size: number): {status: number, message: strin
 
 app.use(bodyParser());
 
-router.get('/v1/passenger', (ctx: any,next: any) => {
+router.get('/v1/passenger', (ctx: Context,next: any) => {
     var page = parseInt(ctx.request.query.page);
     var size = parseInt(ctx.request.query.size);
     var isValid = validation(page,size);
@@ -110,16 +112,16 @@ router.get('/v1/passenger', (ctx: any,next: any) => {
     }
 });
 
-router.post('/v1/passenger', (ctx: any) => {
+router.post('/v1/passenger', (ctx: Context) => {
     // const data: any = ctx.request.body;
     // console.log(data);
     let newId = createPassenger(ctx.request.body);
-    ctx.body = `passenger with id ${newId} created successfully`;
+    ctx.body = `passenger created successfully with id ${newId}`;
     ctx.response.status = 201;
     return;
 });
 
-router.put('/v1/passenger/:id', (ctx: any) => {
+router.put('/v1/passenger/:id', (ctx: Context) => {
     var id = ctx.params.id;
     // if(!id){
     //     ctx.type = 'text/plain; charset=utf-8';
@@ -135,7 +137,7 @@ router.put('/v1/passenger/:id', (ctx: any) => {
         return;
     }
     ctx.response.status = 200;
-    ctx.body = `passenger with id ${Id} updated successfully`;;
+    ctx.body = `passenger updated successfully with id ${Id}`;;
     return;
 });
 
@@ -149,4 +151,4 @@ app.use(async (ctx: any) => {
 
 const server = app.listen(3001, () => console.log("port on ", 3001));
 
-module.exports = server;
+module.exports = { app, passengers };

@@ -572,6 +572,32 @@ export const getClasses = async (ctx: Context) => {
   }
 };
 
+export const getSchedule = async (ctx: Context) => {
+  try {
+    const data =
+      await db.query(`select c.cl_no as class_no,s1.sub_id,s1.sub_name as subject_name,t1.teacher_id,concat(t1.fname,' ',t1.lname) as teacher_name 
+    from classes as c
+    inner join subject as s1
+    on s1.sub_id=c.sub_id
+    inner join teacher as t1
+    on t1.teacher_id=c.teacher_id
+    order by class_no`);
+
+    ctx.status = 200;
+    ctx.body = {
+      status: `successfull`,
+      data: data.rows,
+    };
+  } catch (err) {
+    console.log(err);
+
+    ctx.status = 400;
+    ctx.body = {
+      status: `Bad Data`,
+    };
+  }
+};
+
 export const getSubject = async (ctx: Context) => {
   try {
     const data = await db.query("select * from subject");

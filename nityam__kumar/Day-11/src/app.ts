@@ -16,6 +16,7 @@ import {
   getTeachersTeaching,
   getClasses,
   getSubject,
+  getSchedule,
   fetchStudentsWithClass,
   fetchStudentsWithTeacher,
   fetchStudentsWithSub,
@@ -68,6 +69,9 @@ router.get("/allclasses", getClasses);
 // List of all Subjects
 router.get("/allSubject", getSubject);
 
+//to get all schedule
+router.get("/schedule", getSchedule);
+
 // List of all student Given classId
 router.get("/students/:cl_id", fetchStudentsWithClass);
 // List of all student Given TeacherId
@@ -82,7 +86,6 @@ router.get("/highestmarks", fetchHighestMarksPerSubject);
 
 // List of top 10 scores(sum all subject),
 router.get("/topTen", fetchTopTen);
-
 
 router.get("/topperPerclass", fetchTopperPerClass);
 

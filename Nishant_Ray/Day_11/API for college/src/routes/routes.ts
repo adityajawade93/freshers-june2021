@@ -15,6 +15,7 @@ router.get('/teacher/:id',controller.getStudentByTeacherId );
 router.get('/subject/:id',controller.getStudentBySubjectId);
 router.get('/marks/:id',controller.getSubjectMarksByStudentId);
 router.get('/topclass/:c_id/topsubject/:s_id',controller.gettopperByclassIdAndSubjectId);
+router.get('/topten/:c_id',controller.gettoptenstudent);
 
 router.post('/createstudent',controller.addStudent);
 router.post('/createteacher',controller.addTeacher);

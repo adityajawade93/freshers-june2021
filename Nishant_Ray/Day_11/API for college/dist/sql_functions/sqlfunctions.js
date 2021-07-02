@@ -146,6 +146,17 @@ exports.get_topper_by_classid_and_subjectid = function (c_id, s_id) { return __a
         }
     });
 }); };
+exports.get_topten_students = function (c_id) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, sqlclient.query("SET search_path TO College")];
+            case 1:
+                _a.sent();
+                return [4 /*yield*/, sqlclient.query("SELECT s.student_id , s.fname , a.total_marks\n                  FROM college.student s\n                  INNER JOIN(\n                  SELECT SUM(r.marks) AS total_marks , s.student_id\n                  FROM college.student s\n                  JOIN college.class_student ON class_student.studid = s.student_id\n                  JOIN college.class_schedule c ON class_student.class_id = c.classid\n                  JOIN college.result r ON r.studentid = s.student_id\n                  WHERE c.classid =" + c_id + "\n                  GROUP BY s.student_id\n                  ) a\n                  ON s.student_id = a.student_id\n                  ORDER BY total_marks DESC\n                  LIMIT 10")];
+            case 2: return [2 /*return*/, (_a.sent())];
+        }
+    });
+}); };
 exports.add_student = function (student_id, fname, mname, lname, dob, gender, address) { return __awaiter(void 0, void 0, void 0, function () {
     var data;
     return __generator(this, function (_a) {

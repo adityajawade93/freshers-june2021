@@ -311,8 +311,39 @@ exports.gettopperByclassIdAndSubjectId = function (ctx) { return __awaiter(void 
         }
     });
 }); };
+exports.gettoptenstudent = function (ctx) { return __awaiter(void 0, void 0, void 0, function () {
+    var c_id, rows, err_10;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                c_id = parseInt(ctx.params.c_id);
+                if (c_id === undefined || typeof c_id !== 'number') {
+                    ctx.response.status = 400;
+                    ctx.response.type = 'text/html';
+                    ctx.body = 'Bad Request';
+                    return [2 /*return*/];
+                }
+                rows = [][0];
+                return [4 /*yield*/, fn.get_topten_students(c_id)];
+            case 1:
+                rows = _a.sent();
+                ctx.response.status = 200;
+                ctx.response.type = 'application/json';
+                ctx.body = rows.rows;
+                return [3 /*break*/, 3];
+            case 2:
+                err_10 = _a.sent();
+                ctx.response.status = 500;
+                ctx.response.type = 'text/html';
+                ctx.body = "internal server error";
+                return [2 /*return*/];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
 exports.addStudent = function (ctx) { return __awaiter(void 0, void 0, void 0, function () {
-    var req, err_10;
+    var req, err_11;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -344,7 +375,7 @@ exports.addStudent = function (ctx) { return __awaiter(void 0, void 0, void 0, f
                 ctx.body = "data is inserted in student table";
                 return [3 /*break*/, 3];
             case 2:
-                err_10 = _a.sent();
+                err_11 = _a.sent();
                 ctx.response.status = 500;
                 ctx.response.type = 'text/html';
                 ctx.body = "internal server error";
@@ -354,7 +385,7 @@ exports.addStudent = function (ctx) { return __awaiter(void 0, void 0, void 0, f
     });
 }); };
 exports.addTeacher = function (ctx) { return __awaiter(void 0, void 0, void 0, function () {
-    var req, err_11;
+    var req, err_12;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -386,7 +417,7 @@ exports.addTeacher = function (ctx) { return __awaiter(void 0, void 0, void 0, f
                 ctx.body = "data is inserted in teacher table";
                 return [3 /*break*/, 3];
             case 2:
-                err_11 = _a.sent();
+                err_12 = _a.sent();
                 ctx.response.status = 500;
                 ctx.response.type = 'text/html';
                 ctx.body = "internal server error";
@@ -396,7 +427,7 @@ exports.addTeacher = function (ctx) { return __awaiter(void 0, void 0, void 0, f
     });
 }); };
 exports.addStudentInClass = function (ctx) { return __awaiter(void 0, void 0, void 0, function () {
-    var req, err_12;
+    var req, err_13;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -416,7 +447,7 @@ exports.addStudentInClass = function (ctx) { return __awaiter(void 0, void 0, vo
                 ctx.body = "data is inserted in Class_student table";
                 return [3 /*break*/, 3];
             case 2:
-                err_12 = _a.sent();
+                err_13 = _a.sent();
                 ctx.response.status = 500;
                 ctx.response.type = 'text/html';
                 ctx.body = "internal server error";
@@ -426,7 +457,7 @@ exports.addStudentInClass = function (ctx) { return __awaiter(void 0, void 0, vo
     });
 }); };
 exports.addSubject = function (ctx) { return __awaiter(void 0, void 0, void 0, function () {
-    var req, err_13;
+    var req, err_14;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -446,7 +477,7 @@ exports.addSubject = function (ctx) { return __awaiter(void 0, void 0, void 0, f
                 ctx.body = "data is inserted in Subject table";
                 return [3 /*break*/, 3];
             case 2:
-                err_13 = _a.sent();
+                err_14 = _a.sent();
                 ctx.response.status = 500;
                 ctx.response.type = 'text/html';
                 ctx.body = "internal server error";
@@ -456,7 +487,7 @@ exports.addSubject = function (ctx) { return __awaiter(void 0, void 0, void 0, f
     });
 }); };
 exports.addClassSchedule = function (ctx) { return __awaiter(void 0, void 0, void 0, function () {
-    var req, err_14;
+    var req, err_15;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -488,7 +519,7 @@ exports.addClassSchedule = function (ctx) { return __awaiter(void 0, void 0, voi
                 ctx.body = "data is inserted in Class_schedule table";
                 return [3 /*break*/, 3];
             case 2:
-                err_14 = _a.sent();
+                err_15 = _a.sent();
                 ctx.response.status = 500;
                 ctx.response.type = 'text/html';
                 ctx.body = "internal server error";

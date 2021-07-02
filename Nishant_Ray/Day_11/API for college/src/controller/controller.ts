@@ -273,6 +273,30 @@ exports.gettopperByclassIdAndSubjectId = async (ctx: Context) => {
       }
 }
 
+exports.gettoptenstudent = async (ctx: Context) => {
+  try{
+      var c_id=parseInt(ctx.params.c_id);
+    if(c_id===undefined || typeof c_id!=='number')
+    {
+      ctx.response.status = 400;
+      ctx.response.type = 'text/html';
+    ctx.body ='Bad Request';
+    return ;
+    }
+    let [rows]: Array<{rows: topper}>=[];
+    rows=await  fn.get_topten_students(c_id);
+     
+        ctx.response.status = 200;
+        ctx.response.type = 'application/json';
+      ctx.body=rows.rows;
+    }catch(err){
+      ctx.response.status = 500;
+      ctx.response.type = 'text/html';
+      ctx.body = "internal server error"; 
+      return ;
+    }
+}
+
 exports.addStudent = async (ctx: Context) => {
     try{
         let req:student_data=ctx.request.body;

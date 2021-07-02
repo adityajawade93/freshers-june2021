@@ -7,6 +7,8 @@ const pool = new Pool({
   port: 5432,
   database: "school",
 });
+
+// console.log(pool);
 export default {
   query: (text: string, params?: any[]) => pool.query(text, params),
 };

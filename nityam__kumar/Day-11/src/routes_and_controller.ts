@@ -43,6 +43,7 @@ function checkStudent(s1: Student) {
     typeof s1.age !== "number" ||
     typeof s1.cl_no !== "number" ||
     s1.age <= 0 ||
+    s1.age > 110 ||
     !s1.fname.trim() ||
     !s1.lname.trim()
   ) {
@@ -61,6 +62,7 @@ function checkTeacher(t1: Teacher) {
     typeof t1.lname !== "string" ||
     typeof t1.age !== "number" ||
     t1.age <= 0 ||
+    t1.age > 110 ||
     !t1.fname.trim() ||
     !t1.lname.trim()
   ) {
@@ -101,6 +103,7 @@ function checkMark(m1: Mark) {
     typeof m1.cl_no !== "number" ||
     typeof m1.marks !== "number" ||
     m1.marks < 0 ||
+    m1.marks > 100 ||
     !m1.sub_id.trim() ||
     !m1.teacher_id.trim()
   ) {
@@ -120,9 +123,16 @@ export const createStudent = async (ctx: Context) => {
       };
       return;
     }
+    console.log("check");
     s1.st_id = uuid();
     const text = "INSERT INTO student VALUES($1,$2,$3,$4,$5)";
-    const values = [s1.st_id, s1.fname, s1.lname, s1.age, s1.cl_no];
+    const values = [
+      s1.st_id,
+      s1.fname.trim(),
+      s1.lname.trim(),
+      s1.age,
+      s1.cl_no,
+    ];
     await db.query(text, values);
     ctx.status = 200;
     ctx.body = {
@@ -150,7 +160,7 @@ export const createTeacher = async (ctx: Context) => {
     }
     t1.teacher_id = uuid();
     const text = "INSERT INTO teacher VALUES($1,$2,$3,$4)";
-    const values = [t1.teacher_id, t1.fname, t1.lname, t1.age];
+    const values = [t1.teacher_id, t1.fname.trim(), t1.lname.trim(), t1.age];
     await db.query(text, values);
     ctx.status = 200;
     ctx.body = {
@@ -176,15 +186,45 @@ export const createSubject = async (ctx: Context) => {
       };
       return;
     }
+
+    const text4 = "select * from teacher where teacher_id =$1";
+    const values4 = [s1.teacher_id.trim()];
+
+    const check_teacher = await db.query(text4, values4);
+    if (check_teacher.rows.length === 0) {
+      ctx.status = 401;
+      ctx.body = {
+        status: `Teacher with this id not available!! Enter valid teacher id`,
+      };
+      return;
+    }
+
+    const text5 = "select * from subject where cl_no=$1 and sub_name=$2";
+    const values5 = [s1.cl_no, s1.sub_name.trim()];
+
+    const check_already_exist = await db.query(text5, values5);
+    if (check_already_exist.rows.length > 0) {
+      ctx.status = 400;
+      ctx.body = {
+        status: `subject already exist in this class`,
+      };
+      return;
+    }
+
     s1.sub_id = uuid();
     const text = "INSERT INTO subject VALUES($1,$2,$3,$4)";
-    const values = [s1.sub_id, s1.sub_name, s1.cl_no, s1.teacher_id];
+    const values = [
+      s1.sub_id,
+      s1.sub_name.trim(),
+      s1.cl_no,
+      s1.teacher_id.trim(),
+    ];
     await db.query(text, values);
     const text2 = "INSERT INTO teaches VALUES($1,$2)";
-    const values2 = [s1.teacher_id, s1.sub_id];
+    const values2 = [s1.teacher_id.trim(), s1.sub_id.trim()];
     await db.query(text2, values2);
     const text3 = "INSERT INTO classes VALUES($1,$2,$3)";
-    const values3 = [s1.cl_no, s1.sub_id, s1.teacher_id];
+    const values3 = [s1.cl_no, s1.sub_id.trim(), s1.teacher_id.trim()];
     await db.query(text3, values3);
 
     ctx.status = 200;
@@ -211,8 +251,50 @@ export const createMarks = async (ctx: Context) => {
       };
       return;
     }
+
+    const text4 = "select * from student where st_id =$1";
+    const values4 = [m1.st_id.trim()];
+    const check_student = await db.query(text4, values4);
+    if (check_student.rows.length === 0) {
+      ctx.status = 401;
+      ctx.body = {
+        status: `student with this id not available!! Enter valid student id`,
+      };
+      return;
+    }
+
+    const text5 =
+      "select * from classes where cl_no =$1 and sub_id =$2 and teacher_id =$3";
+    const values5 = [m1.cl_no, m1.sub_id.trim(), m1.teacher_id.trim()];
+    const check_subject_cl = await db.query(text5, values5);
+    if (check_subject_cl.rows.length === 0) {
+      ctx.status = 401;
+      ctx.body = {
+        status: `subject with this class not available!! Enter valid Details`,
+      };
+      return;
+    }
+    const text6 =
+      "select * from marks where cl_no =$1 and sub_id =$2 and teacher_id =$3";
+    const values6 = [m1.cl_no, m1.sub_id.trim(), m1.teacher_id.trim()];
+    const check_already_exist = await db.query(text6, values6);
+
+    if (check_already_exist.rows.length > 0) {
+      ctx.status = 200;
+      ctx.body = {
+        status: `data already available `,
+      };
+      return;
+    }
+
     const text = "INSERT INTO marks VALUES($1,$2,$3,$4,$5)";
-    const values = [m1.st_id, m1.sub_id, m1.marks, m1.teacher_id, m1.cl_no];
+    const values = [
+      m1.st_id.trim(),
+      m1.sub_id.trim(),
+      m1.marks,
+      m1.teacher_id.trim(),
+      m1.cl_no,
+    ];
     await db.query(text, values);
     ctx.status = 200;
     ctx.body = {
@@ -232,7 +314,7 @@ export const createMarks = async (ctx: Context) => {
 export const modifyStudent = async (ctx: Context) => {
   try {
     const st_id = ctx.params.st_id;
-    if (!st_id) {
+    if (!st_id || typeof st_id !== "string") {
       ctx.status = 400;
       ctx.body = {
         status: `Bad input`,
@@ -246,31 +328,31 @@ export const modifyStudent = async (ctx: Context) => {
     if (res.rows.length === 0) {
       ctx.status = 400;
       ctx.body = {
-        status: `id not found`,
+        status: `student with this id not found`,
       };
       return;
     }
     const { fname, lname, age, cl_no } = ctx.request.body;
 
-    if (fname) {
+    if (fname && typeof fname === "string") {
       await db.query("update student set fname=$1 where st_id=$2", [
-        fname,
+        fname.trim(),
         st_id,
       ]);
     }
 
-    if (lname) {
+    if (lname && typeof lname === "string") {
       await db.query("update student set lname=$1 where st_id=$2", [
-        lname,
+        lname.trim(),
         st_id,
       ]);
     }
 
-    if (age) {
+    if (age && typeof age === "number") {
       await db.query("update student set age=$1 where st_id=$2", [age, st_id]);
     }
 
-    if (cl_no) {
+    if (cl_no && typeof cl_no === "number") {
       await db.query("update student set cl_no=$1 where st_id=$2", [
         cl_no,
         st_id,
@@ -293,7 +375,7 @@ export const modifyStudent = async (ctx: Context) => {
 export const modifyTeacher = async (ctx: Context) => {
   try {
     const teacher_id = ctx.params.teacher_id;
-    if (!teacher_id) {
+    if (!teacher_id || typeof teacher_id !== "string") {
       ctx.status = 400;
       ctx.body = {
         status: `Bad input`,
@@ -307,27 +389,27 @@ export const modifyTeacher = async (ctx: Context) => {
     if (res.rows.length === 0) {
       ctx.status = 400;
       ctx.body = {
-        status: `id not found`,
+        status: `teacher with this id not found`,
       };
       return;
     }
     const { fname, lname, age } = ctx.request.body;
 
-    if (fname) {
+    if (fname && typeof fname === "string") {
       await db.query("update teacher set fname=$1 where teacher_id=$2", [
-        fname,
+        fname.trim(),
         teacher_id,
       ]);
     }
 
-    if (lname) {
+    if (lname && typeof lname === "string") {
       await db.query("update teacher set lname=$1 where teacher_id=$2", [
-        lname,
+        lname.trim(),
         teacher_id,
       ]);
     }
 
-    if (age) {
+    if (age && typeof age === "number") {
       await db.query("update teacher set age=$1 where teacher_id=$2", [
         age,
         teacher_id,
@@ -352,7 +434,12 @@ export const modifyMarks = async (ctx: Context) => {
     const st_id = ctx.params.st_id;
     const sub_id = ctx.params.sub_id;
 
-    if (!sub_id || !st_id) {
+    if (
+      !sub_id ||
+      !st_id ||
+      typeof st_id !== "string" ||
+      typeof sub_id !== "string"
+    ) {
       ctx.status = 400;
       ctx.body = {
         status: `Bad input`,
@@ -361,22 +448,22 @@ export const modifyMarks = async (ctx: Context) => {
     }
     const res = await db.query(
       "select * from marks where st_id =$1 and sub_id=$2",
-      [st_id, sub_id]
+      [st_id.trim(), sub_id.trim()]
     );
 
     if (res.rows.length === 0) {
-      ctx.status = 400;
+      ctx.status = 401;
       ctx.body = {
-        status: `id not found`,
+        status: `either subject or student id not available`,
       };
       return;
     }
     const { marks } = ctx.request.body;
 
-    if (marks) {
+    if (marks && typeof marks === "number") {
       await db.query(
         "update marks set marks=$1 where st_id =$2 and sub_id=$3",
-        [marks, st_id, sub_id]
+        [marks, st_id.trim(), sub_id.trim()]
       );
     }
 
@@ -395,8 +482,19 @@ export const modifyMarks = async (ctx: Context) => {
 
 export const getStudents = async (ctx: Context) => {
   try {
-    const page = ctx.query.page;
-    const size = ctx.query.size;
+    let page = ctx.query.page;
+    let size = ctx.query.size;
+
+    if (!page || !size || isNaN(page) || isNaN(size)) {
+      ctx.status = 400;
+      ctx.body = {
+        status: `Bad input`,
+      };
+      return;
+    }
+
+    page = Number(page);
+    size = Number(size);
 
     let student_table_sizee = await db.query("SELECT count(*) from student");
     let student_table_size = student_table_sizee.rows[0].count;
@@ -447,8 +545,19 @@ export const getStudents = async (ctx: Context) => {
 
 export const getTeachers = async (ctx: Context) => {
   try {
-    const page = ctx.query.page;
-    const size = ctx.query.size;
+    let page = ctx.query.page;
+    let size = ctx.query.size;
+
+    if (!page || !size || isNaN(page) || isNaN(size)) {
+      ctx.status = 400;
+      ctx.body = {
+        status: `Bad input`,
+      };
+      return;
+    }
+
+    page = Number(page);
+    size = Number(size);
 
     let teacher_table_sizee = await db.query("SELECT count(*) from teacher");
     let teacher_table_size: number = teacher_table_sizee.rows[0].count;
@@ -499,8 +608,19 @@ export const getTeachers = async (ctx: Context) => {
 
 export const getTeachersTeaching = async (ctx: Context) => {
   try {
-    const page = ctx.query.page;
-    const size = ctx.query.size;
+    let page = ctx.query.page;
+    let size = ctx.query.size;
+
+    if (!page || !size || isNaN(page) || isNaN(size)) {
+      ctx.status = 400;
+      ctx.body = {
+        status: `Bad input`,
+      };
+      return;
+    }
+
+    page = Number(page);
+    size = Number(size);
 
     let teacher_table_sizee = await db.query("SELECT count(*) from teacher");
     let teacher_table_size = teacher_table_sizee.rows[0].count;
@@ -609,10 +729,9 @@ export const getSubject = async (ctx: Context) => {
     };
   } catch (err) {
     console.log(err);
-
-    ctx.status = 400;
+    ctx.status = 500;
     ctx.body = {
-      status: `Bad Data`,
+      status: `Internal Server Error`,
     };
   }
 };
@@ -620,6 +739,14 @@ export const getSubject = async (ctx: Context) => {
 export const fetchStudentsWithClass = async (ctx: Context) => {
   try {
     const cl_id = ctx.params.cl_id;
+    if (!cl_id || typeof cl_id !== "string") {
+      ctx.status = 400;
+      ctx.body = {
+        status: `Bad Data`,
+      };
+      return;
+    }
+
     const data = await db.query("select * from student where cl_no=$1", [
       cl_id,
     ]);
@@ -650,6 +777,14 @@ export const fetchStudentsWithClass = async (ctx: Context) => {
 export const fetchStudentsWithTeacher = async (ctx: Context) => {
   try {
     const teacher_id = ctx.params.teacher_id;
+    if (!teacher_id || typeof teacher_id !== "string") {
+      ctx.status = 400;
+      ctx.body = {
+        status: `Bad Data`,
+      };
+      return;
+    }
+
     const data = await db.query(
       "select s1.st_id,s1.fname,s1.lname,s1.age,s1.cl_no from student as s1 where s1.cl_no in (select distinct cl_no from subject as sub where teacher_id=$1",
       [teacher_id]
@@ -681,9 +816,16 @@ export const fetchStudentsWithTeacher = async (ctx: Context) => {
 export const fetchStudentsWithSub = async (ctx: Context) => {
   try {
     const sub_id = ctx.params.sub_id;
+    if (!sub_id || typeof sub_id !== "string") {
+      ctx.status = 400;
+      ctx.body = {
+        status: `Bad Data`,
+      };
+      return;
+    }
     const data = await db.query(
       "select s1.fname,s1.lname,s1.cl_no,s1.age,sub.sub_id,sub.sub_name from subject as sub,student as s1 where sub.sub_id=$1 and sub.cl_no=s1.cl_no",
-      [sub_id]
+      [sub_id.trim()]
     );
     if (data.rows.length === 0) {
       ctx.status = 404;
@@ -700,9 +842,9 @@ export const fetchStudentsWithSub = async (ctx: Context) => {
   } catch (err) {
     console.log(err);
 
-    ctx.status = 400;
+    ctx.status = 500;
     ctx.body = {
-      status: `Bad Data`,
+      status: `Internal Server error`,
     };
   }
 };
@@ -710,9 +852,16 @@ export const fetchStudentsWithSub = async (ctx: Context) => {
 export const fetchMarks = async (ctx: Context) => {
   try {
     const st_id = ctx.params.st_id;
+    if (!st_id || typeof st_id !== "string") {
+      ctx.status = 400;
+      ctx.body = {
+        status: `Bad Data`,
+      };
+      return;
+    }
     const data = await db.query(
       "select s.fname,s.lname,s.cl_no,m1.marks from marks as m1,student as s where m1.st_id=$1 and s.st_id= m1.st_id",
-      [st_id]
+      [st_id.trim()]
     );
     if (data.rows.length === 0) {
       ctx.status = 404;

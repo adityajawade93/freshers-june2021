@@ -104,6 +104,26 @@ exports.add_result = async (result_id:number,studentid:number,clas_id:number,sub
                   return (await sqlclient.query("INSERT INTO result values($1,$2,$3,$4,$5)",data)); 
         }
 
+exports.update_result = async (studentid:number,subjectid:number,marks:number) => {
+            await sqlclient.query("SET search_path TO College");
+            const data = [studentid,subjectid,marks];
+                  return (await sqlclient.query(`Update result SET marks=${marks} WHERE studentid=${studentid} AND subjectid=${subjectid}`)); 
+        }
+
+exports.check_subject = async (studentid:number) => {
+            await sqlclient.query("SET search_path TO College");
+                  return (await sqlclient.query(`SELECT subj_id FROM class_schedule,class_student WHERE studid=${studentid} AND classid=class_id`)); 
+}
+
+exports.subject_length = async (studentid:number) => {
+      await sqlclient.query("SET search_path TO College");
+            return (await sqlclient.query(`SELECT COUNT(*) FROM (SELECT subj_id FROM class_schedule,class_student WHERE studid=${studentid} AND classid=class_id) AS S`)); 
+}
+
+
+
+
+
 
 
 

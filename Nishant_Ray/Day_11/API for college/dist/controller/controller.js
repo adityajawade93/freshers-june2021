@@ -564,3 +564,59 @@ exports.addResult = function (ctx) { return __awaiter(void 0, void 0, void 0, fu
         }
     });
 }); };
+exports.updateResult = function (ctx) { return __awaiter(void 0, void 0, void 0, function () {
+    var req, rows, flag, length_2, i, _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                _b.trys.push([0, 4, , 5]);
+                req = ctx.request.body;
+                rows = [][0];
+                if (req.studentid === undefined || req.subjectid === undefined || req.marks === undefined) {
+                    ctx.response.status = 400;
+                    ctx.response.type = 'text/html';
+                    ctx.body = "Bad Request";
+                    return [2 /*return*/];
+                }
+                if (typeof req.studentid !== 'number' || typeof req.subjectid !== 'number' || typeof req.marks !== 'number') {
+                    ctx.response.status = 400;
+                    ctx.response.type = 'text/html';
+                    ctx.body = "Bad Request";
+                    return [2 /*return*/];
+                }
+                flag = 0;
+                return [4 /*yield*/, fn.check_subject(req.studentid)];
+            case 1:
+                rows = _b.sent();
+                return [4 /*yield*/, fn.subject_length(req.studentid)];
+            case 2:
+                length_2 = _b.sent();
+                for (i = 0; i < length_2.rows[0].count; i++) {
+                    if (req.subjectid === rows.rows[i].subj_id) {
+                        flag = 1;
+                        break;
+                    }
+                }
+                if (flag === 0) {
+                    ctx.response.status = 400;
+                    ctx.response.type = 'text/html';
+                    ctx.body = "This subject is not opted by the student";
+                    return [2 /*return*/];
+                }
+                return [4 /*yield*/, fn.update_result(req.studentid, req.subjectid, req.marks)];
+            case 3:
+                _b.sent();
+                ctx.response.status = 200;
+                ctx.response.type = 'text/html';
+                ctx.body = "marks are updated in result table";
+                return [3 /*break*/, 5];
+            case 4:
+                _a = _b.sent();
+                ctx.response.status = 500;
+                ctx.response.type = 'text/html';
+                ctx.body = "internal server error";
+                return [2 /*return*/];
+            case 5: return [2 /*return*/];
+        }
+    });
+}); };

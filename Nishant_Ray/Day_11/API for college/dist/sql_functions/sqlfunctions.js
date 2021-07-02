@@ -235,3 +235,38 @@ exports.add_result = function (result_id, studentid, clas_id, subjectid, marks) 
         }
     });
 }); };
+exports.update_result = function (studentid, subjectid, marks) { return __awaiter(void 0, void 0, void 0, function () {
+    var data;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, sqlclient.query("SET search_path TO College")];
+            case 1:
+                _a.sent();
+                data = [studentid, subjectid, marks];
+                return [4 /*yield*/, sqlclient.query("Update result SET marks=" + marks + " WHERE studentid=" + studentid + " AND subjectid=" + subjectid)];
+            case 2: return [2 /*return*/, (_a.sent())];
+        }
+    });
+}); };
+exports.check_subject = function (studentid) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, sqlclient.query("SET search_path TO College")];
+            case 1:
+                _a.sent();
+                return [4 /*yield*/, sqlclient.query("SELECT subj_id FROM class_schedule,class_student WHERE studid=" + studentid + " AND classid=class_id")];
+            case 2: return [2 /*return*/, (_a.sent())];
+        }
+    });
+}); };
+exports.subject_length = function (studentid) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, sqlclient.query("SET search_path TO College")];
+            case 1:
+                _a.sent();
+                return [4 /*yield*/, sqlclient.query("SELECT COUNT(*) FROM (SELECT subj_id FROM class_schedule,class_student WHERE studid=" + studentid + " AND classid=class_id) AS S")];
+            case 2: return [2 /*return*/, (_a.sent())];
+        }
+    });
+}); };

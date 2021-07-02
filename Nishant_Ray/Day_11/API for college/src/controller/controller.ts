@@ -68,6 +68,8 @@ interface result_data{
     marks:number;
 }
 
+
+
 exports.getStudent = async (ctx: Context) =>{
     try{
         let [rows]: Array<{rows: student_data}>=[];
@@ -477,4 +479,55 @@ exports.addResult= async (ctx: Context) => {
           ctx.body = "internal server error"; 
           return ; 
         }
+}
+
+exports.updateResult= async (ctx: Context) => {
+  try{
+      let req:result_data=ctx.request.body;
+      let [rows]: Array<{rows: any}>=[];
+      if( req.studentid===undefined ||  req.subjectid===undefined || req.marks===undefined){
+        ctx.response.status = 400;
+        ctx.response.type = 'text/html';
+        ctx.body = "Bad Request"; 
+        return ;
+      }
+
+      
+        if(typeof req.studentid!=='number' || typeof req.subjectid!=='number' || typeof req.marks!=='number'){
+        ctx.response.status = 400;
+        ctx.response.type = 'text/html';
+        ctx.body = "Bad Request"; 
+        return ;
+        }
+         let flag=0;
+       rows= await fn.check_subject(req.studentid);
+       let length =await fn.subject_length(req.studentid);
+       for(let i=0;i<length.rows[0].count;i++){
+         if(req.subjectid===rows.rows[i].subj_id)
+         {
+             flag=1;
+             break;
+         }
+       }
+
+       if(flag===0){
+        ctx.response.status = 400;
+        ctx.response.type = 'text/html';
+        ctx.body = "This subject is not opted by the student"; 
+        return ;
+       }
+
+
+        await  fn.update_result(req.studentid,req.subjectid,req.marks);
+      
+     
+        ctx.response.status = 200;
+        ctx.response.type = 'text/html';
+        ctx.body="marks are updated in result table";
+      }catch{
+        ctx.response.status = 500;
+        ctx.response.type = 'text/html';
+        ctx.body = "internal server error"; 
+        return ; 
+      }
 }

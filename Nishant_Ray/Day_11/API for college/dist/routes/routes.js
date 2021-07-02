@@ -18,4 +18,5 @@ router.post('/createclass_student', controller.addStudentInClass);
 router.post('/createsubject', controller.addSubject);
 router.post('/createclass_schedule', controller.addClassSchedule);
 router.post('/createresult', controller.addResult);
+router.put('/updateresult', controller.updateResult);
 module.exports = router;

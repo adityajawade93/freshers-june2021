@@ -98,14 +98,7 @@ function getMarks(studentId) {
                         if (err)
                             reject(err);
                         else {
-                            var data = [];
-                            for (var i = 0; i < res.rows.length; i++) {
-                                data.push({
-                                    "subjectName": res.rows[i].subjectname,
-                                    "marks": res.rows[i].marks
-                                });
-                            }
-                            resolve(data);
+                            resolve(res.rows);
                         }
                     });
                 })];
@@ -122,16 +115,7 @@ function getHighestMarksPerSubject(classId) {
                         if (err)
                             reject(err);
                         else {
-                            var data = [];
-                            for (var i = 0; i < res.rows.length; i++) {
-                                data.push({
-                                    "studentId": res.rows[i].sid,
-                                    "studentName": res.rows[i].name,
-                                    "subjectName": res.rows[i].subjectname,
-                                    "max_marks": res.rows[i].max_marks
-                                });
-                            }
-                            resolve(data);
+                            resolve(res.rows);
                         }
                     });
                 })];
@@ -148,15 +132,7 @@ function getTop10Marks(classId) {
                         if (err)
                             reject(err);
                         else {
-                            var data = [];
-                            for (var i = 0; i < res.rows.length; i++) {
-                                data.push({
-                                    "studentId": res.rows[i].sid,
-                                    "studentName": res.rows[i].name,
-                                    "total_marks": res.rows[i].total_marks
-                                });
-                            }
-                            resolve(data);
+                            resolve(res.rows);
                         }
                     });
                 })];

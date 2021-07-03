@@ -134,19 +134,7 @@ async function getStudents(size: any, page: any) {
             if (err)
                 reject(err);
             else {
-                let data = [];
-                for (let i = 0; i < res.rows.length; i++) {
-                    data.push(
-                        {
-                            "sid": res.rows[i].sid,
-                            "name": res.rows[i].name,
-                            "gender": res.rows[i].gender,
-                            "phone": res.rows[i].phone
-                        }
-
-                    );
-                }
-                resolve(data);
+                resolve(res.rows);
 
             }
 
@@ -170,20 +158,7 @@ async function getTeachers() {
             if (err)
                 reject(err);
             else {
-                let data = [];
-                for (let i = 0; i < res.rows.length; i++) {
-                    data.push(
-                        {
-                            "tid": res.rows[i].tid,
-                            "name": res.rows[i].name,
-                            "gender": res.rows[i].gender,
-                            "phone": res.rows[i].phone,
-                            "subjectid": res.rows[i].subjectname
-                        }
-
-                    );
-                }
-                resolve(data);
+                resolve(res.rows);
 
             }
 
@@ -205,18 +180,7 @@ async function getSubjects() {
             if (err)
                 reject(err);
             else {
-                let data = [];
-                for (let i = 0; i < res.rows.length; i++) {
-                    data.push(
-                        {
-                            "subjectId": res.rows[i].subjectid,
-                            "subjectName": res.rows[i].subjectname,
-
-                        }
-
-                    );
-                }
-                resolve(data);
+                resolve(res.rows);
 
             }
 
@@ -238,19 +202,7 @@ async function getClasses() {
                 reject(err);
             else {
 
-                let data = [];
-                for (let i = 0; i < res.rows.length; i++) {
-
-                    data.push(
-                        {
-                            "classId": res.rows[i].classid,
-                            "RoomNo": res.rows[i].roomno,
-
-                        }
-
-                    );
-                }
-                resolve(data);
+                resolve(res.rows);
 
             }
 
@@ -277,21 +229,7 @@ async function getStudentsByClassId(classId: string) {
             if (err)
                 reject(err);
             else {
-                let data = [];
-                for (let i = 0; i < res.rows.length; i++) {
-                    data.push(
-                        {
-                            "sid": res.rows[i].sid,
-                            "name": res.rows[i].name,
-                            "gender": res.rows[i].gender,
-                            "phone": res.rows[i].phone,
-                            "classId": res.rows[i].classid
-
-                        }
-
-                    );
-                }
-                resolve(data);
+                resolve(res.rows);
 
             }
 
@@ -323,22 +261,7 @@ async function getStudentsBySubjectId(subjectId: string) {
             if (err)
                 reject(err);
             else {
-                let data = [];
-                for (let i = 0; i < res.rows.length; i++) {
-                    data.push(
-                        {
-                            "sid": res.rows[i].sid,
-                            "name": res.rows[i].name,
-                            "gender": res.rows[i].gender,
-                            "phone": res.rows[i].phone,
-                            "subjectName": res.rows[i].subjectname,
-                            "subjectid" : res.rows[i].subjectid
-
-                        }
-
-                    );
-                }
-                resolve(data);
+                resolve(res.rows);
 
             }
 
@@ -376,22 +299,7 @@ async function getStudentsByTeacherId(teacherId: string) {
             if (err)
                 reject(err);
             else {
-                let data = [];
-                for (let i = 0; i < res.rows.length; i++) {
-                    data.push(
-                        {
-                            "sid": res.rows[i].sid,
-                            "name": res.rows[i].name,
-                            "gender": res.rows[i].gender,
-                            "phone": res.rows[i].phone,
-                            "teacherName": res.rows[i].teachername,
-                            "subjectName": res.rows[i].subjectname
-
-                        }
-
-                    );
-                }
-                resolve(data);
+                resolve(res.rows);
 
             }
 

@@ -90,18 +90,8 @@ WHERE r.sid = $1;
         if (err)
             reject(err);
         else {
-            let data = [];
-            for (let i = 0; i < res.rows.length; i++) {
-                data.push(
-                    {
-                        "subjectName" : res.rows[i].subjectname,
-                        "marks" : res.rows[i].marks
-
-                    }
-
-                );
-            }
-            resolve(data);
+            
+            resolve(res.rows);
 
         }
 
@@ -143,20 +133,8 @@ async function getHighestMarksPerSubject(classId : string)
         if (err)
             reject(err);
         else {
-            let data = [];
-            for (let i = 0; i < res.rows.length; i++) {
-                data.push(
-                    {
-                        "studentId" : res.rows[i].sid,
-                        "studentName": res.rows[i].name,
-                        "subjectName" : res.rows[i].subjectname,
-                        "max_marks" : res.rows[i].max_marks
-
-                    }
-
-                );
-            }
-            resolve(data);
+            
+            resolve(res.rows);
 
         }
 
@@ -191,20 +169,7 @@ async function getTop10Marks(classId : string) {
             if (err)
                 reject(err);
             else {
-                let data = [];
-                for (let i = 0; i < res.rows.length; i++) {
-                    data.push(
-                        {
-                            "studentId" : res.rows[i].sid,
-                            "studentName": res.rows[i].name,
-                            "total_marks" : res.rows[i].total_marks
-    
-                        }
-    
-                    );
-                }
-                resolve(data);
-    
+                resolve(res.rows);
             }
     
         })

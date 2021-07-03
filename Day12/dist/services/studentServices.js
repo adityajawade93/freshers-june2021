@@ -144,16 +144,7 @@ function getStudents(size, page) {
                         if (err)
                             reject(err);
                         else {
-                            var data = [];
-                            for (var i = 0; i < res.rows.length; i++) {
-                                data.push({
-                                    "sid": res.rows[i].sid,
-                                    "name": res.rows[i].name,
-                                    "gender": res.rows[i].gender,
-                                    "phone": res.rows[i].phone
-                                });
-                            }
-                            resolve(data);
+                            resolve(res.rows);
                         }
                     });
                 })];
@@ -170,17 +161,7 @@ function getTeachers() {
                         if (err)
                             reject(err);
                         else {
-                            var data = [];
-                            for (var i = 0; i < res.rows.length; i++) {
-                                data.push({
-                                    "tid": res.rows[i].tid,
-                                    "name": res.rows[i].name,
-                                    "gender": res.rows[i].gender,
-                                    "phone": res.rows[i].phone,
-                                    "subjectid": res.rows[i].subjectname
-                                });
-                            }
-                            resolve(data);
+                            resolve(res.rows);
                         }
                     });
                 })];
@@ -197,14 +178,7 @@ function getSubjects() {
                         if (err)
                             reject(err);
                         else {
-                            var data = [];
-                            for (var i = 0; i < res.rows.length; i++) {
-                                data.push({
-                                    "subjectId": res.rows[i].subjectid,
-                                    "subjectName": res.rows[i].subjectname,
-                                });
-                            }
-                            resolve(data);
+                            resolve(res.rows);
                         }
                     });
                 })];
@@ -221,14 +195,7 @@ function getClasses() {
                         if (err)
                             reject(err);
                         else {
-                            var data = [];
-                            for (var i = 0; i < res.rows.length; i++) {
-                                data.push({
-                                    "classId": res.rows[i].classid,
-                                    "RoomNo": res.rows[i].roomno,
-                                });
-                            }
-                            resolve(data);
+                            resolve(res.rows);
                         }
                     });
                 })];
@@ -245,17 +212,7 @@ function getStudentsByClassId(classId) {
                         if (err)
                             reject(err);
                         else {
-                            var data = [];
-                            for (var i = 0; i < res.rows.length; i++) {
-                                data.push({
-                                    "sid": res.rows[i].sid,
-                                    "name": res.rows[i].name,
-                                    "gender": res.rows[i].gender,
-                                    "phone": res.rows[i].phone,
-                                    "classId": res.rows[i].classid
-                                });
-                            }
-                            resolve(data);
+                            resolve(res.rows);
                         }
                     });
                 })];
@@ -272,18 +229,7 @@ function getStudentsBySubjectId(subjectId) {
                         if (err)
                             reject(err);
                         else {
-                            var data = [];
-                            for (var i = 0; i < res.rows.length; i++) {
-                                data.push({
-                                    "sid": res.rows[i].sid,
-                                    "name": res.rows[i].name,
-                                    "gender": res.rows[i].gender,
-                                    "phone": res.rows[i].phone,
-                                    "subjectName": res.rows[i].subjectname,
-                                    "subjectid": res.rows[i].subjectid
-                                });
-                            }
-                            resolve(data);
+                            resolve(res.rows);
                         }
                     });
                 })];
@@ -300,18 +246,7 @@ function getStudentsByTeacherId(teacherId) {
                         if (err)
                             reject(err);
                         else {
-                            var data = [];
-                            for (var i = 0; i < res.rows.length; i++) {
-                                data.push({
-                                    "sid": res.rows[i].sid,
-                                    "name": res.rows[i].name,
-                                    "gender": res.rows[i].gender,
-                                    "phone": res.rows[i].phone,
-                                    "teacherName": res.rows[i].teachername,
-                                    "subjectName": res.rows[i].subjectname
-                                });
-                            }
-                            resolve(data);
+                            resolve(res.rows);
                         }
                     });
                 })];

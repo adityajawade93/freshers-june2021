@@ -38,29 +38,26 @@ var _this = this;
 var koa = require('koa');
 var koarouter = require("@koa/router");
 var bodyParser = require('koa-bodyparser');
-var sclient = require("./index");
+var sclient = require("./database");
 var app = new koa();
 var router = new koarouter();
-// get student data with pagination
-router.get('/Students', function (ctx) { return __awaiter(_this, void 0, void 0, function () {
+router.get('/Teachers', function (ctx) { return __awaiter(_this, void 0, void 0, function () {
     function execute() {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        sclient.query("SET search_path TO school");
-                        return [4 /*yield*/, sclient.query("SELECT * FROM Students")];
+                    case 0: return [4 /*yield*/, sclient.query("SET search_path TO school")];
                     case 1:
-                        rows_1 = _a.sent();
-                        return [4 /*yield*/, sclient.query("SELECT Count(*) FROM Students")];
+                        _a.sent();
+                        return [4 /*yield*/, sclient.query("SELECT * FROM Teachers")];
                     case 2:
-                        len_1 = _a.sent();
+                        rows_1 = _a.sent();
                         return [2 /*return*/];
                 }
             });
         });
     }
-    var rows_1, len_1, page, size, totalPages, start, end, req_data, err_1;
+    var rows_1, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -69,28 +66,9 @@ router.get('/Students', function (ctx) { return __awaiter(_this, void 0, void 0,
                 return [4 /*yield*/, execute()];
             case 1:
                 _a.sent();
-                page = parseInt(ctx.request.query.page);
-                size = parseInt(ctx.request.query.size);
-                totalPages = Math.ceil((len_1.rows[0].count) / size);
-                if (page === undefined || size === undefined || typeof page !== 'number' || typeof size !== 'number') {
-                    ctx.response.status = 400;
-                    ctx.response.type = 'text/html';
-                    ctx.body = "Bad Request";
-                    return [2 /*return*/];
-                }
-                if (page < 0 || size < 0 || page > totalPages) {
-                    ctx.response.status = 404;
-                    ctx.response.type = 'text/html';
-                    ctx.body = "Not Found";
-                    return [2 /*return*/];
-                }
-                start = page * size;
-                end = Math.min((page + 1) * size, len_1.rows[0].count);
-                req_data = rows_1.rows;
-                req_data = (req_data).slice(start, end);
                 ctx.response.status = 200;
                 ctx.response.type = 'application/json';
-                ctx.body = req_data;
+                ctx.body = rows_1.rows;
                 return [3 /*break*/, 3];
             case 2:
                 err_1 = _a.sent();
@@ -102,8 +80,7 @@ router.get('/Students', function (ctx) { return __awaiter(_this, void 0, void 0,
         }
     });
 }); });
-// get teacher data
-router.get('/Teachers', function (ctx) { return __awaiter(_this, void 0, void 0, function () {
+router.get('/Subjects', function (ctx) { return __awaiter(_this, void 0, void 0, function () {
     function execute() {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
@@ -111,7 +88,7 @@ router.get('/Teachers', function (ctx) { return __awaiter(_this, void 0, void 0,
                     case 0: return [4 /*yield*/, sclient.query("SET search_path TO school")];
                     case 1:
                         _a.sent();
-                        return [4 /*yield*/, sclient.query("SELECT * FROM Teachers")];
+                        return [4 /*yield*/, sclient.query("SELECT * FROM Subjects")];
                     case 2:
                         rows_2 = _a.sent();
                         return [2 /*return*/];
@@ -142,24 +119,25 @@ router.get('/Teachers', function (ctx) { return __awaiter(_this, void 0, void 0,
         }
     });
 }); });
-// get subject data
-router.get('/Subjects', function (ctx) { return __awaiter(_this, void 0, void 0, function () {
+router.get('/Students', function (ctx) { return __awaiter(_this, void 0, void 0, function () {
     function execute() {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, sclient.query("SET search_path TO school")];
+                    case 0:
+                        sclient.query("SET search_path TO school");
+                        return [4 /*yield*/, sclient.query("SELECT * FROM Students")];
                     case 1:
-                        _a.sent();
-                        return [4 /*yield*/, sclient.query("SELECT * FROM Subjects")];
-                    case 2:
                         rows_3 = _a.sent();
+                        return [4 /*yield*/, sclient.query("SELECT Count(*) FROM Students")];
+                    case 2:
+                        len_1 = _a.sent();
                         return [2 /*return*/];
                 }
             });
         });
     }
-    var rows_3, err_3;
+    var rows_3, len_1, page, size, totalPages, start, end, req_data, err_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -168,9 +146,28 @@ router.get('/Subjects', function (ctx) { return __awaiter(_this, void 0, void 0,
                 return [4 /*yield*/, execute()];
             case 1:
                 _a.sent();
+                page = parseInt(ctx.request.query.page);
+                size = parseInt(ctx.request.query.size);
+                totalPages = Math.ceil((len_1.rows[0].count) / size);
+                if (page === undefined || size === undefined || typeof page !== 'number' || typeof size !== 'number') {
+                    ctx.response.status = 400;
+                    ctx.response.type = 'text/html';
+                    ctx.body = "Bad Request";
+                    return [2 /*return*/];
+                }
+                if (page < 0 || size < 0 || page > totalPages) {
+                    ctx.response.status = 404;
+                    ctx.response.type = 'text/html';
+                    ctx.body = "Not Found";
+                    return [2 /*return*/];
+                }
+                start = page * size;
+                end = Math.min((page + 1) * size, len_1.rows[0].count);
+                req_data = rows_3.rows;
+                req_data = (req_data).slice(start, end);
                 ctx.response.status = 200;
                 ctx.response.type = 'application/json';
-                ctx.body = rows_3.rows;
+                ctx.body = req_data;
                 return [3 /*break*/, 3];
             case 2:
                 err_3 = _a.sent();
@@ -182,7 +179,6 @@ router.get('/Subjects', function (ctx) { return __awaiter(_this, void 0, void 0,
         }
     });
 }); });
-//get class_student data
 router.get('/class', function (ctx) { return __awaiter(_this, void 0, void 0, function () {
     function execute() {
         return __awaiter(this, void 0, void 0, function () {
@@ -222,7 +218,7 @@ router.get('/class', function (ctx) { return __awaiter(_this, void 0, void 0, fu
         }
     });
 }); });
-// get student under teacher data
+// get student using teacherid
 router.get('/Teachers/:id', function (ctx) { return __awaiter(_this, void 0, void 0, function () {
     function execute() {
         return __awaiter(this, void 0, void 0, function () {
@@ -269,7 +265,7 @@ router.get('/Teachers/:id', function (ctx) { return __awaiter(_this, void 0, voi
         }
     });
 }); });
-// get student in subject data
+// get student using subjectid
 router.get('/Subjects/:id', function (ctx) { return __awaiter(_this, void 0, void 0, function () {
     function execute() {
         return __awaiter(this, void 0, void 0, function () {
@@ -362,7 +358,7 @@ router.get('/marks/:id', function (ctx) { return __awaiter(_this, void 0, void 0
         }
     });
 }); });
-// get topper in class and subject data
+// get topper 
 router.get('/topclass/:c_id/topsubject/:s_id', function (ctx) { return __awaiter(_this, void 0, void 0, function () {
     function execute() {
         return __awaiter(this, void 0, void 0, function () {
@@ -421,5 +417,5 @@ app.use(function (ctx) { return __awaiter(_this, void 0, void 0, function () {
     });
 }); });
 app.listen(5000, function () {
-    console.log("server is running on port 5000");
+    console.log("server is up at 5000");
 });

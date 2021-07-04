@@ -108,7 +108,7 @@ router.post('/createsubject', function (ctx, next) { return __awaiter(void 0, vo
                 err_2 = _a.sent();
                 ctx.response.status = 500;
                 ctx.response.type = 'text/html';
-                ctx.body = "internal server error";
+                ctx.body = "server error";
                 return [2 /*return*/];
             case 3: return [2 /*return*/];
         }
@@ -222,13 +222,13 @@ router.post('/addmarks', function (ctx, next) { return __awaiter(void 0, void 0,
                 _b.sent();
                 ctx.response.status = 200;
                 ctx.response.type = 'text/html';
-                ctx.body = "data is inserted in result table";
+                ctx.body = "data is inserted in marks table";
                 return [3 /*break*/, 3];
             case 2:
                 _a = _b.sent();
                 ctx.response.status = 500;
                 ctx.response.type = 'text/html';
-                ctx.body = "internal server error";
+                ctx.body = "server error";
                 return [2 /*return*/];
             case 3: return [2 /*return*/];
         }
@@ -245,5 +245,5 @@ app.use(function (ctx) { return __awaiter(void 0, void 0, void 0, function () {
     });
 }); });
 app.listen(5000, function () {
-    console.log("server is running on port 5000");
+    console.log("server is up at 5000");
 });

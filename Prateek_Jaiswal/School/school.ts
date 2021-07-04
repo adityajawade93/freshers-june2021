@@ -1,7 +1,7 @@
 const koa=require('koa');
 const koarouter=require("@koa/router");
 const bodyParser = require('koa-bodyparser');
-const sclient= require("./index");
+const sclient= require("./database");
 let app=new koa();
 let router=new koarouter();
 

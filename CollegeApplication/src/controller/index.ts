@@ -40,6 +40,10 @@ interface ClassLeaderboardI {
   [key: string]: object []
 }
 
+interface PaginationBoundaryI { 
+  offset: number, limit: number 
+}
+
 // helper functions ---------------------------------------------------------
 
 function getGenderNotation(gender: any) {
@@ -154,7 +158,7 @@ export async function addStudent(ctx: Context) {
     const id: string = uuidv4();
     const name: string = requestData.name.trim();
     const sex: string | null = requestData.sex? getGenderNotation(requestData.sex) : null; 
-    const age: number = requestData.age? requestData.age : null;
+    const age: number | null = requestData.age? requestData.age : null;
     
     const query: string = 'insert into student (id, name, sex, age) values ($1, $2, $3, $4)';
     const result: QueryResult<any> = await dbQuery(query, [id, name, sex, age]);
@@ -704,16 +708,36 @@ export async function getClassStudents(ctx: Context) {
       return;
     }
 
+    const joinTableQuery: string = `
+      student
+      inner join student_class on student.id = student_class.student_id
+      where student_class.class_id = '${class_id}'
+    `;
+
+    const paramsData: { page: number, size: number } = validQueryParams(ctx.request.query);
+    const totalEntryQuery: QueryResult<any> = await dbQuery(`select count(*) as total from ${joinTableQuery}`);
+    const totalEntry: number = totalEntryQuery.rows[0].total;
+
+    let boundary: PaginationBoundaryI = {
+      offset: 0, limit: totalEntry
+    }
+    if (paramsData.page !== -1 && paramsData.size !== -1) { 
+      const paginationResult: PaginationBoundaryI = pagenation(
+        paramsData.page, paramsData.size, totalEntry
+      );
+      boundary.offset = paginationResult.offset;
+      boundary.limit = paginationResult.limit;
+    }
+
     const query: string = `
       select student.id, student.name, student.sex, student.age
-      from student
-      inner join student_class on student.id = student_class.student_id
-      where student_class.class_id = $1
+      from ${joinTableQuery}
+      offset $1 limit $2
     `;
-    const result: QueryResult<any> = await dbQuery(query, [class_id]);
+    const result: QueryResult<any> = await dbQuery(query, [boundary.offset, boundary.limit]);
     const students = result.rows;
     ctx.body = {
-      count: students.length,
+      total_students: totalEntry,
       data: students,
     }
   } catch (e) {
@@ -743,17 +767,37 @@ export async function getTeacherStudents(ctx: Context) {
       return;
     }
 
-    const query: string = `
-      select distinct student.id, student.name, student.sex, student.age
-      from student
+    const joinTableQuery: string = `
+      student
       inner join student_class on student.id = student_class.student_id
       inner join schedule on schedule.class_id = student_class.class_id
-      where schedule.teacher_id = $1
+      where schedule.teacher_id = '${teacher_id}'
     `;
-    const result: QueryResult<any> = await dbQuery(query, [teacher_id]);
+
+    const paramsData: { page: number, size: number } = validQueryParams(ctx.request.query);
+    const totalEntryQuery: QueryResult<any> = await dbQuery(`select count(*) as total from ${joinTableQuery}`);
+    const totalEntry: number = totalEntryQuery.rows[0].total;
+
+    let boundary: PaginationBoundaryI = {
+      offset: 0, limit: totalEntry
+    }
+    if (paramsData.page !== -1 && paramsData.size !== -1) { 
+      const paginationResult: PaginationBoundaryI = pagenation(
+        paramsData.page, paramsData.size, totalEntry
+      );
+      boundary.offset = paginationResult.offset;
+      boundary.limit = paginationResult.limit;
+    }
+
+    const query: string = `
+      select distinct student.id, student.name, student.sex, student.age
+      from ${joinTableQuery}
+      offset $1 limit $2
+    `;
+    const result: QueryResult<any> = await dbQuery(query, [boundary.offset, boundary.limit]);
     const students = result.rows;
     ctx.body = {
-      count: students.length,
+      total_students: totalEntry,
       data: students,
     }
   } catch (e) {
@@ -783,17 +827,37 @@ export async function getSubjectStudents(ctx: Context) {
       return;
     }
 
-    const query: string = `
-      select distinct student.id, student.name, student.sex, student.age
-      from student
+    const joinTableQuery: string = `
+      student
       inner join student_class on student.id = student_class.student_id
       inner join schedule on schedule.class_id = student_class.class_id
-      where schedule.subject_id = $1
+      where schedule.subject_id = '${subject_id}'
     `;
-    const result: QueryResult<any> = await dbQuery(query, [subject_id]);
+
+    const paramsData: { page: number, size: number } = validQueryParams(ctx.request.query);
+    const totalEntryQuery: QueryResult<any> = await dbQuery(`select count(*) as total from ${joinTableQuery}`);
+    const totalEntry: number = totalEntryQuery.rows[0].total;
+
+    let boundary: PaginationBoundaryI = {
+      offset: 0, limit: totalEntry
+    }
+    if (paramsData.page !== -1 && paramsData.size !== -1) { 
+      const paginationResult: PaginationBoundaryI = pagenation(
+        paramsData.page, paramsData.size, totalEntry
+      );
+      boundary.offset = paginationResult.offset;
+      boundary.limit = paginationResult.limit;
+    }
+
+    const query: string = `
+      select distinct student.id, student.name, student.sex, student.age
+      from ${joinTableQuery}
+      offset $1 limit $2
+    `;
+    const result: QueryResult<any> = await dbQuery(query, [boundary.offset, boundary.limit]);
     const students = result.rows;
     ctx.body = {
-      count: students.length,
+      total_students: totalEntry,
       data: students,
     }
   } catch (e) {

@@ -26,7 +26,7 @@ const sqlclient = require("./index");
 
 exports.execute4 = async(uniclassid,Standard,classno,subcode,subject,staffid,T_fname) => {
            
-            await sqlclient.query("SET search_path TO College");
+            await sqlclient.query("SET search_path TO school");
             const data = [uniclassid,Standard,classno,subcode,subject,staffid,T_fname];
            return await sqlclient.query("INSERT INTO Class_schedule values($1,$2,$3,$4,$5,$6,$7)",data) 
                 };
@@ -34,5 +34,5 @@ exports.execute4 = async(uniclassid,Standard,classno,subcode,subject,staffid,T_f
 exports.execute5 = async (resultsid,roll_num,subcode,staffid,standard,marks) =>{
              await sqlclient.query("SET search_path TO school");
              const data = [resultsid,roll_num,subcode,staffid,standard,marks];
-            return await sqlclient.query("INSERT INTO result values($1,$2,$3,$4,$5,$6)",data)
+            return await sqlclient.query("INSERT INTO Marks values($1,$2,$3,$4,$5,$6)",data)
                 };

@@ -82,7 +82,7 @@ exports.execute4 = function (uniclassid, Standard, classno, subcode, subject, st
     var data;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, sqlclient.query("SET search_path TO College")];
+            case 0: return [4 /*yield*/, sqlclient.query("SET search_path TO school")];
             case 1:
                 _a.sent();
                 data = [uniclassid, Standard, classno, subcode, subject, staffid, T_fname];
@@ -99,7 +99,7 @@ exports.execute5 = function (resultsid, roll_num, subcode, staffid, standard, ma
             case 1:
                 _a.sent();
                 data = [resultsid, roll_num, subcode, staffid, standard, marks];
-                return [4 /*yield*/, sqlclient.query("INSERT INTO result values($1,$2,$3,$4,$5,$6)", data)];
+                return [4 /*yield*/, sqlclient.query("INSERT INTO Marks values($1,$2,$3,$4,$5,$6)", data)];
             case 2: return [2 /*return*/, _a.sent()];
         }
     });

@@ -1,0 +1,210 @@
+create schema company;
+set search_path to company;
+
+create table employee(
+fname text not null,
+mname text null,
+lname text not null,
+ssn char(9) not null primary key,
+Bdate date,
+Address text not null,
+Sex char null,
+Salary decimal(10,2) null,
+super_ssn char(9) null,
+dno int not null);
+
+create table department(
+dname text not null,
+dnumber int not null primary key,
+mgr_ssn char(9) not null,
+mgr_start_date date null);
+
+create table dept_locations(
+dnumber int not null ,
+dlocation text not null,
+primary key(dnumber, dlocation));
+
+create table project(
+pname text not null,
+pnumber int not null,
+plocation text,
+dnum int not null,
+primary key(pnumber),
+unique(pname));
+
+create table works_on(
+essn char(9) not null,
+pno int not null,
+hours decimal(3,1) not null,
+primary key(essn, pno));
+
+create table dependent(
+essn char(9) not null,
+dependent_name text not null,
+sex char,
+Bdate date,
+relationship text,
+primary key(essn, dependent_name));
+
+insert into employee values ('John','B','Smith','123456789','1965-01-09','731 Fondren, Houston, TX','M','30000','333445555','5');
+
+select * from employee;
+
+insert into department values ('Research','5','333445555','1988-05-22');
+insert into dependent values ('333445555','Theodore','M','1983-10-25','Son');
+insert into dept_locations values ('1','Houston');
+insert into project values ('ProductX','1','Bellaire','5');
+insert into works_on values ('123456789','1','32.5');
+insert into employee values ('John','B','Smith','333445555','1965-01-09','731 Fondren, Houston, TX','M','30000','333445556','5');
+
+select * from project;
+
+alter table department add foreign key (mgr_ssn) references employee(ssn);
+
+delete from employee where ssn = '123456789';
+
+update employee
+set salary = '50000'
+where ssn = '333445555';
+
+select fname,lname,address
+from employee
+where dno = '5';
+
+select ssn,dname
+from employee, department;
+
+(select distinct Pnumber
+from project,department,employee
+where dnum = dnumber and mgr_ssn = ssn and lname = 'Smith')
+union 
+(select distinct Pnumber
+from project,works_on,employee
+where pnumber = pno and essn = ssn and lname = 'Smith');
+
+select fname,lname 
+from employee
+where not exists (select * from dependent where ssn = essn);
+
+select fname,lname 
+from employee
+where not exists (select * from dependent where ssn = essn)
+and exists (select * from department where ssn = mgr_ssn);
+
+select ssn,fname
+from employee
+where address like '%Houston%';
+
+select ssn,fname
+from employee
+where fname like'____';
+
+select * from employee where (salary between 30000 and 60000);
+
+select * from employee 
+where super_ssn isnull;
+
+select sum(salary),min(salary),max(salary) from employee;
+
+select count(distinct salary ) from employee;
+
+select * from works_on;
+insert into works_on values ('333445555','1','24.5');
+
+select D.dname,E.fname,E.lname,P.pname
+from department as D,employee as E,works_on as W,project as P
+where D.dnumber = E.dno and E.ssn = W.essn and W.pno = P.pnumber order by D.dname,E.fname,E.lname;
+
+insert into employee values ('mick','H','sch','222446666','1990-01-02','B56 tokyo','M','30000','333445556','4');
+
+select * 
+from employee order by salary desc;
+
+select dno,count(*)
+from employee
+group by dno;
+
+select pnumber,count(*)
+from project,works_on
+where pnumber = pno
+group by pnumber
+having count(*) >2;
+
+select * from employee limit 5;
+select * from employee offset 1 limit 5;
+select * from employee fetch first 1 row only;
+
+select ssn,fname,dependent.dependent_name,dependent.relationship
+from employee
+left join dependent on employee.ssn = dependent.essn;
+
+select ssn,fname,dependent.dependent_name,dependent.relationship
+from employee
+right join dependent on employee.ssn = dependent.essn;
+
+select ssn,fname
+from employee
+inner join dependent on employee.ssn = dependent.essn;
+
+select ssn,fname
+from employee
+full join dependent on employee.ssn = dependent.essn;
+
+create view works_on1
+as select fname,lname,pname
+from employee,project,works_on
+where ssn = essn and pno = pnumber;
+
+select * from works_on1;
+
+drop view works_on1;
+
+create table tbl1(tbl1id int);
+create table tbl2(tbl2id int);
+
+create procedure insert_values(x integer, y integer)
+language sql
+as $$
+insert into tbl1 values (x);
+insert into tbl2 values (y);
+$$;
+
+call insert_values(1,11);
+call insert_values(2,12);
+
+select * from tbl2;
+call insert_values(3,13);
+
+create table Audit (empid char(9) not null, entrydate text not null);
+
+create or replace function auditlogfunc() returns trigger as $example_table$
+begin
+insert into audit (empid, entrydate) values (new.ssn, current_timestamp);
+return new;
+end;
+$example_table$ language plpgsql;
+create trigger example_trigger after insert on employee for each row execute procedure auditlogfunc();
+insert into employee values ('micheal','B','clark','222334444','1985-01-09','739 Fondren, Houston, TX','M','40000','333445555','5');
+
+grant select on tbl1 to public;
+
+grant insert on employee to public;
+
+revoke insert on employee from public;
+
+select * from tbl1;
+
+insert into tbl1 values('5');
+insert into tbl1 values('6');
+insert into tbl1 values('7');
+insert into tbl1 values('8');
+
+begin;
+delete from tbl1 where tbl1id > '5';
+commit;
+
+create extension if not exists "uuid-ossp";
+
+select * from pg_available_extensions;
+
+select uuid_generate_v4();

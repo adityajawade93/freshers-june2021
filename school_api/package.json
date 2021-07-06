@@ -1,0 +1,21 @@
+{
+  "name": "day12",
+  "version": "1.0.0",
+  "description": "",
+  "main": "school.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@koa/router": "^10.0.0",
+    "@types/koa": "^2.13.3",
+    "@types/koa__router": "^8.0.4",
+    "@types/node": "^15.12.5",
+    "@types/pg": "^8.6.0",
+    "koa": "^2.13.1",
+    "koa-body": "^4.2.0",
+    "pg": "^8.6.0"
+  }
+}

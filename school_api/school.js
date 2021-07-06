@@ -706,6 +706,47 @@ var highest_mark_class_sub = function (ctx, next) { return __awaiter(void 0, voi
         }
     });
 }); };
+var top_n_students = function (ctx, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var client, n, sql, res, error_16;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                client = new pg_1.Client({ connectionString: connectionString });
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 5, 6, 8]);
+                n = Number(ctx.query.num);
+                if (!n) {
+                    ctx.status = 400;
+                    ctx.body = "Please enter number of students.";
+                }
+                return [4 /*yield*/, client.connect()];
+            case 2:
+                _a.sent();
+                console.log('connected...');
+                return [4 /*yield*/, client.query("set search_path to school")];
+            case 3:
+                _a.sent();
+                sql = "select student_id,student_name,class_id,marks from (\n            select student_id,student_name,class_id, marks,  dense_rank() OVER (\n                PARTITION BY class_id\n                ORDER BY marks DESC ) ab\n                from (\n            select\n            ax.student_id,student_name,class_id, sum(marks) as marks\n            from results ax inner join students bx on ax.student_id = bx.student_id\n            group by ax.student_id,student_name, class_id) as hd) as bc\n            where ab<= " + n + ";";
+                return [4 /*yield*/, client.query(sql)];
+            case 4:
+                res = _a.sent();
+                ctx.status = 200;
+                ctx.body = res.rows;
+                return [3 /*break*/, 8];
+            case 5:
+                error_16 = _a.sent();
+                console.log("something went wrong  " + error_16);
+                return [3 /*break*/, 8];
+            case 6: return [4 /*yield*/, client.end()];
+            case 7:
+                _a.sent();
+                console.log('Client disconnected.');
+                return [7 /*endfinally*/];
+            case 8: return [2 /*return*/];
+        }
+    });
+}); };
 router.post("/s/student", create_student);
 router.post("/s/student_class", student_class);
 router.post("/s/teacher", create_teacher);
@@ -721,6 +762,7 @@ router.get("/s/student_list_classid/:id", student_list_with_classid);
 router.get("/s/student_list_teacherid/:id", student_list_with_teacherid);
 router.get("/s/student_list_subid/:id", student_list_with_subid);
 router.get("/s/highest_marks", highest_mark_class_sub);
+router.get("/s/top_students", top_n_students);
 app.use(koaBody());
 app.use(router.routes());
 app.use(function (ctx) { return __awaiter(void 0, void 0, void 0, function () {

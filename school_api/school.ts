@@ -456,6 +456,42 @@ const highest_mark_class_sub = async (ctx: koa.Context, next: koa.Next) => {
     }
 }
 
+const top_n_students = async (ctx: koa.Context, next: koa.Next) => {
+    let client: Client = new Client({ connectionString: connectionString });
+    try {
+        let n = Number(ctx.query.num);
+
+        if( !n ){
+            ctx.status = 400;
+            ctx.body = "Please enter number of students.";
+        }
+
+        await client.connect();
+        console.log('connected...');
+        await client.query("set search_path to school");
+        var sql: string = `select student_id,student_name,class_id,marks from (
+            select student_id,student_name,class_id, marks,  dense_rank() OVER (
+                PARTITION BY class_id
+                ORDER BY marks DESC ) ab
+                from (
+            select
+            ax.student_id,student_name,class_id, sum(marks) as marks
+            from results ax inner join students bx on ax.student_id = bx.student_id
+            group by ax.student_id,student_name, class_id) as hd) as bc
+            where ab<= ${n};`;
+        let res: any = await client.query(sql);
+        ctx.status = 200;
+        ctx.body = res.rows;
+    }
+    catch (error) {
+        console.log(`something went wrong  ${error}`);
+    }
+    finally {
+        await client.end();
+        console.log('Client disconnected.');
+    }
+}
+
 
 router.post("/s/student", create_student);
 router.post("/s/student_class", student_class);
@@ -473,6 +509,7 @@ router.get("/s/student_list_classid/:id", student_list_with_classid);
 router.get("/s/student_list_teacherid/:id", student_list_with_teacherid);
 router.get("/s/student_list_subid/:id", student_list_with_subid);
 router.get("/s/highest_marks", highest_mark_class_sub);
+router.get("/s/top_students", top_n_students);
 
 
 app.use(koaBody())

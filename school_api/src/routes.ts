@@ -18,7 +18,8 @@ getstudentsbyclass,
 addstudentstoclass,
 getstudentmarksbyid,
 gethighestmarks,
-createmarks } from "./controller";
+createmarks, 
+topteninclass} from "./controller";
 
 var app = new Koa();
 var router = new Router();
@@ -70,6 +71,9 @@ router.get('/school/marks',gethighestmarks)
 
 //create marks
 router.post('/school/marks',createmarks)
+
+//get top 10 students in class
+router.get('/school/topten/:std',topteninclass)
 
 
 

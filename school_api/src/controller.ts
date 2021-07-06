@@ -398,7 +398,7 @@ export var createmarks = async (ctx: any) => {
 
             await setpath()
             var res = await query(`insert into results values('${req.rsid}','${req.rstd}','${req.rsubject}','${req.rmarks}')`)
-            ctx.response.status =200
+            ctx.response.status = 200
             ctx.body = 'marks uploaded successfully'
         } else {
             ctx.response.status = 400
@@ -409,6 +409,33 @@ export var createmarks = async (ctx: any) => {
         ctx.body = 'please give studentid,class,subject and marks'
     }
 
+}
+
+export var topteninclass = async (ctx: any) => {
+    var std: any = await ctx.params.std
+
+    if (std === "null" || std === "undefined") {
+        ctx.response.status = 400
+        ctx.body = 'please give a proper standard'
+
+    } else {
+        await setpath()
+        var res = await query(`select studentid,rstd,fname,sum(rmarks)
+                               from students
+                               inner join results
+                               on studentid = rsid
+                               where rstd='${std}'
+                               group by studentid,rstd
+                               order by sum desc
+                               limit 10`)
+        if (res.rows.length == 0) {
+            ctx.response.status = 400
+            ctx.body = 'the students marks are not given yet'
+            return
+        }
+        ctx.response.status = 200
+        ctx.body = JSON.stringify(res.rows, null, 2)
+    }
 }
 
 /*module.exports = {
@@ -429,4 +456,5 @@ export var createmarks = async (ctx: any) => {
     getstudentmarksbyid,
     gethighestmarks,
     createmarks
+    topteninclass
 }*/

@@ -1,11 +1,14 @@
 {
   "dependencies": {
     "@koa/router": "^10.0.0",
+    "@typescript-eslint/eslint-plugin": "^4.28.2",
+    "@typescript-eslint/parser": "^4.28.2",
     "axios": "^0.21.1",
     "json": "^11.0.0",
     "json2csv": "^5.0.6",
     "koa": "^2.13.1",
     "koa-bodyparser": "^4.3.0",
+    "koa-combine-routers": "^4.0.2",
     "koa-json": "^2.0.2",
     "koa-router": "^10.0.0",
     "nodemon": "^2.0.7",
@@ -53,7 +56,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "start": "ts-node-dev src/server.ts",
+    "start": "ts-node-dev src/index.ts",
     "build": "tsc",
     "nodemon": "nodemon server.js"
   },

@@ -8,7 +8,6 @@ const pool = new Pool({
   database: "school",
 });
 
-// console.log(pool);
 export default {
   query: (text: string, params?: any[]) => pool.query(text, params),
 };

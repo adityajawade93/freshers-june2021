@@ -1,42 +1,40 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { QueryResult } from 'pg';
 import { query as dbQuery } from '../database/index';
+import { handle } from './index';
+import { CError } from '../CustomError/index';
 
 export async function addStudent(id: string, name: string, sex: string | null, age: number | null) {
   try {
     const query = 'insert into student (id, name, sex, age) values ($1, $2, $3, $4)';
-    const result: QueryResult<any> = await dbQuery(query, [id, name, sex, age]);
-
-    if (result && result.command === 'INSERT') return true;
-    return false;
+    const [, resultError] = await handle(dbQuery(query, [id, name, sex, age]));
+    if (resultError) throw new CError(resultError.message, 400);
   } catch (e) {
-    throw Error(e);
+    throw new CError(e.message, e.status);
   }
 }
 
 export async function countStudents() {
   try {
     const query = 'select count(*) as total from student';
-    const result: QueryResult<any> = await dbQuery(query);
-
+    const [result, resultError] = await handle(dbQuery(query));
+    if (resultError) throw new CError(resultError.message, 400);
     return result.rows[0].total;
   } catch (e) {
-    throw Error(e);
+    throw new CError(e.message, e.status);
   }
 }
 
 export async function getStudents(offset: number | null, limit: number | null) {
   try {
-    let query = 'select * from student';
-    if (offset != null && limit != null) query += ` offset ${offset} limit ${limit}`;
-
-    const result: QueryResult<any> = await dbQuery(query);
-
+    // offset = null & limit = null ==> fetches all data
+    const query = `select * from student offset ${offset} limit ${limit}`;
+    const [result, resultError] = await handle(dbQuery(query));
+    if (resultError) throw new CError(resultError.message, 400);
     return result.rows;
   } catch (e) {
-    throw Error(e);
+    throw new CError(e.message, e.status);
   }
 }
 
@@ -49,9 +47,10 @@ export async function getStudentMarks(id: string) {
       inner join subject on subject.id = mark.subject_id
       where mark.student_id = $1
     `;
-    const result: QueryResult<any> = await dbQuery(query, [id]);
+    const [result, resultError] = await handle(dbQuery(query, [id]));
+    if (resultError) throw new CError(resultError.message, 400);
     return result.rows;
   } catch (e) {
-    throw Error(e);
+    throw new CError(e.message, e.status);
   }
 }

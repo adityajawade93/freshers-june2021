@@ -1,18 +1,17 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { QueryResult } from 'pg';
 import { query as dbQuery } from '../database/index';
+import { handle } from './index';
+import { CError } from '../CustomError/index';
 
 export async function addStudentToClass(student_id: string, class_id: string) {
   try {
     const query = 'insert into student_class (student_id, class_id) values ($1, $2)';
-    const result: QueryResult<any> = await dbQuery(query, [student_id, class_id]);
-
-    if (result && result.command === 'INSERT') return true;
-    return false;
+    const [, resultError] = await handle(dbQuery(query, [student_id, class_id]));
+    if (resultError) throw new CError(resultError.message, 400);
   } catch (e) {
-    throw Error(e);
+    throw new CError(e.message, e.status);
   }
 }
 
@@ -26,10 +25,11 @@ export async function getTopper(subject_id: string, class_id: string) {
       where mark.subject_id = $1 and student_class.class_id = $2
       order by mark.marks desc limit 1;
     `;
-    const result: QueryResult<any> = await dbQuery(query, [subject_id, class_id]);
+    const [result, resultError] = await handle(dbQuery(query, [subject_id, class_id]));
+    if (resultError) throw new CError(resultError.message, 400);
     return result.rows;
   } catch (e) {
-    throw Error(e);
+    throw new CError(e.message, e.status);
   }
 }
 
@@ -45,9 +45,10 @@ export async function fetchClassLeaderboard(class_id: string, leaderboardLength:
       order by SUM(mark.marks) desc
       limit $2
   `;
-    const result: QueryResult<any> = await dbQuery(query, [class_id, leaderboardLength]);
+    const [result, resultError] = await handle(dbQuery(query, [class_id, leaderboardLength]));
+    if (resultError) throw new CError(resultError.message, 400);
     return result.rows;
   } catch (e) {
-    throw Error(e);
+    throw new CError(e.message, e.status);
   }
 }

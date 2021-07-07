@@ -1,13 +1,11 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Context } from 'vm';
-import checkExistByUniqueKeys from '../database/helper/checkExistByUniqueKeys';
-import uuidValidate from 'uuid-validate';
 import { v4 as uuidv4 } from 'uuid';
 
-import { validSubjectRequestData } from '../helper/validation';
 import { validQueryParams as validPaginationParams, pagenation } from '../helper/pagination';
 import * as subjectService from '../services/subject';
+import subjectSchema from '../database/helper/validateSchema/subjectSchema';
 
 interface SubjectRequestI {
   name?: any;
@@ -19,39 +17,23 @@ interface PaginationBoundaryI {
 }
 
 export async function addSubject(ctx: Context) {
-  const requestData: SubjectRequestI = ctx.request.body;
-  const validRequestData: boolean = validSubjectRequestData(requestData) && requestData.name;
-  if (!validRequestData) {
-    ctx.status = 400;
-    ctx.body = 'invalid data';
-    return;
-  }
   try {
+    const requestData: SubjectRequestI = ctx.request.body;
+    await subjectSchema.validateAsync(requestData);
     const id: string = uuidv4();
     const name: string = requestData.name.toLowerCase();
 
-    const duplicate: boolean = await checkExistByUniqueKeys('subject', ['name'], [name]);
-    if (duplicate) {
-      ctx.status = 400;
-      ctx.body = 'duplicate data';
-      return;
-    }
+    await subjectService.addSubject(id, name);
 
-    const result: boolean = await subjectService.addSubject(id, name);
-    if (result) {
-      ctx.body = {
-        message: `subject with id: ${id} created`,
-      };
-    } else {
-      ctx.status = 400;
-      ctx.body = 'invalid data';
-    }
+    ctx.body = {
+      message: `subject with ${id} is added`,
+    };
   } catch (e) {
     ctx.status = 404;
-    ctx.body = {
-      message: 'server error',
-      error: e,
-    };
+    if (e.isJoi) ctx.status = 422;
+    else if (e.status) ctx.status = e.status;
+
+    ctx.body = { error: e.message };
   }
 }
 
@@ -65,36 +47,20 @@ export async function getSubjects(ctx: Context) {
     };
   } catch (e) {
     ctx.status = 404;
-    ctx.body = {
-      message: 'server error',
-      error: e,
-    };
+    if (e.status) ctx.status = e.status;
+
+    ctx.body = { error: e.message };
   }
 }
 
 export async function getSubjectStudents(ctx: Context) {
   try {
     const subject_id: string = ctx.params.subject_id;
-    if (!uuidValidate(subject_id)) {
-      ctx.status = 400;
-      ctx.body = 'invalid uuid';
-      return;
-    }
-
-    const validSubject: boolean = await checkExistByUniqueKeys('subject', ['id'], [subject_id]);
-    if (!validSubject) {
-      ctx.status = 400;
-      ctx.body = 'invalid subject id';
-      return;
-    }
-
     const paramsData: { page: number; size: number } = validPaginationParams(ctx.request.query);
     const totalEntry: number = await subjectService.getSubjectStudents(subject_id, { action: 'count' });
 
-    const boundary: PaginationBoundaryI = {
-      offset: 0,
-      limit: totalEntry,
-    };
+    const boundary: PaginationBoundaryI = { offset: 0, limit: totalEntry };
+
     if (paramsData.page !== -1 && paramsData.size !== -1) {
       const paginationResult: PaginationBoundaryI = pagenation(paramsData.page, paramsData.size, totalEntry);
       boundary.offset = paginationResult.offset;
@@ -108,9 +74,8 @@ export async function getSubjectStudents(ctx: Context) {
     };
   } catch (e) {
     ctx.status = 404;
-    ctx.body = {
-      message: 'server error',
-      error: e,
-    };
+    if (e.status) ctx.status = e.status;
+
+    ctx.body = { error: e.message };
   }
 }

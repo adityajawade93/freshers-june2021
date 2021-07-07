@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Context } from 'vm';
-import checkExistByUniqueKeys from '../database/helper/checkExistByUniqueKeys';
-import uuidValidate from 'uuid-validate';
 
 import { validStudentToClassRequestData } from '../helper/validation';
+import { reductiveLeaderboard } from '../helper/general';
 import * as classService from '../services/class';
 import * as generalService from '../services/general';
+import { CError } from '../CustomError/index';
 
 interface ClassObjI {
   name: string;
@@ -23,59 +23,24 @@ interface ClassLeaderboardI {
 }
 
 export async function addStudentToClass(ctx: Context) {
-  const requestData: StudentToClassRequestI = ctx.request.body;
-  const validRequestData: boolean = validStudentToClassRequestData(requestData);
-  if (!validRequestData) {
-    ctx.status = 400;
-    ctx.body = 'invalid data';
-    return;
-  }
   try {
+    const requestData: StudentToClassRequestI = ctx.request.body;
+    const validRequestData: boolean = validStudentToClassRequestData(requestData);
+    if (!validRequestData) throw new CError('invalid input data', 422);
+
     const student_id: string = requestData.student_id;
     const class_name: string = requestData.class_name.toLowerCase();
-
-    if (!uuidValidate(student_id)) {
-      ctx.status = 400;
-      ctx.body = 'invalid uuid';
-      return;
-    }
-
-    const validStudent: boolean = await checkExistByUniqueKeys('student', ['id'], [student_id]);
-    if (!validStudent) {
-      ctx.status = 400;
-      ctx.body = 'invalid student id';
-      return;
-    }
-    const validClass: boolean = await checkExistByUniqueKeys('class', ['name'], [class_name]);
-    if (!validClass) {
-      ctx.status = 400;
-      ctx.body = 'invalid class name';
-      return;
-    }
     const class_id: string = await classService.getClassId(class_name);
 
-    const duplicate: boolean = await checkExistByUniqueKeys('student_class', ['student_id'], [student_id]);
-    if (duplicate) {
-      ctx.status = 400;
-      ctx.body = 'student is already alotted a class';
-      return;
-    }
-
-    const result: boolean = await generalService.addStudentToClass(student_id, class_id);
-    if (result) {
-      ctx.body = {
-        message: 'added student to class',
-      };
-    } else {
-      ctx.status = 400;
-      ctx.body = 'invalid data';
-    }
+    await generalService.addStudentToClass(student_id, class_id);
+    ctx.body = {
+      message: `added student with ${student_id} to class`,
+    };
   } catch (e) {
     ctx.status = 404;
-    ctx.body = {
-      message: 'server error',
-      error: e,
-    };
+    if (e.status) ctx.status = e.status;
+
+    ctx.body = { error: e.message };
   }
 }
 
@@ -83,60 +48,21 @@ export async function getTopper(ctx: Context) {
   try {
     const class_id: string = ctx.params.class_id;
     const subject_id: string = ctx.params.subject_id;
-    if (!uuidValidate(class_id) || !uuidValidate(subject_id)) {
-      ctx.status = 400;
-      ctx.body = 'invalid uuid';
-      return;
-    }
-
-    const validSubject: boolean = await checkExistByUniqueKeys('subject', ['id'], [subject_id]);
-    if (!validSubject) {
-      ctx.status = 400;
-      ctx.body = 'invalid subject id';
-      return;
-    }
-
-    const validClass: boolean = await checkExistByUniqueKeys('class', ['id'], [class_id]);
-    if (!validClass) {
-      ctx.status = 400;
-      ctx.body = 'invalid class id';
-      return;
-    }
-
     const topper = await generalService.getTopper(subject_id, class_id);
     ctx.body = {
       data: topper,
     };
   } catch (e) {
     ctx.status = 404;
-    ctx.body = {
-      message: 'server error',
-      error: e,
-    };
-  }
-}
+    if (e.status) ctx.status = e.status;
 
-async function reductiveLeaderboard(allClasses: ClassObjI[], result: any[], leaderboardLength: number) {
-  try {
-    return allClasses.reduce(
-      (chain: any, classInfo: ClassObjI) =>
-        chain.then(async (value: Record<string, unknown>) => {
-          // base condition promise won't have data
-          if (value) result.push(value);
-          return await generalService.fetchClassLeaderboard(classInfo.id, leaderboardLength);
-
-          // base condition
-        }),
-      Promise.resolve(),
-    );
-  } catch (e) {
-    throw Error(e);
+    ctx.body = { error: e.message };
   }
 }
 
 export async function getLeaderboard(ctx: Context) {
-  const leaderboardLength = 3;
   try {
+    const leaderboardLength = 3;
     const allClasses: ClassObjI[] = await classService.getClasses();
 
     const combinedleaderboard: ClassLeaderboardI = {};
@@ -154,9 +80,8 @@ export async function getLeaderboard(ctx: Context) {
     };
   } catch (e) {
     ctx.status = 404;
-    ctx.body = {
-      message: 'server error',
-      error: e,
-    };
+    if (e.status) ctx.status = e.status;
+
+    ctx.body = { error: e.message };
   }
 }

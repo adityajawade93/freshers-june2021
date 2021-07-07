@@ -1,13 +1,11 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Context } from 'vm';
-import checkExistByUniqueKeys from '../database/helper/checkExistByUniqueKeys';
-import uuidValidate from 'uuid-validate';
 import { v4 as uuidv4 } from 'uuid';
 
-import { validClassRequestData } from '../helper/validation';
 import { validQueryParams as validPaginationParams, pagenation } from '../helper/pagination';
 import * as classService from '../services/class';
+import classSchema from '../database/helper/validateSchema/classSchema';
 
 interface ClassRequestI {
   name?: any;
@@ -19,38 +17,23 @@ interface PaginationBoundaryI {
 }
 
 export async function addClass(ctx: Context) {
-  const requestData: ClassRequestI = ctx.request.body;
-  const validRequestData: boolean = validClassRequestData(requestData) && requestData.name;
-  if (!validRequestData) {
-    ctx.status = 400;
-    ctx.body = 'invalid data';
-    return;
-  }
   try {
+    const requestData: ClassRequestI = ctx.request.body;
+    await classSchema.validateAsync(requestData);
     const id: string = uuidv4();
-    const name: string = requestData.name.toLowerCase();
+    const name: string = requestData.name.toLowerCase().trim();
 
-    const duplicate: boolean = await checkExistByUniqueKeys('class', ['name'], [name]);
-    if (duplicate) {
-      ctx.status = 400;
-      ctx.body = 'duplicate data';
-      return;
-    }
-    const result: boolean = await classService.addClass(id, name);
-    if (result) {
-      ctx.body = {
-        message: `class with id: ${id} created`,
-      };
-    } else {
-      ctx.status = 400;
-      ctx.body = 'invalid data';
-    }
+    await classService.addClass(id, name);
+
+    ctx.body = {
+      message: `class with ${id} is added`,
+    };
   } catch (e) {
     ctx.status = 404;
-    ctx.body = {
-      message: 'server error',
-      error: e,
-    };
+    if (e.isJoi) ctx.status = 422;
+    else if (e.status) ctx.status = e.status;
+
+    ctx.body = { error: e.message };
   }
 }
 
@@ -64,35 +47,20 @@ export async function getClasses(ctx: Context) {
     };
   } catch (e) {
     ctx.status = 404;
-    ctx.body = {
-      message: 'server error',
-      error: e,
-    };
+    if (e.status) ctx.status = e.status;
+
+    ctx.body = { error: e.message };
   }
 }
 
 export async function getClassStudents(ctx: Context) {
   try {
     const class_id: string = ctx.params.class_id;
-    if (!uuidValidate(class_id)) {
-      ctx.status = 400;
-      ctx.body = 'invalid uuid';
-      return;
-    }
-
-    const validClass: boolean = await checkExistByUniqueKeys('class', ['id'], [class_id]);
-    if (!validClass) {
-      ctx.status = 400;
-      ctx.body = 'invalid class id';
-      return;
-    }
     const paramsData: { page: number; size: number } = validPaginationParams(ctx.request.query);
     const totalEntry: number = await classService.getClassStudents(class_id, { action: 'count' });
 
-    const boundary: PaginationBoundaryI = {
-      offset: 0,
-      limit: totalEntry,
-    };
+    const boundary: PaginationBoundaryI = { offset: 0, limit: totalEntry };
+
     if (paramsData.page !== -1 && paramsData.size !== -1) {
       const paginationResult: PaginationBoundaryI = pagenation(paramsData.page, paramsData.size, totalEntry);
       boundary.offset = paginationResult.offset;
@@ -106,9 +74,8 @@ export async function getClassStudents(ctx: Context) {
     };
   } catch (e) {
     ctx.status = 404;
-    ctx.body = {
-      message: 'server error',
-      error: e,
-    };
+    if (e.status) ctx.status = e.status;
+
+    ctx.body = { error: e.message };
   }
 }

@@ -1,0 +1,121 @@
+SET search_path TO school;
+DROP EXTENSION IF EXISTS "uuid-ossp";
+CREATE EXTENSION "uuid-ossp" SCHEMA school;
+
+select uuid_generate_v4();
+
+set search_path to school;
+
+drop table student;
+create table student(
+	studentId char(36) not null primary key default uuid_generate_v4(),
+	name TEXT NOT NULL,
+	classId char(36) not null
+);
+
+drop table teacher;
+create table teacher(
+	teacherId char(36) not null primary key default uuid_generate_v4(),
+	name TEXT NOT NULL
+);
+
+drop table subject;
+create table subject(
+	subjectId char(36) not null primary key default uuid_generate_v4(),
+	name TEXT NOT NULL,
+	classId char(36) not null,
+	teacherId char(36) not null
+);
+
+drop table class;
+create table class(
+	classId char(36) not null primary key default uuid_generate_v4(),
+	name TEXT NOT NULL
+);
+
+drop table marks;
+create table marks(
+	studentId char(36) not null,
+	subjectId char(36) not null,
+	marks integer NOT NULL,
+	primary key(studentId, subjectId)
+);
+
+
+alter table marks add foreign key (studentId) references student(studentId);
+alter table marks add foreign key (subjectId) references subject(subjectId);
+
+alter table subject add foreign key (classId) references class(classId);
+alter table subject add foreign key (teacherId) references teacher(teacherId);
+
+INSERT INTO school.class(name) VALUES (10);
+INSERT INTO school.class(name) VALUES (11);
+
+select * from class;
+select * from school.class;
+select * from school.STUDENT;
+
+INSERT INTO school.student(name, classid) VALUES ('A' , 'ba846eac-ee6e-4d74-b13d-478dfccea248');
+INSERT INTO school.student(name, classid) VALUES ('B' , 'ba846eac-ee6e-4d74-b13d-478dfccea248');
+INSERT INTO school.student(name, classid) VALUES ('C' , 'ba846eac-ee6e-4d74-b13d-478dfccea248');
+INSERT INTO school.student(name, classid) VALUES ('D' , 'ba846eac-ee6e-4d74-b13d-478dfccea248');
+INSERT INTO school.student(name, classid) VALUES ('E' , 'ba846eac-ee6e-4d74-b13d-478dfccea248');
+INSERT INTO school.student(name, classid) VALUES ('F' , 'ba846eac-ee6e-4d74-b13d-478dfccea248');
+
+INSERT INTO school.student(name, classid) VALUES ('G' , '15b3154f-e21a-418f-b0fc-46fb27339302');
+INSERT INTO school.student(name, classid) VALUES ('H' , '15b3154f-e21a-418f-b0fc-46fb27339302');
+INSERT INTO school.student(name, classid) VALUES ('I' , '15b3154f-e21a-418f-b0fc-46fb27339302');
+
+INSERT INTO school.teacher(name) VALUES ('T1');
+INSERT INTO school.teacher(name) VALUES ('T2');
+INSERT INTO school.teacher(name) VALUES ('T3');
+
+INSERT INTO school.subject(name, classid, teacherid) VALUES ('Maths' ,'ba846eac-ee6e-4d74-b13d-478dfccea248', '1c96a972-89eb-4ef4-9ae2-d7cf4230a23f');
+INSERT INTO school.subject(name, classid, teacherid) VALUES ('Science' ,'ba846eac-ee6e-4d74-b13d-478dfccea248', '06cb2075-2b4b-4940-922e-d8b85ce8c29f');
+INSERT INTO school.subject(name, classid, teacherid) VALUES ('English' ,'ba846eac-ee6e-4d74-b13d-478dfccea248', 'c056d2a5-0b93-402b-9590-117a71b04948');
+
+INSERT INTO school.subject(name, classid, teacherid) VALUES ('Maths' ,'15b3154f-e21a-418f-b0fc-46fb27339302', '1c96a972-89eb-4ef4-9ae2-d7cf4230a23f');
+INSERT INTO school.subject(name, classid, teacherid) VALUES ('Science' ,'15b3154f-e21a-418f-b0fc-46fb27339302', '06cb2075-2b4b-4940-922e-d8b85ce8c29f');
+INSERT INTO school.subject(name, classid, teacherid) VALUES ('English' ,'15b3154f-e21a-418f-b0fc-46fb27339302', 'c056d2a5-0b93-402b-9590-117a71b04948');
+
+INSERT INTO school.marks(studentid, subjectid, marks) VALUES ('7843c395-427a-4252-9bca-3fb6c7a15f6c' ,'ba905ab2-4f4e-4df1-addc-484a8cc79b98', '80');
+INSERT INTO school.marks(studentid, subjectid, marks) VALUES ('7843c395-427a-4252-9bca-3fb6c7a15f6c' ,'a581e7ba-1a1f-4b74-9973-141b64bc3d1f', '85');
+INSERT INTO school.marks(studentid, subjectid, marks) VALUES ('7843c395-427a-4252-9bca-3fb6c7a15f6c' ,'de3ea18f-f793-4ead-bdc8-4d6e575b3e95', '75');
+
+List of all Student - with pagination 
+select * from school.student limit 2 offset 1
+
+List of all Teachers
+select * from school.teacher limit 2 offset 1
+
+List of all Classes
+select * from school.class limit 2 offset 1
+
+List of all Subject
+select * from school.subject limit 2 offset 1
+
+List of all student Given classId
+select * from school.student where classid = 'ba846eac-ee6e-4d74-b13d-478dfccea248'
+
+List of all student Given TeacherId
+select * 
+from school.student as st, school.subject as sb
+where st.classid = sb.classid and sb.teacherid = '06cb2075-2b4b-4940-922e-d8b85ce8c29f'
+
+List of all student Given SubjectId
+select * 
+from school.student as st, school.subject as sb
+where st.classid = sb.classid and sb.subjectid = 'ba905ab2-4f4e-4df1-addc-484a8cc79b98'
+
+List of all subject marks given studentId
+select * from school.marks where studentid = '7843c395-427a-4252-9bca-3fb6c7a15f6c'
+
+List of highest mark per subject given class and subject should return student info
+select * from school.marks 
+where subjectid = 'ba905ab2-4f4e-4df1-addc-484a8cc79b98'
+order by marks desc
+limit 1
+
+List of top 10 scores(sum all subject), studentInfo grouped by class, subject. 
+Should be in descending order of score.
+select studentid, sum(marks) as total from school.marks group by studentid order by total desc limit 10

@@ -1,0 +1,15 @@
+Subjects:
+
+class 10:
+ba905ab2-4f4e-4df1-addc-484a8cc79b98
+a581e7ba-1a1f-4b74-9973-141b64bc3d1f
+de3ea18f-f793-4ead-bdc8-4d6e575b3e95
+
+class 11:
+bda5a08a-1330-40c2-96a7-445e46ab34f5
+5a157ed2-8e26-47fa-9bb6-566d49543fd3
+c4f7e218-cc39-477a-bb62-8fe4b8457fcf
+
+Student:
+
+https://dev.to/glaucia86/developing-a-crud-node-js-application-with-postgresql-4c9o

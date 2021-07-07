@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Context } from 'vm';
-import { query as dbQuery, setPath as dbSetPath } from '../database/index';
 import checkExistByUniqueKeys from '../database/helper/checkExistByUniqueKeys';
 import uuidValidate from 'uuid-validate';
-import { QueryResult } from 'pg';
 
 import { validStudentToClassRequestData } from '../helper/validation';
+import * as classService from '../services/class';
+import * as generalService from '../services/general';
 
 interface ClassObjI {
   name: string;
@@ -31,7 +31,6 @@ export async function addStudentToClass(ctx: Context) {
     return;
   }
   try {
-    await dbSetPath();
     const student_id: string = requestData.student_id;
     const class_name: string = requestData.class_name.toLowerCase();
 
@@ -53,9 +52,7 @@ export async function addStudentToClass(ctx: Context) {
       ctx.body = 'invalid class name';
       return;
     }
-    // note that the class is valid
-    const classResult: QueryResult<any> = await dbQuery('select id from class where name = $1', [class_name]);
-    const class_id: string = classResult.rows[0].id;
+    const class_id: string = await classService.getClassId(class_name);
 
     const duplicate: boolean = await checkExistByUniqueKeys('student_class', ['student_id'], [student_id]);
     if (duplicate) {
@@ -64,9 +61,8 @@ export async function addStudentToClass(ctx: Context) {
       return;
     }
 
-    const query = 'insert into student_class (student_id, class_id) values ($1, $2)';
-    const result: QueryResult<any> = await dbQuery(query, [student_id, class_id]);
-    if (result && result.command === 'INSERT') {
+    const result: boolean = await generalService.addStudentToClass(student_id, class_id);
+    if (result) {
       ctx.body = {
         message: 'added student to class',
       };
@@ -85,7 +81,6 @@ export async function addStudentToClass(ctx: Context) {
 
 export async function getTopper(ctx: Context) {
   try {
-    await dbSetPath();
     const class_id: string = ctx.params.class_id;
     const subject_id: string = ctx.params.subject_id;
     if (!uuidValidate(class_id) || !uuidValidate(subject_id)) {
@@ -108,16 +103,7 @@ export async function getTopper(ctx: Context) {
       return;
     }
 
-    const query = `
-      select student.name, student.age, student.sex, mark.marks
-      from student
-      inner join student_class on student.id = student_class.student_id
-      inner join mark on student.id = mark.student_id
-      where mark.subject_id = $1 and student_class.class_id = $2
-      order by mark.marks desc limit 1;
-    `;
-    const result: QueryResult<any> = await dbQuery(query, [subject_id, class_id]);
-    const topper = result.rows;
+    const topper = await generalService.getTopper(subject_id, class_id);
     ctx.body = {
       data: topper,
     };
@@ -130,46 +116,34 @@ export async function getTopper(ctx: Context) {
   }
 }
 
-function fetchClassLeaderboard(classInfo: ClassObjI, leaderboardLength: number) {
-  const query = `
-    select student.name, student.age, student.sex, SUM(mark.marks)
-    from student
-    inner join student_class on student.id = student_class.student_id
-    inner join mark on student.id = mark.student_id
-    where student_class.class_id = $1
-    group by student.id
-    order by SUM(mark.marks) desc
-    limit ${leaderboardLength}
-  `;
-  return dbQuery(query, [classInfo.id]);
-}
+async function reductiveLeaderboard(allClasses: ClassObjI[], result: any[], leaderboardLength: number) {
+  try {
+    return allClasses.reduce(
+      (chain: any, classInfo: ClassObjI) =>
+        chain.then(async (value: Record<string, unknown>) => {
+          // base condition promise won't have data
+          if (value) result.push(value);
+          return await generalService.fetchClassLeaderboard(classInfo.id, leaderboardLength);
 
-function reductiveLeaderboard(allClasses: ClassObjI[], result: any[], leaderboardLength: number) {
-  return allClasses.reduce(
-    (chain: any, classInfo: ClassObjI) =>
-      chain.then((value: { rows: Record<string, unknown> }) => {
-        // base condition promise won't have data
-        if (value) result.push(value.rows);
-        return fetchClassLeaderboard(classInfo, leaderboardLength);
-
-        // base condition
-      }),
-    Promise.resolve(),
-  );
+          // base condition
+        }),
+      Promise.resolve(),
+    );
+  } catch (e) {
+    throw Error(e);
+  }
 }
 
 export async function getLeaderboard(ctx: Context) {
   const leaderboardLength = 3;
   try {
-    await dbSetPath();
-    const allClassesOuery: QueryResult<any> = await dbQuery('select * from class');
-    const allClasses: ClassObjI[] = allClassesOuery.rows;
+    const allClasses: ClassObjI[] = await classService.getClasses();
 
     const combinedleaderboard: ClassLeaderboardI = {};
     const tempResult: any[] = [];
 
     const tailResult = await reductiveLeaderboard(allClasses, tempResult, leaderboardLength);
-    tempResult.push(tailResult.rows);
+    tempResult.push(tailResult);
 
     for (let index = 0; index < allClasses.length; index++) {
       const classInfo: ClassObjI = allClasses[index];

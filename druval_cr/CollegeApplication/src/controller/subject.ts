@@ -1,14 +1,13 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Context } from 'vm';
-import { query as dbQuery, setPath as dbSetPath } from '../database/index';
 import checkExistByUniqueKeys from '../database/helper/checkExistByUniqueKeys';
 import uuidValidate from 'uuid-validate';
 import { v4 as uuidv4 } from 'uuid';
-import { QueryResult } from 'pg';
 
 import { validSubjectRequestData } from '../helper/validation';
 import { validQueryParams as validPaginationParams, pagenation } from '../helper/pagination';
+import * as subjectService from '../services/subject';
 
 interface SubjectRequestI {
   name?: any;
@@ -28,7 +27,6 @@ export async function addSubject(ctx: Context) {
     return;
   }
   try {
-    await dbSetPath();
     const id: string = uuidv4();
     const name: string = requestData.name.toLowerCase();
 
@@ -38,9 +36,9 @@ export async function addSubject(ctx: Context) {
       ctx.body = 'duplicate data';
       return;
     }
-    const query = 'insert into subject (id, name) values ($1, $2)';
-    const result: QueryResult<any> = await dbQuery(query, [id, name]);
-    if (result && result.command === 'INSERT') {
+
+    const result: boolean = await subjectService.addSubject(id, name);
+    if (result) {
       ctx.body = {
         message: `subject with id: ${id} created`,
       };
@@ -59,9 +57,7 @@ export async function addSubject(ctx: Context) {
 
 export async function getSubjects(ctx: Context) {
   try {
-    await dbSetPath();
-    const allSubjectsOuery: QueryResult<any> = await dbQuery('select * from subject');
-    const allSubjects = allSubjectsOuery.rows;
+    const allSubjects = await subjectService.getSubjects();
 
     ctx.body = {
       count: allSubjects.length,
@@ -78,7 +74,6 @@ export async function getSubjects(ctx: Context) {
 
 export async function getSubjectStudents(ctx: Context) {
   try {
-    await dbSetPath();
     const subject_id: string = ctx.params.subject_id;
     if (!uuidValidate(subject_id)) {
       ctx.status = 400;
@@ -93,16 +88,8 @@ export async function getSubjectStudents(ctx: Context) {
       return;
     }
 
-    const joinTableQuery = `
-      student
-      inner join student_class on student.id = student_class.student_id
-      inner join schedule on schedule.class_id = student_class.class_id
-      where schedule.subject_id = '${subject_id}'
-    `;
-
     const paramsData: { page: number; size: number } = validPaginationParams(ctx.request.query);
-    const totalEntryQuery: QueryResult<any> = await dbQuery(`select count(*) as total from ${joinTableQuery}`);
-    const totalEntry: number = totalEntryQuery.rows[0].total;
+    const totalEntry: number = await subjectService.getSubjectStudents(subject_id, { action: 'count' });
 
     const boundary: PaginationBoundaryI = {
       offset: 0,
@@ -113,14 +100,7 @@ export async function getSubjectStudents(ctx: Context) {
       boundary.offset = paginationResult.offset;
       boundary.limit = paginationResult.limit;
     }
-
-    const query = `
-      select distinct student.id, student.name, student.sex, student.age
-      from ${joinTableQuery}
-      offset $1 limit $2
-    `;
-    const result: QueryResult<any> = await dbQuery(query, [boundary.offset, boundary.limit]);
-    const students = result.rows;
+    const students = await subjectService.getSubjectStudents(subject_id, { action: 'details', payload: boundary });
 
     ctx.body = {
       total_students: totalEntry,

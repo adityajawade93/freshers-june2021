@@ -19,5 +19,10 @@ export const setPath = async function () {
 };
 
 export const query = async function (query: string, data: any[] = []) {
-  return pool.query(query, data);
+  try {
+    await setPath();
+    return pool.query(query, data);
+  } catch (e) {
+    throw Error(e);
+  }
 };

@@ -1,15 +1,14 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Context } from 'vm';
-import { query as dbQuery, setPath as dbSetPath } from '../database/index';
 import checkExistByUniqueKeys from '../database/helper/checkExistByUniqueKeys';
 import uuidValidate from 'uuid-validate';
 import { v4 as uuidv4 } from 'uuid';
-import { QueryResult } from 'pg';
 
 import { validPersonRequestData } from '../helper/validation';
 import { getGenderNotation } from '../helper/general';
 import { validQueryParams as validPaginationParams, pagenation } from '../helper/pagination';
+import * as teacherService from '../services/teacher';
 
 interface PersonRequestI {
   name?: any;
@@ -31,15 +30,13 @@ export async function addTeacher(ctx: Context) {
     return;
   }
   try {
-    await dbSetPath();
     const id: string = uuidv4();
     const name: string = requestData.name.trim();
     const sex: string | null = requestData.sex ? getGenderNotation(requestData.sex) : null;
     const age: number = requestData.age ? requestData.age : null;
 
-    const query = 'insert into teacher (id, name, sex, age) values ($1, $2, $3, $4)';
-    const result: QueryResult<any> = await dbQuery(query, [id, name, sex, age]);
-    if (result && result.command === 'INSERT') {
+    const result: boolean = await teacherService.addTeacher(id, name, sex, age);
+    if (result) {
       ctx.body = {
         message: `teacher with id: ${id} created`,
       };
@@ -58,10 +55,8 @@ export async function addTeacher(ctx: Context) {
 
 export async function getTeachers(ctx: Context) {
   try {
-    await dbSetPath();
     const paramsData: { page: number; size: number } = validPaginationParams(ctx.request.query);
-    const totalTeacherQuery: QueryResult<any> = await dbQuery('select count(*) as total from teacher');
-    const totalTeacher: number = totalTeacherQuery.rows[0].total;
+    const totalTeacher: number = await teacherService.countTeachers();
 
     const boundary: PaginationBoundaryI = {
       offset: 0,
@@ -72,12 +67,7 @@ export async function getTeachers(ctx: Context) {
       boundary.offset = paginationResult.offset;
       boundary.limit = paginationResult.limit;
     }
-
-    const allTeachersQuery: QueryResult<any> = await dbQuery('select * from teacher offset $1 limit $2', [
-      boundary.offset,
-      boundary.limit,
-    ]);
-    const allTeachers = allTeachersQuery.rows;
+    const allTeachers = await teacherService.getTeachers(boundary.offset, boundary.limit);
 
     ctx.body = {
       total_teachers: totalTeacher,
@@ -94,7 +84,6 @@ export async function getTeachers(ctx: Context) {
 
 export async function getTeacherStudents(ctx: Context) {
   try {
-    await dbSetPath();
     const teacher_id: string = ctx.params.teacher_id;
     if (!uuidValidate(teacher_id)) {
       ctx.status = 400;
@@ -109,17 +98,8 @@ export async function getTeacherStudents(ctx: Context) {
       return;
     }
 
-    const joinTableQuery = `
-      student
-      inner join student_class on student.id = student_class.student_id
-      inner join schedule on schedule.class_id = student_class.class_id
-      where schedule.teacher_id = '${teacher_id}'
-    `;
-
     const paramsData: { page: number; size: number } = validPaginationParams(ctx.request.query);
-    const totalEntryQuery: QueryResult<any> = await dbQuery(`select count(*) as total from ${joinTableQuery}`);
-    const totalEntry: number = totalEntryQuery.rows[0].total;
-
+    const totalEntry: number = await teacherService.getTeacherStudents(teacher_id, { action: 'count' });
     const boundary: PaginationBoundaryI = {
       offset: 0,
       limit: totalEntry,
@@ -129,14 +109,7 @@ export async function getTeacherStudents(ctx: Context) {
       boundary.offset = paginationResult.offset;
       boundary.limit = paginationResult.limit;
     }
-
-    const query = `
-      select distinct student.id, student.name, student.sex, student.age
-      from ${joinTableQuery}
-      offset $1 limit $2
-    `;
-    const result: QueryResult<any> = await dbQuery(query, [boundary.offset, boundary.limit]);
-    const students = result.rows;
+    const students = await teacherService.getTeacherStudents(teacher_id, { action: 'details', payload: boundary });
 
     ctx.body = {
       total_students: totalEntry,

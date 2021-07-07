@@ -1,14 +1,13 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Context } from 'vm';
-import { query as dbQuery, setPath as dbSetPath } from '../database/index';
 import checkExistByUniqueKeys from '../database/helper/checkExistByUniqueKeys';
 import uuidValidate from 'uuid-validate';
 import { v4 as uuidv4 } from 'uuid';
-import { QueryResult } from 'pg';
 
 import { validClassRequestData } from '../helper/validation';
 import { validQueryParams as validPaginationParams, pagenation } from '../helper/pagination';
+import * as classService from '../services/class';
 
 interface ClassRequestI {
   name?: any;
@@ -28,7 +27,6 @@ export async function addClass(ctx: Context) {
     return;
   }
   try {
-    await dbSetPath();
     const id: string = uuidv4();
     const name: string = requestData.name.toLowerCase();
 
@@ -38,9 +36,8 @@ export async function addClass(ctx: Context) {
       ctx.body = 'duplicate data';
       return;
     }
-    const query = 'insert into class (id, name) values ($1, $2)';
-    const result: QueryResult<any> = await dbQuery(query, [id, name]);
-    if (result && result.command === 'INSERT') {
+    const result: boolean = await classService.addClass(id, name);
+    if (result) {
       ctx.body = {
         message: `class with id: ${id} created`,
       };
@@ -59,9 +56,7 @@ export async function addClass(ctx: Context) {
 
 export async function getClasses(ctx: Context) {
   try {
-    await dbSetPath();
-    const allClassesOuery: QueryResult<any> = await dbQuery('select * from class');
-    const allClasses = allClassesOuery.rows;
+    const allClasses = await classService.getClasses();
 
     ctx.body = {
       count: allClasses.length,
@@ -78,7 +73,6 @@ export async function getClasses(ctx: Context) {
 
 export async function getClassStudents(ctx: Context) {
   try {
-    await dbSetPath();
     const class_id: string = ctx.params.class_id;
     if (!uuidValidate(class_id)) {
       ctx.status = 400;
@@ -92,16 +86,8 @@ export async function getClassStudents(ctx: Context) {
       ctx.body = 'invalid class id';
       return;
     }
-
-    const joinTableQuery = `
-      student
-      inner join student_class on student.id = student_class.student_id
-      where student_class.class_id = '${class_id}'
-    `;
-
     const paramsData: { page: number; size: number } = validPaginationParams(ctx.request.query);
-    const totalEntryQuery: QueryResult<any> = await dbQuery(`select count(*) as total from ${joinTableQuery}`);
-    const totalEntry: number = totalEntryQuery.rows[0].total;
+    const totalEntry: number = await classService.getClassStudents(class_id, { action: 'count' });
 
     const boundary: PaginationBoundaryI = {
       offset: 0,
@@ -112,14 +98,7 @@ export async function getClassStudents(ctx: Context) {
       boundary.offset = paginationResult.offset;
       boundary.limit = paginationResult.limit;
     }
-
-    const query = `
-      select student.id, student.name, student.sex, student.age
-      from ${joinTableQuery}
-      offset $1 limit $2
-    `;
-    const result: QueryResult<any> = await dbQuery(query, [boundary.offset, boundary.limit]);
-    const students = result.rows;
+    const students = await classService.getClassStudents(class_id, { action: 'details', payload: boundary });
 
     ctx.body = {
       total_students: totalEntry,

@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Context } from 'vm';
-import { query as dbQuery, setPath as dbSetPath } from '../database/index';
 import checkExistByUniqueKeys from '../database/helper/checkExistByUniqueKeys';
 import uuidValidate from 'uuid-validate';
-import { QueryResult } from 'pg';
-
 import { validScheduleRequestData } from '../helper/validation';
+import * as subjectService from '../services/subject';
+import * as classService from '../services/class';
+import * as scheduleService from '../services/schedule';
 
 interface ScheduleRequestI {
   subject_name?: any;
@@ -27,7 +27,6 @@ export async function addSchedule(ctx: Context) {
     return;
   }
   try {
-    await dbSetPath();
     const subject_name: string = requestData.subject_name.toLowerCase();
     const class_name: string = requestData.class_name.toLowerCase();
     const teacher_id: string = requestData.teacher_id;
@@ -55,11 +54,8 @@ export async function addSchedule(ctx: Context) {
       ctx.body = 'invalid teacher id';
       return;
     }
-    // note that the class, subject is valid
-    const classResult: QueryResult<any> = await dbQuery('select id from class where name = $1', [class_name]);
-    const class_id: string = classResult.rows[0].id;
-    const subjectResult: QueryResult<any> = await dbQuery('select id from subject where name = $1', [subject_name]);
-    const subject_id: string = subjectResult.rows[0].id;
+    const class_id: string = await classService.getClassId(class_name);
+    const subject_id: string = await subjectService.getSubjectId(subject_name);
 
     const duplicate: boolean = await checkExistByUniqueKeys(
       'schedule',
@@ -72,9 +68,8 @@ export async function addSchedule(ctx: Context) {
       return;
     }
 
-    const query = 'insert into schedule (subject_id, class_id, teacher_id) values ($1, $2, $3)';
-    const result: QueryResult<any> = await dbQuery(query, [subject_id, class_id, teacher_id]);
-    if (result && result.command === 'INSERT') {
+    const result: boolean = await scheduleService.addSchedule(subject_id, class_id, teacher_id);
+    if (result) {
       ctx.body = {
         message: 'added schedule',
       };

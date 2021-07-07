@@ -4,13 +4,12 @@
 import { Context } from 'vm';
 import uuidValidate from 'uuid-validate';
 import { v4 as uuidv4 } from 'uuid';
-import { QueryResult } from 'pg';
 
-import { query as dbQuery, setPath as dbSetPath } from '../database/index';
 import checkExistByUniqueKeys from '../database/helper/checkExistByUniqueKeys';
 import { getGenderNotation } from '../helper/general';
 import { validQueryParams as validPaginationParams, pagenation } from '../helper/pagination';
 import { validPersonRequestData } from '../helper/validation';
+import * as studentService from '../services/student';
 
 interface PersonRequestI {
   name?: any;
@@ -32,15 +31,13 @@ export async function addStudent(ctx: Context) {
     return;
   }
   try {
-    await dbSetPath();
     const id: string = uuidv4();
     const name: string = requestData.name.trim();
     const sex: string | null = requestData.sex ? getGenderNotation(requestData.sex) : null;
     const age: number | null = requestData.age ? requestData.age : null;
 
-    const query = 'insert into student (id, name, sex, age) values ($1, $2, $3, $4)';
-    const result: QueryResult<any> = await dbQuery(query, [id, name, sex, age]);
-    if (result && result.command === 'INSERT') {
+    const result: boolean = await studentService.addStudent(id, name, sex, age);
+    if (result) {
       ctx.body = {
         message: `student with id: ${id} created`,
       };
@@ -59,10 +56,8 @@ export async function addStudent(ctx: Context) {
 
 export async function getStudents(ctx: Context) {
   try {
-    await dbSetPath();
     const paramsData: { page: number; size: number } = validPaginationParams(ctx.request.query);
-    const totalStudentQuery: QueryResult<any> = await dbQuery('select count(*) as total from student');
-    const totalStudent = totalStudentQuery.rows[0].total;
+    const totalStudent: number = await studentService.countStudents();
 
     const boundary: PaginationBoundaryI = {
       offset: 0,
@@ -73,12 +68,7 @@ export async function getStudents(ctx: Context) {
       boundary.offset = paginationResult.offset;
       boundary.limit = paginationResult.limit;
     }
-
-    const allStudentsQuery: QueryResult<any> = await dbQuery('select * from student offset $1 limit $2', [
-      boundary.offset,
-      boundary.limit,
-    ]);
-    const allStudents = allStudentsQuery.rows;
+    const allStudents = await studentService.getStudents(boundary.offset, boundary.limit);
 
     ctx.body = {
       total_students: totalStudent,
@@ -95,7 +85,6 @@ export async function getStudents(ctx: Context) {
 
 export async function getStudentMarks(ctx: Context) {
   try {
-    await dbSetPath();
     const student_id: string = ctx.params.student_id;
     if (!uuidValidate(student_id)) {
       ctx.status = 400;
@@ -109,16 +98,7 @@ export async function getStudentMarks(ctx: Context) {
       ctx.body = 'invalid student id';
       return;
     }
-
-    const query = `
-      select subject.name as subject, mark.marks
-      from mark
-      inner join student on student.id = mark.student_id
-      inner join subject on subject.id = mark.subject_id
-      where mark.student_id = $1
-    `;
-    const result: QueryResult<any> = await dbQuery(query, [student_id]);
-    const studentMarks = result.rows;
+    const studentMarks = await studentService.getStudentMarks(student_id);
 
     ctx.body = {
       count: studentMarks.length,

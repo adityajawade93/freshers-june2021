@@ -62,7 +62,8 @@ export async function getTopper(ctx: Context) {
 
 export async function getLeaderboard(ctx: Context) {
   try {
-    const leaderboardLength = 3;
+    const defaultleaderboardLength = 10;
+    const leaderboardLength = ctx.request.query.limit ? ctx.request.query.limit : defaultleaderboardLength;
     const allClasses: ClassObjI[] = await classService.getClasses();
 
     const combinedleaderboard: ClassLeaderboardI = {};

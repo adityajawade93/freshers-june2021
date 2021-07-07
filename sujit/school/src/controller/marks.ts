@@ -1,5 +1,5 @@
-import { query, setpath } from "../clientdb"
-
+import { setpath } from "../database/clientdb"
+import * as marksservice from "../services/marks"
 
 type results = {
     rsid: string
@@ -18,9 +18,7 @@ export var getstudentmarksbyid = async (ctx: any) => {
 
     } else {
         await setpath()
-        var res = await query(`select R.*,S.fname
-                                from results as R ,students as S 
-                                where R.rsid ='${studentid}'and S.studentid ='${studentid}'`)
+        var res = await marksservice.getstudentmarksbyid(studentid)
         if (res.rows.length == 0) {
             ctx.response.status = 400
             ctx.body = 'this student marks are not given yet'
@@ -39,13 +37,7 @@ export var gethighestmarks = async (ctx: any) => {
         ctx.body = 'please give a proper subject name and class'
     } else {
         await setpath()
-        var res = await query(`select students. * ,results.rmarks from students
-        inner join results
-        on students.studentid = results.rsid
-        where results.rsubject = '${subjectname}' and results.rstd ='${std}'
-        order by results.rmarks desc
-        limit 1`)
-
+        var res = await marksservice.gethighestmarks(subjectname, std)
         if (res.rows.length == 0) {
             ctx.response.status = 400
             ctx.body = 'this students marks are not given yet'
@@ -66,7 +58,7 @@ export var createmarks = async (ctx: any) => {
             && typeof req.rsubject == 'string' && typeof req.rmarks == 'number') {
 
             await setpath()
-            var res = await query(`insert into results values('${req.rsid}','${req.rstd}','${req.rsubject}','${req.rmarks}')`)
+            var res = await marksservice.createmarks(req.rsid, req.rstd, req.rsubject, req.rmarks)
             ctx.response.status = 200
             ctx.body = 'marks uploaded successfully'
         } else {
@@ -89,14 +81,7 @@ export var topteninclass = async (ctx: any) => {
 
     } else {
         await setpath()
-        var res = await query(`select studentid,rstd,fname,sum(rmarks)
-                               from students
-                               inner join results
-                               on studentid = rsid
-                               where rstd='${std}'
-                               group by studentid,rstd
-                               order by sum desc
-                               limit 10`)
+        var res = await marksservice.topteninclass(std)
         if (res.rows.length == 0) {
             ctx.response.status = 400
             ctx.body = 'the students marks are not given yet'

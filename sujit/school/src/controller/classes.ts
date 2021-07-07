@@ -1,5 +1,5 @@
-import { query, setpath } from "../clientdb"
-
+import { setpath } from "../database/clientdb"
+import * as classservice from "../services/classes"
 
 type classestype = {
     cstudentid: string
@@ -16,7 +16,7 @@ export var getstudentsbyclass = async (ctx: any) => {
 
     } else {
         await setpath()
-        var res = await query(`select * from classes where cstandard ='${std}'`)
+        var res = await classservice.getstudentsbyclass(std)
         if (res.rows.length == 0) {
             ctx.response.status = 404
             ctx.body = `no students are present in the class ${std}`
@@ -32,7 +32,7 @@ export var addstudentstoclass = async (ctx: any) => {
     if (req.cstudentid && req.cstandard) {
         if (req.cstudentid != null && req.cstandard != null && typeof req.cstandard == 'number' && typeof req.cstudentid == 'string') {
             await setpath()
-            var res = await query(`insert into classes values('${req.cstudentid}','${req.cstandard}')`)
+            var res = await classservice.addstudentstoclass(req.cstudentid, req.cstandard)
             ctx.response.status = 200
             ctx.body = 'added students to class successfully'
         } else {

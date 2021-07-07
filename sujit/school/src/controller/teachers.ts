@@ -1,30 +1,29 @@
-import { query, setpath } from "../clientdb"
+import { setpath } from "../database/clientdb"
+import * as teacherservice from "../services/teachers"
 
 type teachertype = {
     tfname: string
-    tlname?: string
+    tlname?: string|null
     tsubject: string
-    joindate?: Date
+    joindate?: Date|null|undefined
 }
 
 
 export var getteachers = async (ctx: any) => {
     await setpath()
-    var res = await query('select * from teachers')
+    var res = await teacherservice.getteachers()
     ctx.body = JSON.stringify(res.rows, null, 2)
 }
 
 export var getteacherbyid = async (ctx: any) => {
     var teacherid: any = await ctx.params.id
-    //console.log(studentid.substr(0,studentid.length-1))
     if (teacherid === "null" || teacherid === "undefined") {
         ctx.response.status = 400
         ctx.body = 'please give a proper id'
 
     } else {
         await setpath()
-        var res = await query(`select * from teachers` +
-            ` where teacherid = '${teacherid}'`)
+        var res = await teacherservice.getteacherbyid(teacherid)    
         if (res.rows.length == 0) {
             ctx.response.status = 404
             ctx.body = 'teacher is not found'
@@ -75,8 +74,7 @@ export var createteachers = async (ctx: any) => {
         }
 
         await setpath()
-        var res = await query(`insert into teachers(tfname,tlname,tsubject,joindate) 
-                                                       values('${tfname}','${tlname}','${tsubject}','${doj}')`)
+        var res = await teacherservice.createteachers(tfname,tlname,tsubject,doj)                                               
         ctx.response.status = 200
         ctx.body = "teacher is successfully added"
     } else {

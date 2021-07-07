@@ -2,12 +2,12 @@ const Koa = require('koa')
 const Router = require('@koa/router')
 const bodyParser = require('koa-bodyparser')
 
-import * as student from './controller/students'
-import * as teacher from './controller/teachers'
-import * as subjects from './controller/subjects'
-import * as sechdule from './controller/sechdule'
-import * as classes from './controller/classes'
-import * as marks from './controller/marks'
+import * as student from '../controller/students'
+import * as teacher from '../controller/teachers'
+import * as subjects from '../controller/subjects'
+import * as sechdule from '../controller/sechdule'
+import * as classes from '../controller/classes'
+import * as marks from '../controller/marks'
 
 
 /*

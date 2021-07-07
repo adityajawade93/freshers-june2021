@@ -1,4 +1,5 @@
-import { query, setpath } from "../clientdb"
+import { setpath } from "../database/clientdb"
+import * as sechduleservice from "../services/sechdule"
 
 type sechduletype = {
     subjectname: string
@@ -15,8 +16,7 @@ export var getsechdulebyclass = async (ctx: any) => {
 
     } else {
         await setpath()
-        var res = await query(`select * from sechdule where std ='${std}'`)
-
+        var res = await sechduleservice.getsechdulebyclass(std)
         if (res.rows.length == 0) {
             ctx.response.status = 404
             ctx.body = `no classes are sechduled for the class ${std}`
@@ -37,7 +37,7 @@ export var createsechdule = async (ctx: any) => {
 
         if (std != null && subjectname != null && tid != null && typeof std != 'number' && typeof subjectname != 'string' && typeof tid != 'string') {
             await setpath()
-            var res = await query(`insert into sechdule values('${subjectname}','${tid}','${std}')`)
+            var res = await sechduleservice.createsechdule(subjectname,tid,std)
             ctx.response.status = 200
             ctx.body = 'sechdule created successfully'
         } else {

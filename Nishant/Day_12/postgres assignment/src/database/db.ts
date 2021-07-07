@@ -11,4 +11,4 @@ client.connect()
     console.log("database connected successfully");
 })
 
-module.exports =client;
+export {client};

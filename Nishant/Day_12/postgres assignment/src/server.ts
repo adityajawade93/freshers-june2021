@@ -1,5 +1,5 @@
 
-const app=require('./app')
+const app=require('./app/index')
 const port :number= 3000;
 
 app.listen(port,()=>{

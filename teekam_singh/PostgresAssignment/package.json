@@ -1,8 +1,8 @@
 {
-  "name": "day12",
+  "name": "school",
   "version": "1.0.0",
   "description": "",
-  "main": "school.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,12 +10,13 @@
   "license": "ISC",
   "dependencies": {
     "@koa/router": "^10.0.0",
-    "@types/koa": "^2.13.3",
-    "@types/koa__router": "^8.0.4",
-    "@types/node": "^15.12.5",
+    "@types/koa": "^2.13.4",
+    "@types/koa__router": "^8.0.5",
+    "@types/node": "^16.0.0",
     "@types/pg": "^8.6.0",
     "koa": "^2.13.1",
     "koa-body": "^4.2.0",
+    "koa-combine-routers": "^4.0.2",
     "pg": "^8.6.0"
   }
 }

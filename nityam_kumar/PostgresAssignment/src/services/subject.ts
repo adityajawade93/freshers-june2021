@@ -1,5 +1,6 @@
 import db from "../config/db";
-import { QueryResult } from "pg";
+
+import AppError from "../utils/appError";
 
 interface ISubject {
   subject_id?: string;
@@ -13,7 +14,7 @@ export const getSubjectDB = async () => {
     const data = await db.query("select * from subject");
     return data.rows;
   } catch (err) {
-    throw new Error(err);
+    throw new AppError(err.message, 502);
   }
 };
 
@@ -23,9 +24,12 @@ export const fetchStudentsWithSubDB = async (subject_id: string) => {
       "select s1.fname,s1.lname,s1.cl_no,s1.age,sub.sub_id,sub.sub_name from subject as sub,student as s1 where sub.sub_id=$1 and sub.cl_no=s1.cl_no",
       [subject_id.trim()]
     );
+    if (data.rows.length === 0) {
+      throw new AppError("id not found", 404);
+    }
     return data.rows;
   } catch (err) {
-    throw new Error(err);
+    throw err;
   }
 };
 
@@ -35,11 +39,10 @@ export const checkAlreadyExistDB = async (s1: ISubject) => {
     const values5 = [s1.class_number, s1.subject_name.trim()];
     const check_already_exist = await db.query(text5, values5);
     if (check_already_exist.rows.length > 0) {
-      return true;
+      throw new AppError("subject already exist in this class", 409);
     }
-    return false;
   } catch (err) {
-    throw new Error(err);
+    throw err;
   }
 };
 
@@ -52,11 +55,9 @@ export const addSubjectDB = async (s1: ISubject) => {
       s1.class_number,
       s1.teacher_id.trim(),
     ];
-    const result: QueryResult<any> = await db.query(text, values);
-    if (result && result.command === "INSERT") return true;
-    return false;
+    await db.query(text, values);
   } catch (err) {
-    throw new Error(err);
+    throw new AppError(err.message, 502);
   }
 };
 
@@ -64,11 +65,9 @@ export const addTeachesDB = async (s1: ISubject) => {
   try {
     const text2 = "INSERT INTO teaches VALUES($1,$2)";
     const values2 = [s1.teacher_id.trim(), s1.subject_id];
-    const result: QueryResult<any> = await db.query(text2, values2);
-    if (result && result.command === "INSERT") return true;
-    return false;
+    await db.query(text2, values2);
   } catch (err) {
-    throw new Error(err);
+    throw new AppError(err.message, 502);
   }
 };
 
@@ -76,10 +75,8 @@ export const addClassDB = async (s1: ISubject) => {
   try {
     const text3 = "INSERT INTO classes VALUES($1,$2,$3)";
     const values3 = [s1.class_number, s1.subject_id, s1.teacher_id.trim()];
-    const result: QueryResult<any> = await db.query(text3, values3);
-    if (result && result.command === "INSERT") return true;
-    return false;
+    await db.query(text3, values3);
   } catch (err) {
-    throw new Error(err);
+    throw new AppError(err.message, 502);
   }
 };

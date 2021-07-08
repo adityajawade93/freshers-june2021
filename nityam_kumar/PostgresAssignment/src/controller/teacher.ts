@@ -1,9 +1,9 @@
 import uuid from "uniqid";
 import { Context } from "vm";
 import * as teacherService from "../services/teacher";
-import { invalidData, serverERROR, NOTFOUNDERROR } from "../utils/util";
-// import { checkTeacher } from "../helper/validation";
+
 import teacherSchema from "../config/db/validateSchema/teacherSchema";
+import AppError from "../utils/appError";
 
 interface ITeacher {
   age: number;
@@ -16,25 +16,19 @@ interface ITeacher {
 export const createTeacher = async (ctx: Context) => {
   try {
     const t1: ITeacher = ctx.request.body;
-    // if (!checkTeacher(t1)) {
-    //   invalidData(ctx, "Bad input Data");
-    //   return;
-    // }
 
     await teacherSchema.validateAsync(t1);
 
     t1.teacher_id = uuid();
 
-    if (await teacherService.addTeacherDB(t1)) {
-      ctx.status = 200;
-      ctx.body = {
-        status: `successfully created teacher with ${t1.teacher_id}`,
-      };
-    } else {
-      invalidData(ctx, "Bad input Data");
-    }
+    await teacherService.addTeacherDB(t1);
+    ctx.status = 200;
+    ctx.body = {
+      status: `successfully created teacher with ${t1.teacher_id}`,
+    };
   } catch (err) {
-    serverERROR(ctx);
+    if (!err.status) throw new AppError(err.message, 400);
+    throw err;
   }
 };
 
@@ -42,32 +36,21 @@ export const modifyTeacher = async (ctx: Context) => {
   try {
     const teacher_id = ctx.params.teacherId;
     if (!teacher_id || typeof teacher_id !== "string") {
-      invalidData(ctx, "Bad input Data");
-      return;
+      throw new AppError("BAD DATA", 400);
     }
 
-    if (!(await teacherService.checkExists(teacher_id))) {
-      invalidData(ctx, `teacher with this id not found`);
-      return;
-    }
+    await teacherService.checkExists(teacher_id);
+
     const { fname, lname, age } = ctx.request.body;
 
-    const queryResult = await teacherService.modifyTeacherDB(
-      fname,
-      lname,
-      age,
-      teacher_id
-    );
-    if (queryResult) {
-      ctx.status = 200;
-      ctx.body = {
-        status: `successfully updated teacher with ${teacher_id}`,
-      };
-    } else {
-      invalidData(ctx, "Bad input Data");
-    }
+    await teacherService.modifyTeacherDB(fname, lname, age, teacher_id);
+
+    ctx.status = 200;
+    ctx.body = {
+      status: `successfully updated teacher with ${teacher_id}`,
+    };
   } catch (err) {
-    serverERROR(ctx);
+    throw err;
   }
 };
 
@@ -77,11 +60,7 @@ export const getTeachers = async (ctx: Context) => {
     let size = ctx.query.size;
 
     if (!page || !size || isNaN(page) || isNaN(size)) {
-      ctx.status = 400;
-      ctx.body = {
-        status: `Bad input`,
-      };
-      return;
+      throw new AppError("BAD DATA", 400);
     }
 
     page = Number(page);
@@ -97,8 +76,7 @@ export const getTeachers = async (ctx: Context) => {
       size < 0 ||
       size > max_size_limit
     ) {
-      NOTFOUNDERROR(ctx, "NOT FOUND!!");
-      return;
+      throw new AppError("NOT FOUND!!", 404);
     }
 
     const start_index = (page - 1) * size;
@@ -113,7 +91,8 @@ export const getTeachers = async (ctx: Context) => {
       data: data,
     };
   } catch (err) {
-    serverERROR(ctx);
+    if (!err.status) throw new AppError(err.message, 400);
+    throw err;
   }
 };
 
@@ -123,8 +102,7 @@ export const getTeachersTeaching = async (ctx: Context) => {
     let size = ctx.query.size;
 
     if (!page || !size || isNaN(page) || isNaN(size)) {
-      invalidData(ctx, "Bad input Data");
-      return;
+      throw new AppError("BAD DATA", 400);
     }
 
     page = Number(page);
@@ -143,8 +121,7 @@ export const getTeachersTeaching = async (ctx: Context) => {
       size < 0 ||
       size > max_size_limit
     ) {
-      NOTFOUNDERROR(ctx, "NOT FOUND!!");
-      return;
+      throw new AppError("NOT FOUND!!", 404);
     }
 
     const start_index = (page - 1) * size;
@@ -163,7 +140,8 @@ export const getTeachersTeaching = async (ctx: Context) => {
       data: data,
     };
   } catch (err) {
-    serverERROR(ctx);
+    if (!err.status) throw new AppError(err.message, 400);
+    throw err;
   }
 };
 
@@ -171,16 +149,10 @@ export const fetchStudentsWithTeacher = async (ctx: Context) => {
   try {
     const teacher_id = ctx.params.teacherId;
     if (!teacher_id || typeof teacher_id !== "string") {
-      invalidData(ctx, "Bad input Data");
-      return;
+      throw new AppError("BAD DATA", 400);
     }
 
     const data = await teacherService.fetchStudentWithTeacherID(teacher_id);
-
-    if (data.length === 0) {
-      NOTFOUNDERROR(ctx, `id not found`);
-      return;
-    }
 
     ctx.status = 200;
     ctx.body = {
@@ -188,6 +160,6 @@ export const fetchStudentsWithTeacher = async (ctx: Context) => {
       data: data,
     };
   } catch (err) {
-    serverERROR(ctx);
+    throw err;
   }
 };

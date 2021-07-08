@@ -2,7 +2,7 @@ import { Context } from "vm";
 
 import * as classService from "../services/classes";
 
-import { invalidData, serverERROR, NOTFOUNDERROR } from "../utils/util";
+import AppError from "../utils/appError";
 
 export const getClasses = async (ctx: Context) => {
   try {
@@ -13,7 +13,7 @@ export const getClasses = async (ctx: Context) => {
       data: AllAvailableClasses,
     };
   } catch (err) {
-    serverERROR(ctx);
+    throw err;
   }
 };
 
@@ -26,7 +26,7 @@ export const getSchedule = async (ctx: Context) => {
       data: data,
     };
   } catch (err) {
-    serverERROR(ctx);
+    throw err;
   }
 };
 
@@ -34,8 +34,7 @@ export const getClassSchedule = async (ctx: Context) => {
   try {
     let classNumber = ctx.params.classNumber;
     if (classNumber && isNaN(classNumber)) {
-      invalidData(ctx, "Bad Input");
-      return;
+      throw new AppError("BAD DATA", 400);
     }
     classNumber = Number(classNumber);
     const data = await classService.getClassScheduleDB(classNumber);
@@ -45,7 +44,7 @@ export const getClassSchedule = async (ctx: Context) => {
       data: data,
     };
   } catch (err) {
-    serverERROR(ctx);
+    throw err;
   }
 };
 
@@ -53,16 +52,10 @@ export const fetchStudentsWithClass = async (ctx: Context) => {
   try {
     const class_number = ctx.params.classNumber;
     if (!class_number || typeof class_number !== "number") {
-      invalidData(ctx, "bad Input");
-      return;
+      throw new AppError("BAD DATA", 400);
     }
 
     const data = await classService.fetchStudentsWithClassDB(class_number);
-
-    if (data.length === 0) {
-      NOTFOUNDERROR(ctx, `id not found`);
-      return;
-    }
 
     ctx.status = 200;
     ctx.body = {
@@ -70,6 +63,6 @@ export const fetchStudentsWithClass = async (ctx: Context) => {
       data: data,
     };
   } catch (err) {
-    serverERROR(ctx);
+    throw err;
   }
 };

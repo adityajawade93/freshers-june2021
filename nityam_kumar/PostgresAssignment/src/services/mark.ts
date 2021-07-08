@@ -1,5 +1,7 @@
 import db from "../config/db";
-import { QueryResult } from "pg";
+
+import AppError from "../utils/appError";
+
 interface IMark {
   student_id: string;
   subject_id: string;
@@ -14,9 +16,12 @@ export const fetchMarksDB = async (student_id: string) => {
       "select s.fname,s.lname,s.cl_no,m1.marks from marks as m1,student as s where m1.st_id=$1 and s.st_id= m1.st_id",
       [student_id.trim()]
     );
+    if (data.rows.length === 0) {
+      throw new AppError("id not found", 404);
+    }
     return data.rows;
   } catch (err) {
-    throw new Error(err);
+    throw err;
   }
 };
 
@@ -27,7 +32,7 @@ export const fetchHighestMarksPerSubjectDB = async () => {
     );
     return data.rows;
   } catch (err) {
-    throw new Error(err);
+    throw new AppError(err.message, 502);
   }
 };
 
@@ -47,7 +52,7 @@ export const fetchHighestMarksPerSubjectWithSubjectIDDB = async (
     );
     return data.rows;
   } catch (err) {
-    throw new Error(err);
+    throw new AppError(err.message, 502);
   }
 };
 
@@ -59,7 +64,7 @@ export const fetchTopBYNumberDB = async (number: number) => {
     );
     return data.rows;
   } catch (err) {
-    throw new Error(err);
+    throw new AppError(err.message, 502);
   }
 };
 
@@ -84,11 +89,9 @@ export const fetchTopperPerClassDB = async () => {
         order by maxa3.highest_marks desc`);
     return data.rows;
   } catch (err) {
-    throw new Error(err);
+    throw new AppError(err.message, 502);
   }
 };
-
-
 
 export const fetchTopperPerClassWithClassNumberDB = async (
   classNumber: number
@@ -118,7 +121,7 @@ export const fetchTopperPerClassWithClassNumberDB = async (
     );
     return data.rows;
   } catch (err) {
-    throw new Error(err);
+    throw new AppError(err.message, 502);
   }
 };
 
@@ -128,11 +131,13 @@ export const checkStudentExist = async (m1: IMark) => {
     const values4 = [m1.student_id.trim()];
     const check_student = await db.query(text4, values4);
     if (check_student.rows.length === 0) {
-      return false;
+      throw new AppError(
+        `student with this id not available!! Enter valid student id`,
+        401
+      );
     }
-    return true;
   } catch (err) {
-    throw new Error(err);
+    throw err;
   }
 };
 
@@ -147,11 +152,13 @@ export const checkSubjectExist = async (m1: IMark) => {
     ];
     const check_subject_cl = await db.query(text5, values5);
     if (check_subject_cl.rows.length === 0) {
-      return false;
+      throw new AppError(
+        `subject with this class not available!! Enter valid Details`,
+        401
+      );
     }
-    return true;
   } catch (err) {
-    throw new Error(err);
+    throw err;
   }
 };
 
@@ -166,11 +173,10 @@ export const checkAlreadyExist = async (m1: IMark) => {
     ];
     const check_already_exist = await db.query(text6, values6);
     if (check_already_exist.rows.length > 0) {
-      return true;
+      throw new AppError(`data already available `, 409);
     }
-    return false;
   } catch (err) {
-    throw new Error(err);
+    throw err;
   }
 };
 
@@ -184,12 +190,9 @@ export const addMarkDB = async (m1: IMark) => {
       m1.teacher_id.trim(),
       m1.class_number,
     ];
-    const result: QueryResult<any> = await db.query(text, values);
-    // console.log(result);
-    if (result && result.command === "INSERT") return true;
-    return false;
+    await db.query(text, values);
   } catch (err) {
-    throw new Error(err);
+    throw new AppError(err.message, 502);
   }
 };
 
@@ -200,11 +203,10 @@ export const checkExist = async (student_id: string, subject_id: string) => {
       [student_id.trim(), subject_id.trim()]
     );
     if (res.rows.length === 0) {
-      return false;
+      throw new AppError(`either subject or student id not available`, 401);
     }
-    return true;
   } catch (err) {
-    throw new Error(err);
+    throw err;
   }
 };
 
@@ -220,8 +222,7 @@ export const ModifyMarksDB = async (
         [marks, student_id.trim(), subject_id.trim()]
       );
     }
-    return true;
   } catch (err) {
-    throw new Error(err);
+    throw new AppError(err.message, 502);
   }
 };

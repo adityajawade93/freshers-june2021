@@ -1,11 +1,13 @@
 import db from "../config/db";
 
+import AppError from "../utils/appError";
+
 export const getClassesDB = async () => {
   try {
     const data = await db.query("select distinct cl_no as class from student");
     return data.rows;
   } catch (err) {
-    throw new Error(err);
+    throw new AppError(err.message, 502);
   }
 };
 
@@ -21,7 +23,7 @@ export const getScheduleDB = async () => {
       order by class_no`);
     return data.rows;
   } catch (err) {
-    throw new Error(err);
+    throw new AppError(err.message, 502);
   }
 };
 
@@ -33,7 +35,7 @@ export const getClassScheduleDB = async (classNumber: number) => {
     );
     return data.rows;
   } catch (err) {
-    throw new Error(err);
+    throw new AppError(err.message, 502);
   }
 };
 
@@ -42,8 +44,11 @@ export const fetchStudentsWithClassDB = async (class_number: number) => {
     const data = await db.query("select * from student where cl_no=$1", [
       class_number,
     ]);
+    if (data.rows.length === 0) {
+      throw new AppError("classNumber NOT FOUND", 404);
+    }
     return data.rows;
   } catch (err) {
-    throw new Error(err);
+    throw new AppError(err.message, 502);
   }
 };

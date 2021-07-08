@@ -1,8 +1,7 @@
 import uuid from "uniqid";
 import { Context } from "vm";
 import * as studentService from "../services/student";
-import { invalidData, serverERROR, NOTFOUNDERROR } from "../utils/util";
-// import { checkStudent } from "../helper/validation";
+
 import studentSchema from "../config/db/validateSchema/studentSchema";
 import AppError from "../utils/appError";
 import Joi from "joi";
@@ -70,8 +69,7 @@ export const getStudents = async (ctx: Context) => {
     let size = ctx.query.size;
 
     if (!page || !size || isNaN(page) || isNaN(size)) {
-      invalidData(ctx, "Bad Input");
-      return;
+      throw new AppError("BAD INPUT!!", 400);
     }
 
     page = Number(page);

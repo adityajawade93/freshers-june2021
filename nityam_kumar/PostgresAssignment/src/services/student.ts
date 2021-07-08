@@ -1,5 +1,5 @@
 import db from "../config/db";
-import { QueryResult } from "pg";
+
 import AppError from "../utils/appError";
 
 interface IStudent {
@@ -22,9 +22,9 @@ export const addStudentDB = async (s1: IStudent) => {
       s1.class_number,
       s1.sex,
     ];
-    const result: QueryResult<any> = await db.query(text, values);
+    await db.query(text, values);
   } catch (err) {
-    throw err;
+    throw new AppError(err.message, 502);
   }
 };
 
@@ -64,7 +64,7 @@ export const modifyStudentDB = async (
       ]);
     }
   } catch (err) {
-    throw err;
+    throw new AppError(err.message, 502);
   }
 };
 
@@ -97,8 +97,8 @@ export const getStudentsDB = async (start_index: number, req_size: number) => {
       req_size,
     ]);
     return data.rows;
-  } catch (e) {
-    throw e;
+  } catch (err) {
+    throw new AppError(err.message, 502);
   }
 };
 
@@ -109,7 +109,7 @@ export const getStudentScheduleDB = async (studentId: string) => {
       [studentId]
     );
     return data.rows;
-  } catch (e) {
-    throw Error(e);
+  } catch (err) {
+    throw new AppError(err.message, 502);
   }
 };

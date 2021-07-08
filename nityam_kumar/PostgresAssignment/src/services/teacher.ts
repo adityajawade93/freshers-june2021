@@ -1,5 +1,6 @@
 import db from "../config/db";
-import { QueryResult } from "pg";
+
+import AppError from "../utils/appError";
 
 interface ITeacher {
   age: number;
@@ -19,12 +20,9 @@ export const addTeacherDB = async (t1: ITeacher) => {
       t1.age,
       t1.sex,
     ];
-    const result: QueryResult<any> = await db.query(text, values);
-    console.log(result);
-    if (result && result.command === "INSERT") return true;
-    return false;
+    await db.query(text, values);
   } catch (err) {
-    throw new Error(err);
+    throw new AppError(err.message, 502);
   }
 };
 
@@ -34,11 +32,13 @@ export const checkExists = async (teacher_id: string) => {
       teacher_id,
     ]);
     if (res.rows.length === 0) {
-      return false;
+      throw new AppError(
+        "Teacher with this id not available!! Enter valid teacher id",
+        401
+      );
     }
-    return true;
   } catch (err) {
-    throw new Error(err);
+    throw err;
   }
 };
 
@@ -69,9 +69,8 @@ export const modifyTeacherDB = async (
         teacher_id,
       ]);
     }
-    return true;
   } catch (err) {
-    throw new Error(err);
+    throw new AppError(err.message, 502);
   }
 };
 
@@ -79,8 +78,8 @@ export const countTeachers = async () => {
   try {
     const result = await db.query("SELECT count(*) from teacher");
     return result.rows[0].count;
-  } catch (e) {
-    throw new Error(e);
+  } catch (err) {
+    throw new AppError(err.message, 502);
   }
 };
 
@@ -91,8 +90,8 @@ export const getTeachersDB = async (start_index: number, req_size: number) => {
       req_size,
     ]);
     return data.rows;
-  } catch (e) {
-    throw Error(e);
+  } catch (err) {
+    throw new AppError(err.message, 502);
   }
 };
 
@@ -102,8 +101,8 @@ export const countTeachersTeaching = async () => {
       "SELECT count(DISTINCT teacher_id) from subject"
     );
     return result.rows[0].count;
-  } catch (e) {
-    throw Error(e);
+  } catch (err) {
+    throw new AppError(err.message, 502);
   }
 };
 
@@ -117,8 +116,8 @@ export const getTeachersTeachingDB = async (
       [start_index, req_size]
     );
     return data.rows;
-  } catch (e) {
-    throw Error(e);
+  } catch (err) {
+    throw new AppError(err.message, 502);
   }
 };
 
@@ -128,8 +127,11 @@ export const fetchStudentWithTeacherID = async (teacher_id: string) => {
       "select s1.st_id,s1.fname,s1.lname,s1.age,s1.cl_no from student as s1 where s1.cl_no in (select distinct cl_no from subject as sub where teacher_id=$1",
       [teacher_id]
     );
+    if (data.rows.length === 0) {
+      throw new AppError("ID NOT FOUND", 404);
+    }
     return data.rows;
   } catch (e) {
-    throw Error(e);
+    throw e;
   }
 };

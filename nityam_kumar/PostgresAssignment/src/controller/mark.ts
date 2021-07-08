@@ -1,15 +1,8 @@
 import { Context } from "vm";
 import * as marksService from "../services/mark";
-// import { checkMark } from "../helper/validation";
-import markSchema from "../config/db/validateSchema/markSchema";
 
-import {
-  invalidData,
-  serverERROR,
-  NOTFOUNDERROR,
-  CONFLICTERROR,
-  UNAUTHORIZEDERROR,
-} from "../utils/util";
+import markSchema from "../config/db/validateSchema/markSchema";
+import AppError from "../utils/appError";
 
 interface IMark {
   student_id: string;
@@ -25,37 +18,20 @@ export const createMarks = async (ctx: Context) => {
 
     await markSchema.validateAsync(m1);
 
-    if (!(await marksService.checkStudentExist(m1))) {
-      UNAUTHORIZEDERROR(
-        ctx,
-        `student with this id not available!! Enter valid student id`
-      );
-      return;
-    }
+    await marksService.checkStudentExist(m1);
 
-    if (!(await marksService.checkSubjectExist(m1))) {
-      UNAUTHORIZEDERROR(
-        ctx,
-        `subject with this class not available!! Enter valid Details`
-      );
-      return;
-    }
+    await marksService.checkSubjectExist(m1);
 
-    if (await marksService.checkAlreadyExist(m1)) {
-      CONFLICTERROR(ctx, `data already available `);
-      return;
-    }
+    await marksService.checkAlreadyExist(m1);
 
-    if (marksService.addMarkDB(m1)) {
-      ctx.status = 200;
-      ctx.body = {
-        status: `successfully created marks with ${m1.student_id} & ${m1.subject_id}`,
-      };
-    } else {
-      invalidData(ctx, "Bad input Data");
-    }
+    await marksService.addMarkDB(m1);
+    ctx.status = 200;
+    ctx.body = {
+      status: `successfully created marks with ${m1.student_id} & ${m1.subject_id}`,
+    };
   } catch (err) {
-    serverERROR(ctx);
+    if (!err.status) throw new AppError(err.message, 400);
+    throw err;
   }
 };
 
@@ -70,27 +46,21 @@ export const modifyMarks = async (ctx: Context) => {
       typeof student_id !== "string" ||
       typeof subject_id !== "string"
     ) {
-      invalidData(ctx, "Bad input Data");
-      return;
+      throw new AppError("BAD INPUT DATA", 400);
     }
 
-    if (!(await marksService.checkExist(student_id, subject_id))) {
-      UNAUTHORIZEDERROR(ctx, `either subject or student id not available`);
-      return;
-    }
+    await marksService.checkExist(student_id, subject_id);
 
     const { marks } = ctx.request.body;
 
-    if (await marksService.ModifyMarksDB(marks, student_id, subject_id)) {
-      ctx.status = 200;
-      ctx.body = {
-        status: `successfully updated marks with ${student_id} & ${subject_id} with ${marks}`,
-      };
-    } else {
-      invalidData(ctx, "Bad input Data");
-    }
+    await marksService.ModifyMarksDB(marks, student_id, subject_id);
+    ctx.status = 200;
+    ctx.body = {
+      status: `successfully updated marks with ${student_id} & ${subject_id} with ${marks}`,
+    };
   } catch (err) {
-    serverERROR(ctx);
+    if (!err.status) throw new AppError(err.message, 400);
+    throw err;
   }
 };
 
@@ -98,21 +68,17 @@ export const fetchMarks = async (ctx: Context) => {
   try {
     const student_id = ctx.params.studentId;
     if (!student_id || typeof student_id !== "string") {
-      invalidData(ctx, "Bad input Data");
-      return;
+      throw new AppError("BAD INPUT DATA", 400);
     }
     const data = await marksService.fetchMarksDB(student_id);
-    if (data.length === 0) {
-      NOTFOUNDERROR(ctx, `id not found`);
-      return;
-    }
+
     ctx.status = 200;
     ctx.body = {
       status: `successfull`,
       data: data,
     };
   } catch (err) {
-    invalidData(ctx, "Bad input Data");
+    throw err;
   }
 };
 
@@ -125,19 +91,17 @@ export const fetchHighestMarksPerSubject = async (ctx: Context) => {
       data: data,
     };
   } catch (err) {
-    serverERROR(ctx);
+    throw err;
   }
 };
 
-//to do
 export const fetchHighestMarksPerSubjectWithSubjectID = async (
   ctx: Context
 ) => {
   try {
     const subject_id = ctx.params.subjectId;
     if (subject_id && typeof subject_id !== "string") {
-      invalidData(ctx, "Bad input Data");
-      return;
+      throw new AppError("BAD INPUT DATA", 400);
     }
     const data = await marksService.fetchHighestMarksPerSubjectWithSubjectIDDB(
       subject_id
@@ -148,7 +112,7 @@ export const fetchHighestMarksPerSubjectWithSubjectID = async (
       data: data,
     };
   } catch (err) {
-    serverERROR(ctx);
+    throw err;
   }
 };
 
@@ -156,8 +120,7 @@ export const fetchTopBYNumber = async (ctx: Context) => {
   try {
     let number = ctx.params.number;
     if (!number || isNaN(number)) {
-      invalidData(ctx, "Bad input Data");
-      return;
+      throw new AppError("BAD INPUT DATA", 400);
     }
     number = Number(number);
     const data = await marksService.fetchTopBYNumberDB(number);
@@ -167,7 +130,7 @@ export const fetchTopBYNumber = async (ctx: Context) => {
       data: data,
     };
   } catch (err) {
-    serverERROR(ctx);
+    throw err;
   }
 };
 
@@ -180,7 +143,7 @@ export const fetchTopperPerClass = async (ctx: Context) => {
       data: data,
     };
   } catch (err) {
-    serverERROR(ctx);
+    throw err;
   }
 };
 
@@ -188,8 +151,7 @@ export const fetchTopperPerClassWithClassNumber = async (ctx: Context) => {
   try {
     let classNumber = ctx.params.classNumber;
     if (classNumber && isNaN(classNumber)) {
-      invalidData(ctx, "Bad input Data");
-      return;
+      throw new AppError("BAD INPUT DATA", 400);
     }
     classNumber = Number(classNumber);
     const data = await marksService.fetchTopperPerClassWithClassNumberDB(
@@ -201,6 +163,6 @@ export const fetchTopperPerClassWithClassNumber = async (ctx: Context) => {
       data: data,
     };
   } catch (err) {
-    serverERROR(ctx);
+    throw err;
   }
 };

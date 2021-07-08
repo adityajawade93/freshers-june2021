@@ -12,7 +12,7 @@ import router from "../routes/index";
 
 import AppError from "../utils/appError";
 
-import { globalErrHandler } from "../controller/errorHandler";
+import { globalErrHandler } from "../utils/errorHandler";
 
 app.use(globalErrHandler).use(bodyParser()).use(json()).use(router());
 
@@ -21,12 +21,6 @@ app.use(async (ctx: Context, next) => {
 });
 
 app.on("error", (err, ctx: Context) => {
-  /* centralized error handling:
-   *   console.log error
-   *   write error to log file
-   *   save error and request information to database if ctx.request match condition
-   *   ...
-   */
   console.log(err);
 });
 

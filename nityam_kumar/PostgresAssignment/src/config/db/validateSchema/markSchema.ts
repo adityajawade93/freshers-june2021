@@ -4,7 +4,7 @@ const markSchema = Joi.object().keys({
   subject_id: Joi.string().trim().required().max(50),
   student_id: Joi.string().trim().required().max(50),
   teacher_id: Joi.string().trim().required().max(50),
-  class_number: Joi.number().required(),
+  class_number: Joi.number().required().min(1),
   marks: Joi.number().min(0).max(100),
 });
 

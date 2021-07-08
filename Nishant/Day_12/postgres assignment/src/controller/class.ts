@@ -2,7 +2,7 @@ import { Context } from "vm";
 
 import * as serviceclass from '../services/class';
 
-interface  class_schedule_data{
+interface  ISchedule{
     classid:number;
     classno:number;
     subj_id:number;
@@ -11,19 +11,19 @@ interface  class_schedule_data{
     t_fname:string;
 }
 
-interface class_student_data{
+interface IClass{
     class_id:number;
     studid:number
 }
 
-interface student_details_data{
+interface IStudentDetails{
     student_id:number;
     fname:string;
 }
 
 export async function getClass(ctx: Context){
     try{
-        let [rows]: Array<{rows: class_schedule_data}>=[];
+        let [rows]: Array<{rows: ISchedule}>=[];
         rows=await  serviceclass.get_class();
             ctx.response.status = 200;
           ctx.response.type = 'application/json';
@@ -38,16 +38,16 @@ export async function getClass(ctx: Context){
 
 export async function getStudentByClassId(ctx: Context){
     try{
-        var id:number=parseInt(ctx.params.id);
-        if(id===undefined || typeof id!=='number')
+        var classId:number=parseInt(ctx.params.classId);
+        if(classId===undefined || typeof classId!=='number')
         {
           ctx.response.status = 400;
           ctx.response.type = 'text/html';
         ctx.body ='Bad Request';
         return ;
         }
-        let [rows]: Array<{rows: student_details_data}>=[];
-        rows=await  serviceclass.get_student_by_classid(id);
+        let [rows]: Array<{rows: IStudentDetails}>=[];
+        rows=await  serviceclass.get_student_by_classid(classId);
             ctx.response.status = 200;
           ctx.response.type = 'application/json';
           ctx.body=rows.rows;
@@ -61,7 +61,7 @@ export async function getStudentByClassId(ctx: Context){
 
 export async function addStudentInClass(ctx: Context){
     try{
-        let req:class_student_data=ctx.request.body;
+        let req:IClass=ctx.request.body;
         if(req.class_id===undefined || req.studid===undefined || typeof req.class_id!=='number' || typeof req.studid!=='number'){
           ctx.response.status = 400;
           ctx.response.type = 'text/html';

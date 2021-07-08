@@ -2,7 +2,7 @@ import { Context } from "vm";
 
 import * as serviceschedule from '../services/schedule';
 
-interface  class_schedule_data{
+interface  ISchedule{
     classid:number;
     classno:number;
     subj_id:number;
@@ -13,7 +13,7 @@ interface  class_schedule_data{
 
 export async function addClassSchedule(ctx: Context){
     try{
-        let req:class_schedule_data=ctx.request.body;
+        let req:ISchedule=ctx.request.body;
         if(req.classid===undefined || req.classno===undefined || req.subj_id===undefined || req.subj_name===undefined || req.t_id===undefined || req.t_fname===undefined){
           ctx.response.status = 400;
           ctx.response.type = 'text/html';

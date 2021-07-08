@@ -6,11 +6,11 @@ import {getSubject, getStudentBySubjectId, getSubjectMarksByStudentId, addSubjec
 
 router.get('/subject',getSubject);
 
-router.get('/subject/:id',getStudentBySubjectId);
+router.get('/subject/:subjectId/student',getStudentBySubjectId);
 
-router.get('/marks/:id',getSubjectMarksByStudentId);
+router.get('/student/:studentId/subject/marks',getSubjectMarksByStudentId);
 
-router.post('/createsubject',addSubject);
+router.post('/subject',addSubject);
 
 export {router};
 

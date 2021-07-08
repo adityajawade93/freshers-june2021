@@ -6,8 +6,8 @@ import {getClass, getStudentByClassId, addStudentInClass} from '../controller/cl
 
 router.get('/class',getClass);
 
-router.get('/class/:id',getStudentByClassId);
+router.get('/class/:classId/student',getStudentByClassId);
 
-router.post('/createclass_student',addStudentInClass);
+router.post('/class',addStudentInClass);
 
 export {router};

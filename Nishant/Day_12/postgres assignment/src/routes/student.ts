@@ -6,6 +6,6 @@ import {getStudent, addStudent} from '../controller/student';
 
 router.get('/student',getStudent);
 
-router.post('/createstudent',addStudent);
+router.post('/student',addStudent);
 
 export {router};

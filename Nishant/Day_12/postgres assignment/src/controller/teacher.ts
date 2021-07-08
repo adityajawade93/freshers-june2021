@@ -2,7 +2,7 @@ import { Context } from "vm";
 
 import * as serviceteacher from '../services/teacher';
 
-interface teacher_data{
+interface ITeacher{
     teacher_id: number;
     fname:string;
     mname:string;
@@ -12,14 +12,14 @@ interface teacher_data{
     address:string;
 }
 
-interface student_details_data{
+interface IStudentDetails{
   student_id:number;
   fname:string;
 }
 
 export async function getTeacher(ctx: Context){
     try{
-        let [rows]: Array<{rows: teacher_data}>=[];
+        let [rows]: Array<{rows: ITeacher}>=[];
         rows=await  serviceteacher.get_teacher();
         
             ctx.response.status = 200;
@@ -35,21 +35,23 @@ export async function getTeacher(ctx: Context){
 
 export async function getStudentByTeacherId(ctx: Context){
     try{
-        var id:number=parseInt(ctx.url.substring(9));
-        if(id===undefined || typeof id!=='number')
+        let {teacherId}:{teacherId:number}=ctx.params;
+        teacherId=Number(teacherId);
+        if(teacherId===undefined || typeof teacherId!=='number')
         {
           ctx.response.status = 400;
           ctx.response.type = 'text/html';
         ctx.body ='Bad Request';
         return ;
         }
-        let [rows]: Array<{rows: student_details_data}>=[];
-       rows=await  serviceteacher.get_student_by_teacherid(id);
+        let [rows]: Array<{rows: IStudentDetails}>=[];
+       rows=await  serviceteacher.get_student_by_teacherid(teacherId);
          
             ctx.response.status = 200;
             ctx.response.type = 'application/json';
           ctx.body=rows.rows;
         }catch(err){
+          console.log(err);
           ctx.response.status = 500;
           ctx.response.type = 'text/html';
           ctx.body = "internal server error"; 
@@ -59,7 +61,7 @@ export async function getStudentByTeacherId(ctx: Context){
 
 export async function addTeacher(ctx: Context){
     try{
-        let req:teacher_data=ctx.request.body;
+        let req:ITeacher=ctx.request.body;
         if(req.teacher_id===undefined || req.fname===undefined || req.mname===undefined || req.lname===undefined || req.dob===undefined || req.gender===undefined || req.address===undefined){
           ctx.response.status = 400;
           ctx.response.type = 'text/html';

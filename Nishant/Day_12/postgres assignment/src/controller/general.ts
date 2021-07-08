@@ -2,25 +2,28 @@ import { Context } from "vm";
 
 import * as servicegeneral from '../services/general';
 
-interface topper{
+interface ITopper{
     student_id:number;
     fname:string;
     marks:number;
 }
 
+
+
 export async function gettopperByclassIdAndSubjectId(ctx: Context){
     try{
-        var c_id=parseInt(ctx.params.c_id);
-        var s_id=parseInt(ctx.params.s_id);
-      if(c_id===undefined || typeof c_id!=='number' || s_id===undefined || typeof s_id!=='number')
+        let {classId,subjectId}:{classId:number,subjectId:number}=ctx.params;
+        classId=Number(classId);
+        subjectId=Number(subjectId);
+      if(classId===undefined || typeof classId!=='number' || subjectId===undefined || typeof subjectId!=='number')
       {
         ctx.response.status = 400;
         ctx.response.type = 'text/html';
       ctx.body ='Bad Request';
       return ;
       }
-      let [rows]: Array<{rows: topper}>=[];
-      rows=await  servicegeneral.get_topper_by_classid_and_subjectid(c_id,s_id);
+      let [rows]: Array<{rows: ITopper}>=[];
+      rows=await  servicegeneral.get_topper_by_classid_and_subjectid(classId,subjectId);
        
           ctx.response.status = 200;
           ctx.response.type = 'application/json';
@@ -35,17 +38,18 @@ export async function gettopperByclassIdAndSubjectId(ctx: Context){
 
 export async function gettopstudent(ctx: Context){
   try{
-      var c_id=parseInt(ctx.params.c_id);
-      var num=parseInt(ctx.params.num);
-    if(c_id===undefined || typeof c_id!=='number')
+    let {classId,count}:{classId:number,count:number}=ctx.params;
+    classId=Number(classId);
+    count=Number(count);
+    if(classId===undefined || typeof count!=='number')
     {
       ctx.response.status = 400;
       ctx.response.type = 'text/html';
     ctx.body ='Bad Request';
     return ;
     }
-    let [rows]: Array<{rows: topper}>=[];
-    rows=await  servicegeneral.get_top_students(c_id,num);
+    let [rows]: Array<{rows: ITopper}>=[];
+    rows=await  servicegeneral.get_top_students(classId,count);
      
         ctx.response.status = 200;
         ctx.response.type = 'application/json';

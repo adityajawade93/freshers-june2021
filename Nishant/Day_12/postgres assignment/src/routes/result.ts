@@ -4,8 +4,8 @@ const router=new koarouter();
 
 import {addResult, updateResult} from '../controller/result';
 
-router.post('/createresult',addResult);
+router.post('/result',addResult);
 
-router.put('/updateresult',updateResult);
+router.put('/result',updateResult);
 
 export {router};

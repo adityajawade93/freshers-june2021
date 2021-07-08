@@ -4,6 +4,6 @@ const router=new koarouter();
 
 import {addClassSchedule} from '../controller/schedule';
 
-router.post('/createclass_schedule',addClassSchedule);
+router.post('/schedule',addClassSchedule);
 
 export {router};

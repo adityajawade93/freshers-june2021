@@ -9,10 +9,10 @@ export async function get_teacher(){
       }
         }
 
-export async function get_student_by_teacherid(id:number){
+export async function get_student_by_teacherid(teacherId:number){
         try{
             await sqlclient.query("SET search_path TO College");
-                  return (await sqlclient.query(`SELECT S.student_id,S.fname FROM Student AS S,class_student,class_schedule WHERE t_id=${id} AND class_id=classid AND studid=student_id`)); 
+                  return (await sqlclient.query(`SELECT S.student_id,S.fname FROM Student AS S,class_student,class_schedule WHERE t_id=${teacherId} AND class_id=classid AND studid=student_id`)); 
         }catch(e){
             throw Error(e);
       }

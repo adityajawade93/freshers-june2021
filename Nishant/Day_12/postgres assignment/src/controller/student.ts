@@ -2,7 +2,7 @@ import { Context } from "vm";
 
 import * as studentService from '../services/student';
 
-interface student_data{
+interface IStudent{
   student_id: number;
   fname:string;
   mname:string;
@@ -10,12 +10,12 @@ interface student_data{
   dob :Date;
   gender: CharacterData;
   address:string;
-  slice(a:number,b:number): student_data;
+  slice(a:number,b:number): IStudent;
 }
 
 export async function getStudent(ctx: Context){
     try{
-        let [rows]: Array<{rows: student_data}>=[];
+        let [rows]: Array<{rows: IStudent}>=[];
         let length:any;
       rows=await  studentService.get_student();
       length=await  studentService.get_student_length()
@@ -53,7 +53,7 @@ export async function getStudent(ctx: Context){
 
 export async function addStudent(ctx: Context){
     try{
-        let req:student_data=ctx.request.body;
+        let req:IStudent=ctx.request.body;
         
         if(req.student_id===undefined || req.fname===undefined || req.mname===undefined || req.lname===undefined || req.dob===undefined || req.gender===undefined || req.address===undefined){
           ctx.response.status = 400;

@@ -6,8 +6,8 @@ import {getTeacher, addTeacher, getStudentByTeacherId} from '../controller/teach
 
 router.get('/teacher',getTeacher);
 
-router.get('/teacher/:id',getStudentByTeacherId );
+router.get('/teacher/:teacherId/student',getStudentByTeacherId );
 
-router.post('/createteacher',addTeacher);
+router.post('/teacher',addTeacher);
 
 export {router};

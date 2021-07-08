@@ -2,7 +2,7 @@ import { Context } from "vm";
 
 import * as serviceresult from '../services/result';
 
-interface result_data{
+interface IResult{
     result_id:number;
     studentid:number;
     clas_id:number;
@@ -12,7 +12,7 @@ interface result_data{
 
 export async function addResult(ctx: Context){
     try{
-        let req:result_data=ctx.request.body;
+        let req:IResult=ctx.request.body;
         if(req.result_id===undefined || req.studentid===undefined || req.clas_id===undefined || req.subjectid===undefined || req.marks===undefined){
           ctx.response.status = 400;
           ctx.response.type = 'text/html';
@@ -41,7 +41,7 @@ export async function addResult(ctx: Context){
 
 export async function updateResult(ctx: Context){
   try{
-      let req:result_data=ctx.request.body;
+      let req:IResult=ctx.request.body;
       let [rows]: Array<{rows: any}>=[];
       if( req.studentid===undefined ||  req.subjectid===undefined || req.marks===undefined){
         ctx.response.status = 400;

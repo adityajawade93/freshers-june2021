@@ -22,7 +22,7 @@ async function start() {
 app.use(bodyParser());
 app.use(router.routes()).use(router.allowedMethods());
 app.use(async (ctx: Context) => {
-    ctx.body = "Invalid 3463465URL";
+    ctx.body = "Invalid URL, please provide correct url";
     ctx.status = 400;
 });
 

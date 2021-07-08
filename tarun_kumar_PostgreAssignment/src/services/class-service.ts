@@ -30,7 +30,7 @@ export async function getClassId(name: string) {
 
 export async function getClasses() {
     try {
-        const query = 'select * from classesmap';
+        const query = 'select * from classes';
         const result = await dbQuery(query);
 
         console.log(result.rows);

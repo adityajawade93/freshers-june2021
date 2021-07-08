@@ -1,43 +1,55 @@
-import { dbQuery } from "../db/db";
+import { Context } from 'vm';
+import { v4 as uuidv4 } from 'uuid';
+import * as classService from '../services/class-service';
 
-export async function createClass(id: String, name: string) {
-
+export async function addClass(ctx: Context) {
     try {
-        const query = 'insert into classes (id, name) values ($1, $2)';
-        const res = await dbQuery(query, [id, name]);
+        const requestData: any = ctx.request.body;
 
-        if (res && res.command === 'INSERT')
-            return true;
+        const id: string = uuidv4();
+        const name: string = requestData.name.toLowerCase().trim();
 
-        return false;
-    }
-    catch (error) {
-        throw Error(error);
-    }
+        await classService.addClass(id, name);
 
-}
-
-export async function getClassId(name: string) {
-    try {
-        const query = 'select id from classes where name = $1';
-        const result = await dbQuery(query, [name]);
-
-        return result.rows[0].id;
+        ctx.body = {
+            message: `class with ${id} and name ${name} is added`,
+        };
     } catch (e) {
-        throw Error(e);
+        ctx.status = 404;
+        ctx.body = { error: e.message };
     }
 }
 
-export async function getClasses() {
+export async function getClasses(ctx: Context) {
     try {
-        const query = 'select * from classes';
-        const result = await dbQuery(query);
+        const allClasses = await classService.getClasses();
 
-        return result.rows;
+        ctx.body = {
+            count: allClasses.length,
+            data: allClasses
+        };
     } catch (e) {
-        throw Error(e);
+        ctx.status = 404;
+        if (e.status) ctx.status = e.status;
+
+        ctx.body = { error: e.message };
     }
 }
 
 
+export async function getClassId(ctx: Context) {
+    try {
+        const requestData: any = ctx.params.name;
+        const name: string = requestData.name.toLowerCase().trim();
+        const classdata = await classService.getClassId(name);
 
+        ctx.body = {
+            data: classdata
+        };
+    } catch (e) {
+        ctx.status = 404;
+        if (e.status) ctx.status = e.status;
+
+        ctx.body = { error: e.message };
+    }
+}

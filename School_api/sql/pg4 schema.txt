@@ -1,0 +1,140 @@
+CREATE SCHEMA school ;
+SET search_path TO school;
+CREATE TABLE Subjects(  
+	subcode int NOT NULL PRIMARY KEY, 
+	subject TEXT NOT NULL,
+    staffid int NOT NULL
+);
+CREATE TABLE Standards(  
+    standard int NOT NULL,
+    subcode int NOT NULL REFERENCES Subjects(subcode),
+	staffid int NOT NULL
+);
+CREATE TABLE Students(
+	roll_num int NOT NULL PRIMARY KEY, 
+	fname TEXT NOT NULL, 
+	lname TEXT NOT NULL, 
+	standard int NOT NULL,
+     subcode int NOT NULL REFERENCES Subjects(subcode)     
+);
+CREATE TABLE Teachers(
+	staffid int NOT NULL PRIMARY KEY , 
+	fname TEXT NOT NULL, 
+	lname TEXT NOT NULL,
+	 subcode int NOT NULL REFERENCES Subjects(subcode)
+);
+
+CREATE TABLE Marks(
+	resultsid int NOT NULL,
+roll_num int NOT NULL,
+subcode int NOT NULL,
+staffid int NOT NULL REFERENCES Teachers(staffid),
+standard int NOT NULL ,
+marks DECIMAL(10,3) NOT NULL
+);
+
+INSERT INTO Subjects VALUES('101','Maths','05');
+INSERT INTO Subjects VALUES('201','Physics','10');
+INSERT INTO Subjects VALUES('301','Chemistry','15');
+INSERT INTO Subjects VALUES('401','Economics','20');
+
+INSERT INTO Teachers VALUES('05','Vinay','Pandey','101');
+INSERT INTO Teachers VALUES('10','Uday','Mishra','201');
+INSERT INTO Teachers VALUES('15','KD','Pathak','301');
+INSERT INTO Teachers VALUES('20','Hari','Prasad','401');
+
+INSERT INTO Standards VALUES('9','101','05');
+INSERT INTO Standards VALUES('9','201','10');
+INSERT INTO Standards VALUES('9','301','15');
+INSERT INTO Standards VALUES('10','101','05');
+INSERT INTO Standards VALUES('10','201','10');
+INSERT INTO Standards VALUES('10','301','15');
+INSERT INTO Standards VALUES('11','101','05');
+INSERT INTO Standards VALUES('11','201','10');
+INSERT INTO Standards VALUES('11','301','15');
+INSERT INTO Standards VALUES('11','401','20');
+
+INSERT INTO Students VALUES('0901','Abhi','Mishra','9','101');
+INSERT INTO Students VALUES('0905','Chetan','Bisht','9','101');
+INSERT INTO Students VALUES('0911','Sreyas','Mishra','9','201');
+INSERT INTO Students VALUES('0921','Prakhar','Mishra','9','201');
+INSERT INTO Students VALUES('0933','Prajjwal','Mishra','9','301');
+
+INSERT INTO Students VALUES('1001','Kaustav','Goswami','10','101');
+INSERT INTO Students VALUES('1021','Sourish','Dekane','10','201');
+INSERT INTO Students VALUES('1045','Sabal','Jaiswal','10','301');
+
+INSERT INTO Students VALUES('1104','Hari','Haran','11','101');
+INSERT INTO Students VALUES('1124','Shashank','Ojha','11','201');
+INSERT INTO Students VALUES('1134','Guneet','Singh','11','401');
+
+--SELECT* FROM Standards;
+
+--SELECT* FROM Students;
+
+--SELECT* FROM Teachers;
+
+--SELECT* FROM Subjects;
+
+INSERT INTO Marks VALUES('010','0901','101','05','9','87');
+INSERT INTO Marks VALUES('024','0905','101','05','9','84');
+INSERT INTO Marks VALUES('142','0911','201','10','9','96');
+INSERT INTO Marks VALUES('111','0921','201','10','9','88');
+INSERT INTO Marks VALUES('242','0933','301','15','9','56');
+INSERT INTO Marks VALUES('137','1001','101','05','10','67');
+INSERT INTO Marks VALUES('44','1021','201','10','10','85');
+INSERT INTO Marks VALUES('88','1045','301','15','10','87');
+INSERT INTO Marks VALUES('56','1104','101','05','11','98');
+INSERT INTO Marks VALUES('13','1124','201','10','11','76');
+INSERT INTO Marks VALUES('18','1134','401','20','11','65');
+
+--SELECT * FROM Marks;
+--Listing all teachers with subjects
+--SELECT T.staffid,T.fname,T.lname,S.subject 
+--FROM Teachers AS T INNER JOIN Subjects AS S ON T.staffid=S.staffid;
+
+--listing all students given class id
+--SELECT * FROM Students WHERE standard=9;
+
+--listing all students given teacher id 
+--SELECT T.fname, T.lname, ST.roll_num ,ST.fname,ST.lname,ST.standard 
+--FROM Students AS ST INNER JOIN Teachers AS T ON T.subcode=ST.subcode AND T.staffid='15';
+
+--listing all students given subject id
+--SELECT ST.fname,ST.lname,ST.standard,sub.subcode,sub.subject
+--FROM Subjects AS sub,Students AS ST
+--WHERE sub.subcode='201' AND sub.subcode=ST.subcode;
+
+CREATE TABLE Class_schedule(
+	uniclassid varchar NOT NULL PRIMARY KEY,
+	Standard int NOT NULL,
+	classno int NOT NULL,
+	subcode int  NOT NULL,
+	subject text NOT NULL,
+	staffid int  NOT NULL,
+	T_fname text NOT NULL);
+	
+  INSERT INTO Class_schedule values('9C1','9','1','101','Maths','05','Vinay');
+  INSERT INTO Class_schedule values('9C2','9','2','201','Physics','10','Uday');
+  INSERT INTO Class_schedule values('9C3','9','3','401','Economics','20','Hari');
+  INSERT INTO Class_schedule values('9C4','9','4','301','Chemistry','15','KD');
+  
+  INSERT INTO Class_schedule values('10C1','10','1','201','Physics','10','Uday');
+  INSERT INTO Class_schedule values('10C2','10','2','301','Chemistry','15','KD');
+ INSERT INTO Class_schedule values('10C3','10','3','101','Maths','05','Vinay');
+  INSERT INTO Class_schedule values('10C4','10','4','401','Economics','20','Hari');
+ 
+
+
+  
+  INSERT INTO Class_schedule values('11C1','11','1','301','Chemistry','15','KD');
+  INSERT INTO Class_schedule values('11C2','11','2','401','Economics','20','Hari');
+INSERT INTO Class_schedule values('11C3','11','3','201','Physics','10','Uday');
+INSERT INTO Class_schedule values('11C4','11','4','101','Maths','05','Vinay');
+
+--SELECT * FROM Class_schedule;
+ALTER TABLE class_schedule ADD FOREIGN KEY (staffid) REFERENCES Teachers(staffid);
+ ALTER TABLE Class_schedule ADD FOREIGN KEY (subcode) REFERENCES Subjects(subcode);
+ ALTER TABLE Marks ADD FOREIGN KEY(roll_num) REFERENCES Students(roll_num);
+  ALTER TABLE Marks ADD FOREIGN KEY(subcode) REFERENCES Subjects(subcode);
+  ALTER TABLE Subjects ADD FOREIGN KEY (staffid) REFERENCES Teachers(staffid);

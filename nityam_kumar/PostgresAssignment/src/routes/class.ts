@@ -4,14 +4,19 @@ import {
   getClasses,
   getSchedule,
   fetchStudentsWithClass,
+  getClassSchedule,
 } from "../controller/class";
 
 const router = new KoaRouter({ prefix: "/class" });
 
-router.get("/all", getClasses);
+router.get("/", getClasses);
 
-router.get("/schedule", getSchedule);
+router.get("/scheduleSchool", getSchedule);
+router.get("/schedule/:classNumber", getClassSchedule);
 
-router.get("/students/:cl_id", fetchStudentsWithClass);
+
+router.get("/:classNumber/student", fetchStudentsWithClass);
+
+
 
 export default router;

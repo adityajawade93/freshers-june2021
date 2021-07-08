@@ -1,7 +1,7 @@
 import db from "../config/db";
 import { QueryResult } from "pg";
 
-interface Teacher {
+interface ITeacher {
   age: number;
   fname: string;
   lname: string;
@@ -9,7 +9,7 @@ interface Teacher {
   sex?: string;
 }
 
-export const addTeacherDB = async (t1: Teacher) => {
+export const addTeacherDB = async (t1: ITeacher) => {
   try {
     const text = "INSERT INTO teacher VALUES($1,$2,$3,$4,$5)";
     const values = [

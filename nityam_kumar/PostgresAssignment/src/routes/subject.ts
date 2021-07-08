@@ -10,8 +10,8 @@ const router = new KoaRouter({ prefix: "/subject" });
 
 router.post("/", createSubject);
 
-router.get("/allSubject", getSubject);
+router.get("/", getSubject);
 
-router.get("/students/:sub_id", fetchStudentsWithSub);
+router.get("/students/:subjectId", fetchStudentsWithSub);
 
 export default router;

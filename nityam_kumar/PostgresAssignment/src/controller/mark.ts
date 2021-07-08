@@ -1,6 +1,7 @@
 import { Context } from "vm";
-import * as marksWorker from "../services/mark";
-import { checkMark } from "../config/validation";
+import * as marksService from "../services/mark";
+// import { checkMark } from "../helper/validation";
+import markSchema from "../config/db/validateSchema/markSchema";
 
 import {
   invalidData,
@@ -8,25 +9,23 @@ import {
   NOTFOUNDERROR,
   CONFLICTERROR,
   UNAUTHORIZEDERROR,
-} from "../config/error";
+} from "../utils/util";
 
-interface Mark {
-  st_id: string;
-  sub_id: string;
+interface IMark {
+  student_id: string;
+  subject_id: string;
   marks: number;
   teacher_id: string;
-  cl_no: number;
+  class_number: number;
 }
 
 export const createMarks = async (ctx: Context) => {
   try {
-    const m1: Mark = ctx.request.body;
-    if (!checkMark(m1)) {
-      invalidData(ctx, "bad input data");
-      return;
-    }
+    const m1: IMark = ctx.request.body;
 
-    if (!(await marksWorker.checkStudentExist(m1))) {
+    await markSchema.validateAsync(m1);
+
+    if (!(await marksService.checkStudentExist(m1))) {
       UNAUTHORIZEDERROR(
         ctx,
         `student with this id not available!! Enter valid student id`
@@ -34,7 +33,7 @@ export const createMarks = async (ctx: Context) => {
       return;
     }
 
-    if (!(await marksWorker.checkSubjectExist(m1))) {
+    if (!(await marksService.checkSubjectExist(m1))) {
       UNAUTHORIZEDERROR(
         ctx,
         `subject with this class not available!! Enter valid Details`
@@ -42,15 +41,15 @@ export const createMarks = async (ctx: Context) => {
       return;
     }
 
-    if (await marksWorker.checkAlreadyExist(m1)) {
+    if (await marksService.checkAlreadyExist(m1)) {
       CONFLICTERROR(ctx, `data already available `);
       return;
     }
 
-    if (marksWorker.addMarkDB(m1)) {
+    if (marksService.addMarkDB(m1)) {
       ctx.status = 200;
       ctx.body = {
-        status: `successfully created marks with ${m1.st_id} & ${m1.sub_id}`,
+        status: `successfully created marks with ${m1.student_id} & ${m1.subject_id}`,
       };
     } else {
       invalidData(ctx, "Bad input Data");
@@ -62,30 +61,30 @@ export const createMarks = async (ctx: Context) => {
 
 export const modifyMarks = async (ctx: Context) => {
   try {
-    const st_id = ctx.params.st_id;
-    const sub_id = ctx.params.sub_id;
+    const student_id = ctx.params.studentId;
+    const subject_id = ctx.params.subjectId;
 
     if (
-      !sub_id ||
-      !st_id ||
-      typeof st_id !== "string" ||
-      typeof sub_id !== "string"
+      !subject_id ||
+      !student_id ||
+      typeof student_id !== "string" ||
+      typeof subject_id !== "string"
     ) {
       invalidData(ctx, "Bad input Data");
       return;
     }
 
-    if (!(await marksWorker.checkExist(st_id, sub_id))) {
+    if (!(await marksService.checkExist(student_id, subject_id))) {
       UNAUTHORIZEDERROR(ctx, `either subject or student id not available`);
       return;
     }
 
     const { marks } = ctx.request.body;
 
-    if (await marksWorker.ModifyMarksDB(marks, st_id, sub_id)) {
+    if (await marksService.ModifyMarksDB(marks, student_id, subject_id)) {
       ctx.status = 200;
       ctx.body = {
-        status: `successfully updated marks with ${st_id} & ${sub_id} with ${marks}`,
+        status: `successfully updated marks with ${student_id} & ${subject_id} with ${marks}`,
       };
     } else {
       invalidData(ctx, "Bad input Data");
@@ -97,12 +96,12 @@ export const modifyMarks = async (ctx: Context) => {
 
 export const fetchMarks = async (ctx: Context) => {
   try {
-    const st_id = ctx.params.st_id;
-    if (!st_id || typeof st_id !== "string") {
+    const student_id = ctx.params.studentId;
+    if (!student_id || typeof student_id !== "string") {
       invalidData(ctx, "Bad input Data");
       return;
     }
-    const data = await marksWorker.fetchMarksDB(st_id);
+    const data = await marksService.fetchMarksDB(student_id);
     if (data.length === 0) {
       NOTFOUNDERROR(ctx, `id not found`);
       return;
@@ -119,7 +118,30 @@ export const fetchMarks = async (ctx: Context) => {
 
 export const fetchHighestMarksPerSubject = async (ctx: Context) => {
   try {
-    const data = await marksWorker.fetchHighestMarksPerSubjectDB();
+    const data = await marksService.fetchHighestMarksPerSubjectDB();
+    ctx.status = 200;
+    ctx.body = {
+      status: `successfull`,
+      data: data,
+    };
+  } catch (err) {
+    serverERROR(ctx);
+  }
+};
+
+//to do
+export const fetchHighestMarksPerSubjectWithSubjectID = async (
+  ctx: Context
+) => {
+  try {
+    const subject_id = ctx.params.subjectId;
+    if (subject_id && typeof subject_id !== "string") {
+      invalidData(ctx, "Bad input Data");
+      return;
+    }
+    const data = await marksService.fetchHighestMarksPerSubjectWithSubjectIDDB(
+      subject_id
+    );
     ctx.status = 200;
     ctx.body = {
       status: `successfull`,
@@ -138,7 +160,7 @@ export const fetchTopBYNumber = async (ctx: Context) => {
       return;
     }
     number = Number(number);
-    const data = await marksWorker.fetchTopBYNumberDB(number);
+    const data = await marksService.fetchTopBYNumberDB(number);
     ctx.status = 200;
     ctx.body = {
       status: `successfull`,
@@ -151,7 +173,28 @@ export const fetchTopBYNumber = async (ctx: Context) => {
 
 export const fetchTopperPerClass = async (ctx: Context) => {
   try {
-    const data = await marksWorker.fetchTopperPerClassDB();
+    const data = await marksService.fetchTopperPerClassDB();
+    ctx.status = 200;
+    ctx.body = {
+      status: `successfull`,
+      data: data,
+    };
+  } catch (err) {
+    serverERROR(ctx);
+  }
+};
+
+export const fetchTopperPerClassWithClassNumber = async (ctx: Context) => {
+  try {
+    let classNumber = ctx.params.classNumber;
+    if (classNumber && isNaN(classNumber)) {
+      invalidData(ctx, "Bad input Data");
+      return;
+    }
+    classNumber = Number(classNumber);
+    const data = await marksService.fetchTopperPerClassWithClassNumberDB(
+      classNumber
+    );
     ctx.status = 200;
     ctx.body = {
       status: `successfull`,

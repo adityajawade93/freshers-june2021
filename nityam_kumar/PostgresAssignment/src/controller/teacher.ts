@@ -1,10 +1,11 @@
 import uuid from "uniqid";
 import { Context } from "vm";
-import * as teacherWorker from "../services/teacher";
-import { invalidData, serverERROR, NOTFOUNDERROR } from "../config/error";
-import { checkTeacher } from "../config/validation";
+import * as teacherService from "../services/teacher";
+import { invalidData, serverERROR, NOTFOUNDERROR } from "../utils/util";
+// import { checkTeacher } from "../helper/validation";
+import teacherSchema from "../config/db/validateSchema/teacherSchema";
 
-interface Teacher {
+interface ITeacher {
   age: number;
   fname: string;
   lname: string;
@@ -12,18 +13,19 @@ interface Teacher {
   sex?: string;
 }
 
-
-
 export const createTeacher = async (ctx: Context) => {
   try {
-    const t1: Teacher = ctx.request.body;
-    if (!checkTeacher(t1)) {
-      invalidData(ctx, "Bad input Data");
-      return;
-    }
+    const t1: ITeacher = ctx.request.body;
+    // if (!checkTeacher(t1)) {
+    //   invalidData(ctx, "Bad input Data");
+    //   return;
+    // }
+
+    await teacherSchema.validateAsync(t1);
+
     t1.teacher_id = uuid();
 
-    if (await teacherWorker.addTeacherDB(t1)) {
+    if (await teacherService.addTeacherDB(t1)) {
       ctx.status = 200;
       ctx.body = {
         status: `successfully created teacher with ${t1.teacher_id}`,
@@ -38,19 +40,19 @@ export const createTeacher = async (ctx: Context) => {
 
 export const modifyTeacher = async (ctx: Context) => {
   try {
-    const teacher_id = ctx.params.teacher_id;
+    const teacher_id = ctx.params.teacherId;
     if (!teacher_id || typeof teacher_id !== "string") {
       invalidData(ctx, "Bad input Data");
       return;
     }
 
-    if (!(await teacherWorker.checkExists(teacher_id))) {
+    if (!(await teacherService.checkExists(teacher_id))) {
       invalidData(ctx, `teacher with this id not found`);
       return;
     }
     const { fname, lname, age } = ctx.request.body;
 
-    const queryResult = await teacherWorker.modifyTeacherDB(
+    const queryResult = await teacherService.modifyTeacherDB(
       fname,
       lname,
       age,
@@ -85,7 +87,7 @@ export const getTeachers = async (ctx: Context) => {
     page = Number(page);
     size = Number(size);
 
-    let teacher_table_size: number = await teacherWorker.countTeachers();
+    let teacher_table_size: number = await teacherService.countTeachers();
     const max_page_limit = Math.ceil(teacher_table_size / size);
     const max_size_limit = 500;
 
@@ -102,7 +104,7 @@ export const getTeachers = async (ctx: Context) => {
     const start_index = (page - 1) * size;
     const end_index = Math.min(page * size, teacher_table_size);
     const req_size = end_index - start_index;
-    const data = await teacherWorker.getTeachersDB(start_index, req_size);
+    const data = await teacherService.getTeachersDB(start_index, req_size);
 
     ctx.status = 200;
     ctx.body = {
@@ -129,7 +131,7 @@ export const getTeachersTeaching = async (ctx: Context) => {
     size = Number(size);
 
     let teacher_table_size: number =
-      await teacherWorker.countTeachersTeaching();
+      await teacherService.countTeachersTeaching();
 
     const max_page_limit = Math.ceil(teacher_table_size / size);
 
@@ -149,7 +151,7 @@ export const getTeachersTeaching = async (ctx: Context) => {
     const end_index = Math.min(page * size, teacher_table_size);
     const req_size = end_index - start_index;
 
-    const data = await teacherWorker.getTeachersTeachingDB(
+    const data = await teacherService.getTeachersTeachingDB(
       start_index,
       req_size
     );
@@ -167,13 +169,13 @@ export const getTeachersTeaching = async (ctx: Context) => {
 
 export const fetchStudentsWithTeacher = async (ctx: Context) => {
   try {
-    const teacher_id = ctx.params.teacher_id;
+    const teacher_id = ctx.params.teacherId;
     if (!teacher_id || typeof teacher_id !== "string") {
       invalidData(ctx, "Bad input Data");
       return;
     }
 
-    const data = await teacherWorker.fetchStudentWithTeacherID(teacher_id);
+    const data = await teacherService.fetchStudentWithTeacherID(teacher_id);
 
     if (data.length === 0) {
       NOTFOUNDERROR(ctx, `id not found`);

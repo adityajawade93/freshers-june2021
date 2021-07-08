@@ -1,11 +1,11 @@
 import db from "../config/db";
 import { QueryResult } from "pg";
 
-interface Subject {
-  sub_id?: string;
-  sub_name: string;
+interface ISubject {
+  subject_id?: string;
+  subject_name: string;
   teacher_id: string;
-  cl_no: number;
+  class_number: number;
 }
 
 export const getSubjectDB = async () => {
@@ -17,11 +17,11 @@ export const getSubjectDB = async () => {
   }
 };
 
-export const fetchStudentsWithSubDB = async (sub_id: string) => {
+export const fetchStudentsWithSubDB = async (subject_id: string) => {
   try {
     const data = await db.query(
       "select s1.fname,s1.lname,s1.cl_no,s1.age,sub.sub_id,sub.sub_name from subject as sub,student as s1 where sub.sub_id=$1 and sub.cl_no=s1.cl_no",
-      [sub_id.trim()]
+      [subject_id.trim()]
     );
     return data.rows;
   } catch (err) {
@@ -29,10 +29,10 @@ export const fetchStudentsWithSubDB = async (sub_id: string) => {
   }
 };
 
-export const checkAlreadyExistDB = async (s1: Subject) => {
+export const checkAlreadyExistDB = async (s1: ISubject) => {
   try {
     const text5 = "select * from subject where cl_no=$1 and sub_name=$2";
-    const values5 = [s1.cl_no, s1.sub_name.trim()];
+    const values5 = [s1.class_number, s1.subject_name.trim()];
     const check_already_exist = await db.query(text5, values5);
     if (check_already_exist.rows.length > 0) {
       return true;
@@ -43,13 +43,13 @@ export const checkAlreadyExistDB = async (s1: Subject) => {
   }
 };
 
-export const addSubjectDB = async (s1: Subject) => {
+export const addSubjectDB = async (s1: ISubject) => {
   try {
     const text = "INSERT INTO subject VALUES($1,$2,$3,$4)";
     const values = [
-      s1.sub_id,
-      s1.sub_name.trim(),
-      s1.cl_no,
+      s1.subject_id,
+      s1.subject_name.trim(),
+      s1.class_number,
       s1.teacher_id.trim(),
     ];
     const result: QueryResult<any> = await db.query(text, values);
@@ -60,10 +60,10 @@ export const addSubjectDB = async (s1: Subject) => {
   }
 };
 
-export const addTeachesDB = async (s1: Subject) => {
+export const addTeachesDB = async (s1: ISubject) => {
   try {
     const text2 = "INSERT INTO teaches VALUES($1,$2)";
-    const values2 = [s1.teacher_id.trim(), s1.sub_id];
+    const values2 = [s1.teacher_id.trim(), s1.subject_id];
     const result: QueryResult<any> = await db.query(text2, values2);
     if (result && result.command === "INSERT") return true;
     return false;
@@ -72,10 +72,10 @@ export const addTeachesDB = async (s1: Subject) => {
   }
 };
 
-export const addClassDB = async (s1: Subject) => {
+export const addClassDB = async (s1: ISubject) => {
   try {
     const text3 = "INSERT INTO classes VALUES($1,$2,$3)";
-    const values3 = [s1.cl_no, s1.sub_id, s1.teacher_id.trim()];
+    const values3 = [s1.class_number, s1.subject_id, s1.teacher_id.trim()];
     const result: QueryResult<any> = await db.query(text3, values3);
     if (result && result.command === "INSERT") return true;
     return false;

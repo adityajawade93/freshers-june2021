@@ -1,75 +1,66 @@
 import uuid from "uniqid";
 import { Context } from "vm";
-import * as studentWorker from "../services/student";
-import { invalidData, serverERROR, NOTFOUNDERROR } from "../config/error";
-import { checkStudent } from "../config/validation";
+import * as studentService from "../services/student";
+import { invalidData, serverERROR, NOTFOUNDERROR } from "../utils/util";
+// import { checkStudent } from "../helper/validation";
+import studentSchema from "../config/db/validateSchema/studentSchema";
+import AppError from "../utils/appError";
+import Joi from "joi";
 
-interface Student {
-  cl_no: number;
+const studentIDSchema = Joi.object({
+  student_id: Joi.string().trim().required(),
+});
+
+interface IStudent {
+  class_number: number;
   age: number;
-  st_id?: string;
+  student_id?: string;
   fname: string;
   lname: string;
   sex?: string;
 }
 
-
-
 export const createStudent = async (ctx: Context) => {
   try {
-    const s1: Student = ctx.request.body;
-    if (!checkStudent(s1)) {
-      invalidData(ctx, "bad input");
-      return;
-    }
-    s1.st_id = uuid();
-    const msg = await studentWorker.addStudentDB(s1);
-
-    if (msg) {
-      ctx.status = 200;
-      ctx.body = {
-        status: `successfully created student with ${s1.st_id}`,
-      };
-    } else {
-      invalidData(ctx, "bad Input");
-    }
+    const s1: IStudent = ctx.request.body;
+    await studentSchema.validateAsync(s1);
+    s1.student_id = uuid();
+    const msg = await studentService.addStudentDB(s1);
+    ctx.status = 200;
+    ctx.body = {
+      status: `successfully created student with ${s1.student_id}`,
+    };
   } catch (err) {
-    serverERROR(ctx);
+    if (!err.status) throw new AppError(err.message, 400);
+    throw err;
   }
 };
 
 export const modifyStudent = async (ctx: Context) => {
   try {
-    const st_id = ctx.params.st_id;
-    if (!st_id || typeof st_id !== "string") {
-      invalidData(ctx, "Bad Input");
-      return;
-    }
+    const student_id = ctx.params.studentID;
 
-    if (!(await studentWorker.checkExists(st_id))) {
-      invalidData(ctx, `student with this id not found`);
-      return;
-    }
+    await studentIDSchema.validateAsync({ student_id: student_id });
 
-    const { fname, lname, age, cl_no } = ctx.request.body;
+    await studentService.checkExists(student_id);
 
-    const queryResult = await studentWorker.modifyStudentDB(
+    const { fname, lname, age, class_number } = ctx.request.body;
+
+    await studentService.modifyStudentDB(
       fname,
       lname,
       age,
-      cl_no,
-      st_id
+      class_number,
+      student_id
     );
-    if (queryResult) {
-      ctx.status = 200;
-      ctx.body = {
-        status: `successfully updated student with ${st_id}`,
-      };
-    } else {
-      invalidData(ctx, "Bad Input");
-    }
+
+    ctx.status = 200;
+    ctx.body = {
+      status: `successfully updated student with ${student_id}`,
+    };
   } catch (err) {
-    serverERROR(ctx);
+    if (!err.status) throw new AppError(err.message, 400);
+    throw err;
   }
 };
 
@@ -86,7 +77,7 @@ export const getStudents = async (ctx: Context) => {
     page = Number(page);
     size = Number(size);
 
-    let student_table_size: number = await studentWorker.countStudents();
+    let student_table_size: number = await studentService.countStudents();
     const max_page_limit: number = Math.ceil(student_table_size / size);
     const max_size_limit = 500;
 
@@ -96,15 +87,14 @@ export const getStudents = async (ctx: Context) => {
       size < 0 ||
       size > max_size_limit
     ) {
-      NOTFOUNDERROR(ctx, "Page NOT FOUND!!");
-      return;
+      throw new AppError("Page NOT FOUND!!", 404);
     }
 
     const start_index = (page - 1) * size;
     const end_index = Math.min(page * size, student_table_size);
     const req_size = end_index - start_index;
 
-    const result = await studentWorker.getStudentsDB(start_index, req_size);
+    const result = await studentService.getStudentsDB(start_index, req_size);
 
     ctx.status = 200;
     ctx.body = {
@@ -113,6 +103,22 @@ export const getStudents = async (ctx: Context) => {
       data: result,
     };
   } catch (err) {
-    serverERROR(ctx);
+    throw err;
+  }
+};
+
+export const getStudentSchedule = async (ctx: Context) => {
+  try {
+    const student_id = ctx.params.studentID;
+    await studentIDSchema.validateAsync({ student_id: student_id });
+    const result = await studentService.getStudentScheduleDB(student_id);
+    ctx.status = 200;
+    ctx.body = {
+      status: `successfull`,
+      data: result,
+    };
+  } catch (err) {
+    if (!err.status) throw new AppError(err.message, 400);
+    throw err;
   }
 };

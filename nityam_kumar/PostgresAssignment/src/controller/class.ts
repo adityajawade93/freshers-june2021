@@ -1,18 +1,16 @@
-
 import { Context } from "vm";
 
-import * as classWorker from "../services/classes";
+import * as classService from "../services/classes";
 
-import { invalidData, serverERROR, NOTFOUNDERROR } from "../config/error";
+import { invalidData, serverERROR, NOTFOUNDERROR } from "../utils/util";
 
 export const getClasses = async (ctx: Context) => {
   try {
-    const [data1, data2] = await classWorker.getClassesDB();
+    const AllAvailableClasses = await classService.getClassesDB();
     ctx.status = 200;
     ctx.body = {
       status: `successfull`,
-      data: data1,
-      dat2: data2,
+      data: AllAvailableClasses,
     };
   } catch (err) {
     serverERROR(ctx);
@@ -21,7 +19,26 @@ export const getClasses = async (ctx: Context) => {
 
 export const getSchedule = async (ctx: Context) => {
   try {
-    const data = await classWorker.getScheduleDB();
+    const data = await classService.getScheduleDB();
+    ctx.status = 200;
+    ctx.body = {
+      status: `successfull`,
+      data: data,
+    };
+  } catch (err) {
+    serverERROR(ctx);
+  }
+};
+
+export const getClassSchedule = async (ctx: Context) => {
+  try {
+    let classNumber = ctx.params.classNumber;
+    if (classNumber && isNaN(classNumber)) {
+      invalidData(ctx, "Bad Input");
+      return;
+    }
+    classNumber = Number(classNumber);
+    const data = await classService.getClassScheduleDB(classNumber);
     ctx.status = 200;
     ctx.body = {
       status: `successfull`,
@@ -34,13 +51,13 @@ export const getSchedule = async (ctx: Context) => {
 
 export const fetchStudentsWithClass = async (ctx: Context) => {
   try {
-    const cl_id = ctx.params.cl_id;
-    if (!cl_id || typeof cl_id !== "string") {
+    const class_number = ctx.params.classNumber;
+    if (!class_number || typeof class_number !== "number") {
       invalidData(ctx, "bad Input");
       return;
     }
 
-    const data = await classWorker.fetchStudentsWithClassDB(cl_id);
+    const data = await classService.fetchStudentsWithClassDB(class_number);
 
     if (data.length === 0) {
       NOTFOUNDERROR(ctx, `id not found`);
@@ -56,5 +73,3 @@ export const fetchStudentsWithClass = async (ctx: Context) => {
     serverERROR(ctx);
   }
 };
-
-

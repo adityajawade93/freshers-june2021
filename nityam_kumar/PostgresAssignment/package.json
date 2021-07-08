@@ -4,6 +4,7 @@
     "@typescript-eslint/eslint-plugin": "^4.28.2",
     "@typescript-eslint/parser": "^4.28.2",
     "axios": "^0.21.1",
+    "joi": "^17.4.0",
     "json": "^11.0.0",
     "json2csv": "^5.0.6",
     "koa": "^2.13.1",
@@ -58,7 +59,8 @@
     "test": "jest",
     "start": "ts-node-dev src/index.ts",
     "build": "tsc",
-    "nodemon": "nodemon server.js"
+    "nodemon": "nodemon server.js",
+    "debug":"ndb server.js"
   },
   "author": "",
   "license": "ISC",

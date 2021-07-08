@@ -2,11 +2,8 @@ import db from "../config/db";
 
 export const getClassesDB = async () => {
   try {
-    const data1 = await db.query(
-      "select c.cl_no,c.sub_id,c.teacher_id,t.fname,t.lname,s.sub_name from classes as c inner join teacher as t on c.teacher_id=t.teacher_id inner join subject as s on s.sub_id=c.sub_id order by c.cl_no"
-    );
-    const data2 = await db.query("select distinct cl_no as class from student");
-    return [data1.rows, data2.rows];
+    const data = await db.query("select distinct cl_no as class from student");
+    return data.rows;
   } catch (err) {
     throw new Error(err);
   }
@@ -28,10 +25,22 @@ export const getScheduleDB = async () => {
   }
 };
 
-export const fetchStudentsWithClassDB = async (cl_id: string) => {
+export const getClassScheduleDB = async (classNumber: number) => {
+  try {
+    const data = await db.query(
+      `select sub_name,sub_id from subject where cl_no =$1`,
+      [classNumber]
+    );
+    return data.rows;
+  } catch (err) {
+    throw new Error(err);
+  }
+};
+
+export const fetchStudentsWithClassDB = async (class_number: number) => {
   try {
     const data = await db.query("select * from student where cl_no=$1", [
-      cl_id,
+      class_number,
     ]);
     return data.rows;
   } catch (err) {

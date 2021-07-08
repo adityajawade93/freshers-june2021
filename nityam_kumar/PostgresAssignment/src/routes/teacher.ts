@@ -12,12 +12,12 @@ const router = new KoaRouter({ prefix: "/teacher" });
 
 router.post("/", createTeacher);
 
-router.get("/allteacher", getTeachers);
+router.get("/", getTeachers);
 
-router.get("/allteacher/teaching", getTeachersTeaching);
+router.get("/teaching", getTeachersTeaching);
 
-router.patch("/:teacher_id", modifyTeacher);
+router.patch("/:teacherId", modifyTeacher);
 
-router.get("/students/:teacher_id", fetchStudentsWithTeacher);
+router.get("/students/:teacherId", fetchStudentsWithTeacher);
 
 export default router;

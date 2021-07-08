@@ -1,6 +1,6 @@
 let arr = [1,2,3,4,5,6,7,8,9,10,11];
 
-function binary_search(arr,l,r,num){
+const binarySearch = function binary_search(arr,l,r,num){
   if(l>r){
     return -1;
   }
@@ -17,6 +17,7 @@ function binary_search(arr,l,r,num){
   }
 }
 
-let result = binary_search(arr,0,arr.length-1,7);
+let result = binarySearch(arr,0,arr.length-1,7);
 console.log(result);
 
+module.exports = binarySearch;

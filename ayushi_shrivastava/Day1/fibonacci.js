@@ -9,3 +9,5 @@ function fibonacci(num){
   
   let fib = fibonacci(7);
   console.log(fib);
+
+  module.exports = fibonacci;

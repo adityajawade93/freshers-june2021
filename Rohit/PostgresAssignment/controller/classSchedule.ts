@@ -1,20 +1,20 @@
 import { Context } from "vm";
 
-const sched = require('../sql/classSchedule')
+const scheduleController = require('../services/classSchedule')
 
-interface class_scheduleinfo {
-    classid: number;
+interface IClassScheduleInfo {
+    cls_Id: number;
     classno: number;
-    subj_id: number;
-    subj_name: string;
-    tch_id: number;
-    tch_fname: string;
+    subjId: number;
+    subject_name: string;
+    teach_Id: number;
+    teacher_fname: string;
   }
 
-  exports.class_scheduleData = async (ctx: Context) => {
+  exports.getClass_scheduleData = async (ctx: Context) => {
     try {
-      let [rows]: Array<{ rows: class_scheduleinfo }> = [];
-      rows = await sched.get_class_schedule();
+      let [rows]: Array<{ rows: IClassScheduleInfo }> = [];
+      rows = await scheduleController.get_class_schedule();
       ctx.response.status = 200;
       ctx.response.type = "application/json";
       ctx.body = rows.rows;
@@ -29,14 +29,14 @@ interface class_scheduleinfo {
 
   exports.add_class_schedule_in_table = async (ctx: Context) => {
     try {
-      let req: class_scheduleinfo = ctx.request.body;
+      let req: IClassScheduleInfo = ctx.request.body;
       if (
-        req.classid === undefined ||
+        req.cls_Id === undefined ||
         req.classno === undefined ||
-        req.subj_id === undefined ||
-        req.subj_name === undefined ||
-        req.tch_id === undefined ||
-        req.tch_fname === undefined
+        req.subjId === undefined ||
+        req.subject_name === undefined ||
+        req.teach_Id === undefined ||
+        req.teacher_fname === undefined
       ) {
         ctx.response.status = 400;
         ctx.response.type = "text/html";
@@ -45,12 +45,12 @@ interface class_scheduleinfo {
       }
   
       if (
-        typeof req.classid !== "number" ||
+        typeof req.cls_Id !== "number" ||
         typeof req.classno !== "number" ||
-        typeof req.subj_id !== "number" ||
-        typeof req.subj_name !== "string" ||
-        typeof req.tch_id !== "number" ||
-        typeof req.tch_fname !== "string"
+        typeof req.subjId !== "number" ||
+        typeof req.subject_name !== "string" ||
+        typeof req.teach_Id !== "number" ||
+        typeof req.teacher_fname !== "string"
       ) {
         ctx.response.status = 400;
         ctx.response.type = "text/html";
@@ -58,22 +58,22 @@ interface class_scheduleinfo {
         return;
       }
   
-      if (req.subj_name.trim() === "" || req.tch_fname.trim() === "") {
+      if (req.subject_name.trim() === "" || req.teacher_fname.trim() === "") {
         ctx.response.status = 400;
         ctx.response.type = "text/html";
         ctx.body = "Bad Request";
         return;
       }
-      await sched.add_class_schedule(
-        req.classid,
+      await scheduleController.add_class_schedule(
+        req.cls_Id,
         req.classno,
-        req.subj_id,
-        req.subj_name,
-        req.tch_id,
-        req.tch_fname
+        req.subjId,
+        req.subject_name,
+        req.teach_Id,
+        req.teacher_fname
       );
   
-      ctx.response.status = 200;
+      ctx.response.status = 201;
       ctx.response.type = "text/html";
       ctx.body = "data is inserted in Class_schedule table";
     } catch (err) {

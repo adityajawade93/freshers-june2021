@@ -1,18 +1,18 @@
 import { Context } from "vm";
 
-const tch = require('../sql/teacher')
+const teacherController = require('../services/teacher')
 
-interface teacherinfo {
-    t_id: number;
-    t_fname: string;
-    t_lname: string;
+interface ITeacherInfo {
+    teacherId: number;
+    teacher_fname: string;
+    teacher_lname: string;
     gender: CharacterData;
   }
 
-exports.teacherData = async (ctx: Context) => {
+exports.getTeacherData = async (ctx: Context) => {
     try {
-      let [rows]: Array<{ rows: teacherinfo }> = [];
-      rows = await tch.get_teacher();
+      let [rows]: Array<{ rows: ITeacherInfo }> = [];
+      rows = await teacherController.get_teacher();
   
       ctx.response.status = 200;
       ctx.response.type = "application/json";
@@ -27,11 +27,11 @@ exports.teacherData = async (ctx: Context) => {
   
   exports.add_teacher_in_table = async (ctx: Context) => {
     try {
-      let req: teacherinfo = ctx.request.body;
+      let req: ITeacherInfo = ctx.request.body;
       if (
-        req.t_id === undefined ||
-        req.t_fname === undefined ||
-        req.t_lname === undefined ||
+        req.teacherId === undefined ||
+        req.teacher_fname === undefined ||
+        req.teacher_lname === undefined ||
         req.gender === undefined
       ) {
         ctx.response.status = 400;
@@ -40,7 +40,7 @@ exports.teacherData = async (ctx: Context) => {
         return;
       }
   
-      if (req.t_fname.trim() === "" || req.t_lname.trim() === "") {
+      if (req.teacher_fname.trim() === "" || req.teacher_lname.trim() === "") {
         ctx.response.status = 400;
         ctx.response.type = "text/html";
         ctx.body = "Bad Request";
@@ -48,9 +48,9 @@ exports.teacherData = async (ctx: Context) => {
       }
   
       if (
-        typeof req.t_id !== "number" ||
-        typeof req.t_fname !== "string" ||
-        typeof req.t_lname !== "string" ||
+        typeof req.teacherId !== "number" ||
+        typeof req.teacher_fname !== "string" ||
+        typeof req.teacher_lname !== "string" ||
         typeof req.gender !== "string"
       ) {
         ctx.response.status = 400;
@@ -58,9 +58,9 @@ exports.teacherData = async (ctx: Context) => {
         ctx.body = "Bad Request";
         return;
       }
-      await tch.add_teacher(req.t_id, req.t_fname, req.t_lname, req.gender);
+      await teacherController.add_teacher(req.teacherId, req.teacher_fname, req.teacher_lname, req.gender);
   
-      ctx.response.status = 200;
+      ctx.response.status = 201;
       ctx.response.type = "text/html";
       ctx.body = "data is inserted in teacher table";
     } catch (err) {

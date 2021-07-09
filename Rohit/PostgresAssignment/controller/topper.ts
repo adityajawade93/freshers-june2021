@@ -1,22 +1,22 @@
 import { Context } from "vm";
 
-const top = require('../sql/topper');
+const topperController = require('../services/topper');
 
 interface topper {
-    s_id: number;
-    s_name: string;
+    studentId: number;
+    name: string;
     marks: number;
   }
   
-  exports.topper_by_clsId_and_subjId = async (ctx: Context) => {
+  exports.getTopper_by_classId_and_subjectId = async (ctx: Context) => {
     try {
-      var c_id: number = parseInt(ctx.params.c_id);
-      var sub_id: number = parseInt(ctx.params.sub_id);
+      var classId: number = parseInt(ctx.params.classId);
+      var subjectId: number = parseInt(ctx.params.subjectId);
       if (
-        c_id === undefined ||
-        typeof c_id !== "number" ||
-        sub_id === undefined ||
-        typeof sub_id !== "number"
+        classId=== undefined ||
+        typeof classId !== "number" ||
+        subjectId === undefined ||
+        typeof subjectId !== "number"
       ) {
         ctx.response.status = 400;
         ctx.response.type = "text/html";
@@ -24,7 +24,7 @@ interface topper {
         return;
       }
       let [rows]: Array<{ rows: topper }> = [];
-      rows = await top.get_topper_by_classid_and_subjectid(c_id, sub_id);
+      rows = await topperController.get_topper_by_classId_and_subjectId(classId, subjectId);
   
       ctx.response.status = 200;
       ctx.response.type = "application/json";
@@ -37,17 +37,17 @@ interface topper {
     }
   };
   
-  exports.topten_by_clsId = async (ctx: Context) => {
+  exports.getTopTen_by_classId = async (ctx: Context) => {
     try {
-      var c_id = parseInt(ctx.params.c_id);
-      if (c_id === undefined || typeof c_id !== "number") {
+      var classId = parseInt(ctx.params.classId);
+      if (classId === undefined || typeof classId !== "number") {
         ctx.response.status = 400;
         ctx.response.type = "text/html";
         ctx.body = "Bad Request";
         return;
       }
       let [rows]: Array<{ rows: topper }> = [];
-      rows = await top.get_topten_students(c_id);
+      rows = await topperController.get_topten_students(classId);
   
       ctx.response.status = 200;
       ctx.response.type = "application/json";

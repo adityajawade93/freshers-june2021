@@ -1,25 +1,25 @@
 import { Context } from "vm";
 
-const mrk = require('../sql/marks');
+const marksController = require('../services/marks');
 
-interface marksinfo {
-    subject_id: number;
+interface IMarksInfo {
+    subjectId: number;
     subject_name: string;
     marks: number;
   }
   
 
-exports.subjectMarks_by_subjectId = async (ctx: Context) => {
+exports.getSubjectMarks_by_studentId = async (ctx: Context) => {
     try {
-      var id: number = parseInt(ctx.url.substring(7));
-      if (id === undefined || typeof id !== "number") {
+      var studentId: number = parseInt(ctx.params.studentId);
+      if (studentId === undefined || typeof studentId !== "number") {
         ctx.response.status = 400;
         ctx.response.type = "text/html";
         ctx.body = "Bad Request";
         return;
       }
-      let [rows]: Array<{ rows: marksinfo }> = [];
-      rows = await mrk.get_subjectmarks_by_studentid(id);
+      let [rows]: Array<{ rows: IMarksInfo }> = [];
+      rows = await marksController.get_subjectmarks_by_studentid(studentId);
       ctx.response.status = 200;
       ctx.response.type = "application/json";
       ctx.body = rows.rows;

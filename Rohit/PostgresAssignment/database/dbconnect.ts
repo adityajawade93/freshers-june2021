@@ -5,10 +5,11 @@ const client = new Client({
   port: 3376,
   host: "localhost",
   database: "employees",
-  schema: "myschool",
+  schema:"school",
 });
 
-client.connect().then(() => {
+client.connect()
+.then(() => {
   console.log("connected successfully");
 });
 

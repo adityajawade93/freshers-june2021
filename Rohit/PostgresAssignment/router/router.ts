@@ -2,42 +2,42 @@ const koarouter = require("@koa/router");
 
 const router = new koarouter();
 
-const stnt = require('../controller/student');
-const tchr = require('../controller/teacher');
-const subj = require('../controller/subject');
-const cls = require('../controller/class');
+const student = require('../controller/student');
+const teacher = require('../controller/teacher');
+const subject = require('../controller/subject');
+const clas = require('../controller/class');
 const schedule = require('../controller/classSchedule');
-const rslt = require('../controller/result');
-const topr = require('../controller/topper');
+const result = require('../controller/result');
+const topper = require('../controller/topper');
 const mark = require('../controller/marks');
 
-router.get('/student',stnt.studentData);
-router.get('/student/:clsId',stnt.studentData_by_classId);
-router.get('/student/:subjId',stnt.studentData_subjectId);
-router.get('/student/:teacherId',stnt.studentData_teacherId);
-router.post('/addstudent',stnt.add_student_in_table);
+router.get('/student',student.getStudentData);
+router.get('/studentclass/:classId',student.studentData_by_classId);
+router.get('/studentsubject/:subjectId',student.studentData_subjectId);
+router.get('/studentteacher/:teacherId',student.studentData_teacherId);
+router.post('/addstudent',student.add_student_in_table);
 
-router.get('/teacher',tchr.teacherData);
-router.post('/addteacher',tchr.add_teacher_in_table);
+router.get('/teacher',teacher.getTeacherData);
+router.post('/addteacher',teacher.add_teacher_in_table);
 
-router.get('/class',cls.classData);
-router.post('/addclasses',cls.add_student_in_classes_table);
+router.get('/class',clas.getClassInfo);
+router.post('/addclasses',clas.addStudentInClass);
 
-router.get('/subject',subj.subjectData);
-router.post('/addsubject',subj.add_subject_in_table);
+router.get('/subject',subject.getSubjectData);
+router.post('/addsubject',subject.add_subject_in_table);
 
 
-router.get('/result',rslt.resultData); 
-router.post('/addresult',rslt.add_reasultData_in_table);
-router.put('/updateresult/:stId/:subjId',rslt.updateResult_by_stId_and_sbjId);
+router.get('/result',result.getResultData); 
+router.post('/addresult',result.add_reasultData_in_table);
+router.put('/updateresult/:stId/:subjId',result.updateResult_by_studentId_and_subjectId);
 
-router.get('/classschedule',schedule.class_scheduleData);
+router.get('/classschedule',schedule.getClass_scheduleData);
 router.post('/addschedule',schedule.add_class_schedule_in_table);
 
-router.get('/subjectmarks/:subjId',mark.subjectMarks_by_subjectId);
+router.get('/subjectmarks/:studentId',mark.getSubjectMarks_by_studentId);
 
-router.get('/topper/:clsId/subject/:subjId',topr.topper_by_clsId_and_subjId);
-router.get('/topten/:clsId',topr.topten_by_clsId);
+router.get('/topper/:classId/subject/:subjectId',topper.getTopper_by_classId_and_subjectId);
+router.get('/topten/:classId',topper.getTopTen_by_classId);
 
 
 module.exports = router;

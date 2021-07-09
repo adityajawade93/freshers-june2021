@@ -1,17 +1,17 @@
 import { Context } from "vm";
 
-const cls = require('../sql/class');
+const classController = require('../services/class');
 
-interface classesinfo {
-    cls_id: number;
-    st_id: number;
+interface IClassInfo {
+    classId: number;
+    stId: number;
   }
   
   
-exports.classData = async (ctx: Context) => {
+exports.getClassInfo = async (ctx: Context) => {
     try {
-      let [rows]: Array<{ rows: classesinfo }> = [];
-      rows = await cls.get_classes();
+      let [rows]: Array<{ rows: IClassInfo }> = [];
+      rows = await classController.get_classes();
   
       ctx.response.status = 200;
       ctx.response.type = "application/json";
@@ -24,23 +24,23 @@ exports.classData = async (ctx: Context) => {
     }
   };
   
-  exports.add_student_in_classes_table = async (ctx: Context) => {
+  exports.addStudentInClass = async (ctx: Context) => {
     try {
-      let req: classesinfo = ctx.request.body;
+      let req: IClassInfo = ctx.request.body;
       if (
-        req.cls_id === undefined ||
-        req.st_id === undefined ||
-        typeof req.cls_id !== "number" ||
-        typeof req.st_id !== "number"
+        req.classId === undefined ||
+        req.stId === undefined ||
+        typeof req.classId !== "number" ||
+        typeof req.stId !== "number"
       ) {
         ctx.response.status = 400;
         ctx.response.type = "text/html";
         ctx.body = "Bad Request";
         return;
       }
-      await cls.add_student_in_class(req.cls_id, req.st_id);
+      await classController.add_student_to_class(req.classId, req.stId);
   
-      ctx.response.status = 200;
+      ctx.response.status = 201;
       ctx.response.type = "text/html";
       ctx.body = "data is inserted in classes table";
     } catch (err) {

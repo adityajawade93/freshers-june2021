@@ -20,8 +20,8 @@ app.use(async (ctx: Context, next) => {
   throw new AppError("Page NOT found", 404);
 });
 
-app.on("error", (err, ctx: Context) => {
-  console.log(err);
-});
+// app.on("error", (err, ctx: Context) => {
+//   console.log(err);
+// });
 
 export default app;

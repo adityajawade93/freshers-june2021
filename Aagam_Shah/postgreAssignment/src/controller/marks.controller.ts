@@ -1,13 +1,14 @@
-const db = require('../config/database').pool;
-import { Context } from "vm";
+// const db = require('../config/database').pool;
+import db from '../config/database';
+import { Context } from 'vm';
 import * as validation from '../helper/validation';
 
-exports.marksOfStudent = async (ctx: Context) => {
-  var id = ctx.params.id;
-  if(validation.isValidId(id)){
+export async function marksOfStudent(ctx: Context){
+  const studentId = ctx.params.id;
+  if(validation.isValidId(studentId)){
     try{
       const response = await db.query(
-        `select * from school.marks where studentid = $1`, [id]
+        `select * from school.marks where studentid = $1`, [studentId]
       );
       if(response.rows.length){
         ctx.response.status = 200;
@@ -15,7 +16,7 @@ exports.marksOfStudent = async (ctx: Context) => {
         return;
       }
       ctx.response.status = 400;
-      ctx.body = "Required Id is not Present";
+      ctx.body = 'Required Id is not Present';
       return;
     }
     catch(error){
@@ -25,21 +26,21 @@ exports.marksOfStudent = async (ctx: Context) => {
     }
   }
   else{
-    ctx.body = "invalid id passed";
+    ctx.body = 'invalid id passed';
     ctx.response.status = 400;
     return;
   }
 };
 
-exports.highestMarkOfSubject = async (ctx: Context) => {
-  var id = ctx.params.id;
-  if(validation.isValidId(id)){
+export async function highestMarkOfSubject(ctx: Context){
+  const subjetId = ctx.params.id;
+  if(validation.isValidId(subjetId)){
     try{
       const response = await db.query(
         `select * from school.marks 
         where subjectid = $1
         order by marks desc
-        limit 1`, [id]
+        limit 1`, [subjetId]
       );
       if(response.rows.length){
         ctx.response.status = 200;
@@ -47,7 +48,7 @@ exports.highestMarkOfSubject = async (ctx: Context) => {
         return;
       }
       ctx.response.status = 400;
-      ctx.body = "Required Id is not Present";
+      ctx.body = 'Required Id is not Present';
       return;
     }
     catch(error){
@@ -57,7 +58,7 @@ exports.highestMarkOfSubject = async (ctx: Context) => {
     }
   }
   else{
-    ctx.body = "invalid id passed";
+    ctx.body = 'invalid id passed';
     ctx.response.status = 400;
     return;
   }

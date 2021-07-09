@@ -1,8 +1,9 @@
-const db = require('../config/database').pool;
+// const db = require('../config/database').pool;
+import db from '../config/database';
 import { Context } from "vm";
 import * as validation from '../helper/validation';
 
-exports.listAllTeachers = async (ctx: Context) => {
+export async function listAllTeachers(ctx: Context){
   var page = parseInt(ctx.request.query.page);
   var size = parseInt(ctx.request.query.size);
   var isValid = validation.page_validation(page,size);

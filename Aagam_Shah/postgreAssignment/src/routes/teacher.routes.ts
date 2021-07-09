@@ -1,12 +1,15 @@
-const koarouter = require('@koa/router');
-const teacherController = require('../controller/teacher.controller');
+// const koarouter = require('@koa/router');
+// const teacherController = require('../controller/teacher.controller');
+
+import koarouter from '@koa/router';
+import * as teacherController from '../controller/teacher.controller';
 
 const router = new koarouter();
 
 router.get('/teachers', teacherController.listAllTeachers);
 
 // For Require somewhere
-module.exports = router;
+// module.exports = router;
 
 // For import somewhere
 export default router;

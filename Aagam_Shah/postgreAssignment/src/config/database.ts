@@ -1,4 +1,6 @@
-const { Pool } = require('pg');
+// const { Pool } = require('pg');
+
+import { Pool } from 'pg';
 
 // const dotenv = require('dotenv');
 // dotenv.config();
@@ -13,7 +15,9 @@ pool.on('connect', () => {
   // console.log(response);
 });
 
-module.exports = {
-  pool
-  // query: (text: any, params: any) => pool.query(text, params)
-};
+// module.exports = {
+//   pool
+//   // query: (text: any, params: any) => pool.query(text, params)
+// };
+
+export default pool;

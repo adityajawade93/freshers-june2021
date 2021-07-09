@@ -1,4 +1,5 @@
-const app = require('./src/app').default;
+// const app = require('./src/app').default;
+import { app } from './src/app';
 
 const port = process.env.PORT || 3000;
 

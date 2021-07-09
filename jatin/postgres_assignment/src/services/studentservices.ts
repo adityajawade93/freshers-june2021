@@ -56,7 +56,12 @@ async function getStudent(page: number,size: number){
 
 async function getStudentFromClassID(id: string){
     return new Promise((resolve,reject)=>{
-        client.query('select * from school.student where studentID IN (select studentID from school.studies_in where classID = $1)',[id],
+        client.query(`
+        select s.studentid, s.name, class.classid
+        from school.student s
+        left join school.studies_in on studies_in.studentid = s.studentid
+        left join school.class on class.classid = studies_in.classid
+        where class.classid = $1`,[id],
         (err: any,res: any)=>{
             if(err)reject (err);
             else resolve(res.rows);
@@ -66,7 +71,14 @@ async function getStudentFromClassID(id: string){
 
 async function getStudentFromSubjectID(id: string){
     return new Promise((resolve,reject)=>{
-        client.query('select * from school.student where studentid in (select studentid from school.studies_in where classid in (select classid from school.having_subject where subjectid = $1))', [id],
+        client.query(`
+        select s.studentid, s.name, class.classid, subject.name , subject.subjectid
+        from school.student s
+        left join school.studies_in on studies_in.studentid = s.studentid
+        left join school.class on class.classid = studies_in.classid
+        left join school.having_subject on class.classid = having_subject.classid
+        left join school.subject on subject.subjectid = having_subject.subjectid
+        where subject.subjectid = $1`, [id],
         (err:any,res: any)=>{
             if(err)reject (err);
             else resolve(res.rows);
@@ -76,7 +88,16 @@ async function getStudentFromSubjectID(id: string){
 
 async function getStudentFromTeacherID(id: string){
     return new Promise((resolve,reject)=>{
-        client.query('select * from school.student where studentid in (select studentid from school.studies_in where classid in (select classid from school.having_subject where subjectid in (select subjectid from school.takes where teacherid = $1 )))', [id],
+        client.query(`
+        select s.studentid, s.name, class.classid, teacher.teacherid
+        from school.student s
+        left join school.studies_in on studies_in.studentid = s.studentid
+        left join school.class on class.classid = studies_in.classid
+        left join school.having_subject on class.classid = having_subject.classid
+        left join school.subject on subject.subjectid = having_subject.subjectid
+        left join school.takes on subject.subjectid = takes.subjectid
+        left join school.teacher on teacher.teacherid = takes.teacherid
+        where teacher.teacherid = $1`,[id],
         (err: any,res: any)=>{
             if(err)reject (err);
             else resolve(res.rows);

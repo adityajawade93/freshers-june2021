@@ -1,9 +1,9 @@
 import { dbQuery } from "../db/db";
 
-export async function addTeacher(id: string, name: string, sex: string | null, age: number | null) {
+export async function addTeacher(teacherid: string, name: string, sex: string | null, age: number | null, tsub: string | null) {
     try {
-        const query = 'insert into teacher (id, name, sex, age) values ($1, $2, $3, $4)';
-        const res = await (dbQuery(query, [id, name, sex, age]));
+        const query = 'insert into teacher (teacherid, name, sex, age, tsub) values ($1, $2, $3, $4, $5)';
+        const res = await (dbQuery(query, [teacherid, name, sex, age, tsub]));
         if (res && res.command === 'INSERT')
             return true;
 

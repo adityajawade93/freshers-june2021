@@ -10,8 +10,9 @@ export async function addClass(ctx: Context) {
         const name: string = requestData.name.toLowerCase().trim();
 
         await classService.addClass(id, name);
-
+        ctx.status = 201;
         ctx.body = {
+
             message: `class with ${id} and name ${name} is added`,
         };
     } catch (e) {
@@ -39,10 +40,10 @@ export async function getClasses(ctx: Context) {
 
 export async function getClassId(ctx: Context) {
     try {
-        const requestData: any = ctx.params.name;
-        const name: string = requestData.name.toLowerCase().trim();
-        const classdata = await classService.getClassId(name);
+        const id: string = ctx.params.id;
+        const classdata = await classService.getClassId(id);
 
+        ctx.status = 200;
         ctx.body = {
             data: classdata
         };

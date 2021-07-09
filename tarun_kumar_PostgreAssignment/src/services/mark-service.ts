@@ -1,10 +1,10 @@
 import { dbQuery } from "../db/db";
 
-
-export async function addMark(student_id: string, subject_id: string, marks: number) {
+//student_id: string, subject_id: string, marks: number
+export async function addMark(requestData: any) {
     try {
-        const query = 'insert into mark (student_id, subject_id, marks) values ($1, $2, $3)';
-        const res = await (dbQuery(query, [student_id, subject_id, marks]));
+        const query = 'insert into mark (studentid, subid, marks) values ($1, $2, $3)';
+        const res = await (dbQuery(query, [requestData.studentid, requestData.subid, requestData.marks]));
 
         if (res && res.command === 'INSERT')
             return true;
@@ -15,10 +15,10 @@ export async function addMark(student_id: string, subject_id: string, marks: num
     }
 }
 
-export async function updateMark(marks: number, student_id: string, subject_id: string) {
+export async function updateMark(marks: number, studentid: string, subid: string) {
     try {
-        const query = 'update mark set marks = $1 where student_id = $2 and subject_id = $3';
-        const res = await (dbQuery(query, [marks, student_id, subject_id]));
+        const query = 'update mark set marks = $1 where studentid = $2 and subid = $3';
+        const res = await (dbQuery(query, [marks, studentid, subid]));
 
         if (res && res.command === 'INSERT')
             return true;

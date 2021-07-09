@@ -10,7 +10,7 @@ export async function addSubject(ctx: Context) {
         const name: string = requestData.name.toLowerCase();
 
         await subjectService.addSubject(id, name);
-
+        ctx.status = 201;
         ctx.body = {
             message: `subject with ${id} is added`,
         };

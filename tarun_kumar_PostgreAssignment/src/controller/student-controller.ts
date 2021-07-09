@@ -14,14 +14,12 @@ export async function addStudent(ctx: Context) {
         const age: number | null = requestData.age;
 
         await studentService.addStudent(id, name, sex, age);
+        ctx.status = 201;
         ctx.body = {
             message: `student with id: ${id} created`,
         };
     } catch (e) {
         ctx.status = 404;
-        if (e.isJoi) ctx.status = 422;
-        else if (e.status) ctx.status = e.status;
-
         ctx.body = { error: e.message };
     }
 }

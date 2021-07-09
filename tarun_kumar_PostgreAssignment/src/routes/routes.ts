@@ -14,7 +14,7 @@ const port = 3001;
 
 //class
 router.get("/class", getClasses);
-router.get("/class/:name", getClassId);
+router.get("/class/:id", getClassId);
 router.post('/class', addClass);
 
 //mark

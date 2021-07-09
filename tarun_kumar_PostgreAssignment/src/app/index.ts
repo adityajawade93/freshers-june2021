@@ -25,9 +25,9 @@ app.use(async (ctx: Context) => {
     ctx.body = "Invalid URL, please provide correct url";
     ctx.status = 400;
 });
-
-const server = app.listen(port, () => console.log("port on ", port));
 start();
+const server = app.listen(port, () => console.log("port on ", port));
+
 
 module.exports = server;
 

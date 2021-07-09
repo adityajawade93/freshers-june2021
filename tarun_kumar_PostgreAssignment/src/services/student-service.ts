@@ -42,11 +42,11 @@ export async function getStudents() {
 export async function getStudentMarks(id: string) {
     try {
         const query = `
-        select subject.name as subject, mark.marks
+        select subname as subject, mark.marks
         from mark
-        inner join student on student.id = mark.student_id
-        inner join subject on subject.id = mark.subject_id
-        where mark.student_id = $1
+        inner join student on studentid = mark.studentid
+        inner join subject on subid = mark.subid
+        where mark.studentid = $1
       `;
         const res = await (dbQuery(query, [id]));
 

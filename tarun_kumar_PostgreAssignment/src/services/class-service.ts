@@ -1,10 +1,10 @@
 import { dbQuery } from "../db/db";
 
-export async function addClass(id: String, name: string) {
+export async function addClass(cid: String, cname: string) {
 
     try {
-        const query = 'insert into classes (id, name) values ($1, $2)';
-        const res = await dbQuery(query, [id, name]);
+        const query = 'insert into classes (cid, cname) values ($1, $2)';
+        const res = await dbQuery(query, [cid, cname]);
 
         if (res && res.command === 'INSERT')
             return true;
@@ -17,12 +17,12 @@ export async function addClass(id: String, name: string) {
 
 }
 
-export async function getClassId(name: string) {
+export async function getClassId(id: string) {
     try {
-        const query = 'select id from classes where name = $1';
-        const result = await dbQuery(query, [name]);
-
-        return result.rows[0].id;
+        const query = 'select * from classes where cid = $1';
+        const result = await dbQuery(query, [id]);
+        //console.log(result);
+        return result.rows[0];
     } catch (e) {
         throw Error(e);
     }

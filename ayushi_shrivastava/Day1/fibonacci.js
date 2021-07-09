@@ -11,3 +11,4 @@ function fibonacci(num){
   console.log(fib);
 
   module.exports = fibonacci;
+  

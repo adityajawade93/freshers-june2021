@@ -1,4 +1,4 @@
-import { ValidatePage, ValidId } from "../helper/index";
+import { ValidatePage} from "../helper/index";
 import { Context } from "vm";
 import { AddStudent, AllStudents } from "../services/student";
 
@@ -33,7 +33,7 @@ export async function addStudents(ctx: Context) {
   const name = ctx.request.body.name;
   const classid = ctx.request.body.classid;
 
-  if (name && ValidId(classid)) {
+  if (name && classid) {
     try {
       const [response, responseError] = await AddStudent(name, classid);
       ctx.body = { Message: "Data added succesfully" };

@@ -1,4 +1,4 @@
-import { ValidId, ValidatePage } from "../helper/index";
+import {ValidatePage } from "../helper/index";
 import { Context } from "vm";
 import { AddSubject, AllSubjects, SubjectStudent } from "../services/subject";
 
@@ -25,7 +25,7 @@ export async function allSubjects(ctx: Context) {
 
 export async function subjectStudent(ctx: Context) {
   var id = ctx.params.id;
-  if (ValidId(id)) {
+  if (id) {
     try {
       const response = await SubjectStudent(id);
       ctx.response.status = 200;
@@ -47,8 +47,8 @@ export async function addSubject(ctx: Context) {
   // console.log(name,classid,subjectid);
   if (
     name &&
-    ValidId(classid) &&
-    ValidId(subjectid) &&
+    classid &&
+    subjectid &&
     typeof name == "string" &&
     typeof classid == "string" &&
     typeof subjectid == "string"

@@ -1,4 +1,4 @@
-import { ValidatePage, ValidId } from "../helper/index";
+import { ValidatePage } from "../helper/index";
 import { Context } from "vm";
 import { AllMarks, AddMarks, Topper } from "../services/marks";
 
@@ -20,8 +20,8 @@ export async function addMarks(ctx: Context) {
   const marks = ctx.request.body.marks;
 
   if (
-    ValidId(studentid) == true &&
-    ValidId(subjectid) &&
+    studentid &&
+    subjectid &&
     typeof marks == "number"
   ) {
     try {

@@ -1,4 +1,4 @@
-import { ValidatePage, ValidId } from "../helper/index";
+import { ValidatePage} from "../helper/index";
 import { Allteacher, TeacherStudent, AddTeacher } from "../services/teachers";
 import { Context } from "vm";
 
@@ -17,7 +17,7 @@ export async function getTeachers(ctx: Context) {
 
 export async function teacherStudent(ctx: Context) {
   const id = ctx.params.id;
-  if (ValidId(id)) {
+  if (id) {
     try {
       const response = await TeacherStudent(id);
       ctx.response.status = 200;

@@ -1,5 +1,4 @@
 import { ValidatePage } from "../helper/index";
-import { ValidId } from "../helper/index";
 import { Context } from "vm";
 import { AllClasses, addClass, classStudent } from "../services/class";
 
@@ -19,7 +18,7 @@ export async function getClasses(ctx: Context) {
 export async function studentsOfClass(ctx: Context) {
   const id = ctx.params.id.trim();
   // console.log(id);
-  if (ValidId(id)) {
+  if (id) {
     try {
       const [response, responseError] = await classStudent(id);
       ctx.body = response.rows;

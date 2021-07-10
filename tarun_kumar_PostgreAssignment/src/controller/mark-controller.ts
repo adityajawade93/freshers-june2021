@@ -27,14 +27,14 @@ export async function addMarks(ctx: Context) {
 export async function updateMarks(ctx: Context) {
     try {
         const requestData = ctx.request.body;
-        const student_id: string = requestData.student_id;
-        const subject_name: string = requestData.subject_name.toLowerCase();
-        const marks: number = requestData.marks;
-        const subject_id: string = await subjectService.getSubjectId(subject_name);
+        // const student_id: string = requestData.student_id;
+        // const subject_name: string = requestData.subject_name.toLowerCase();
+        // const marks: number = requestData.marks;
+        // const subject_id: string = await subjectService.getSubjectId(subject_name);
 
-        await markService.updateMark(marks, student_id, subject_id);
+        await markService.updateMark(requestData);
         ctx.body = {
-            message: `marks for student with ${student_id} is updated`,
+            message: `marks for student with ${requestData.studentid} is updated`,
         };
     } catch (e) {
         ctx.status = 404;

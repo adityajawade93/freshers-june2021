@@ -12,11 +12,12 @@ export async function addStudent(ctx: Context) {
         const name: string = requestData.name.trim();
         const sex: string | null = requestData.sex;
         const age: number | null = requestData.age;
+        const classid: string = requestData.classid;
 
-        await studentService.addStudent(id, name, sex, age);
+        await studentService.addStudent(id, name, sex, age, classid);
         ctx.status = 201;
         ctx.body = {
-            message: `student with id: ${id} created`,
+            message: `student with id: ${id} created and name ${name}`,
         };
     } catch (e) {
         ctx.status = 404;
@@ -43,8 +44,8 @@ export async function getStudents(ctx: Context) {
 
 export async function getStudentMarks(ctx: Context) {
     try {
-        const student_id: string = ctx.params.student_id;
-        const studentMarks = await studentService.getStudentMarks(student_id);
+        const studentid: string = ctx.params.studentid;
+        const studentMarks = await studentService.getStudentMarks(studentid);
 
         ctx.body = {
             count: studentMarks.length,

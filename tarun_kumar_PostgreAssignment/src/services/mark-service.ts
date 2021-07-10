@@ -15,10 +15,10 @@ export async function addMark(requestData: any) {
     }
 }
 
-export async function updateMark(marks: number, studentid: string, subid: string) {
+export async function updateMark(requestData: any) {
     try {
         const query = 'update mark set marks = $1 where studentid = $2 and subid = $3';
-        const res = await (dbQuery(query, [marks, studentid, subid]));
+        const res = await (dbQuery(query, [requestData.marks, requestData.studentid, requestData.subid]));
 
         if (res && res.command === 'INSERT')
             return true;

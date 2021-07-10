@@ -1,9 +1,9 @@
 import { dbQuery } from "../db/db";
 
-export async function addSubject(id: string, name: string) {
+export async function addSubject(subid: string, subname: string) {
     try {
-        const query = 'insert into subject (id, name) values ($1, $2)';
-        const res = await (dbQuery(query, [id, name]));
+        const query = 'insert into subject (subid, subname) values ($1, $2)';
+        const res = await (dbQuery(query, [subid, subname]));
 
     } catch (e) {
         throw new Error(e.message);
@@ -21,10 +21,10 @@ export async function getSubjects() {
     }
 }
 
-export async function getSubjectId(name: string) {
+export async function getSubjectId(subname: string) {
     try {
-        const query = 'select id from subject where name = $1';
-        const res = await (dbQuery(query, [name]));
+        const query = 'select id from subject where subname = $1';
+        const res = await (dbQuery(query, [subname]));
 
         return res.rows[0].id;
     } catch (e) {

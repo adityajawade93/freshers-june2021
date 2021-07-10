@@ -1,10 +1,10 @@
 import { dbQuery } from "../db/db";
 
 
-export async function addStudent(id: string, name: string, sex: string | null, age: number | null) {
+export async function addStudent(studentid: string, name: string, sex: string | null, age: number | null, classid: string) {
     try {
-        const query = 'insert into student (id, name, sex, age) values ($1, $2, $3, $4)';
-        const res = await dbQuery(query, [id, name, sex, age]);
+        const query = 'insert into student (studentid, name, sex, age, classid) values ($1, $2, $3, $4,$5)';
+        const res = await dbQuery(query, [studentid, name, sex, age, classid]);
 
         if (res && res.command === 'INSERT')
             return true;
@@ -44,8 +44,8 @@ export async function getStudentMarks(id: string) {
         const query = `
         select subname as subject, mark.marks
         from mark
-        inner join student on studentid = mark.studentid
-        inner join subject on subid = mark.subid
+        inner join student on student.studentid = mark.studentid
+        inner join subject on subject.subid = mark.subid
         where mark.studentid = $1
       `;
         const res = await (dbQuery(query, [id]));

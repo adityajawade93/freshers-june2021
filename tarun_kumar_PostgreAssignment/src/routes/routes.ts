@@ -24,7 +24,7 @@ router.put('/mark', updateMarks);
 //student
 router.get('/student', getStudents);
 router.post('/student', addStudent);
-router.get('/:student_id/marks', getStudentMarks);
+router.get('/:studentid/marks', getStudentMarks);
 
 //subject
 router.get('/subject', getSubjects);

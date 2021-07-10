@@ -13,20 +13,20 @@ async function start() {
     try {
         await dbStart();
         console.log('Database Connected');
-
+        await app.listen(port, () => console.log("port on ", port));
     } catch (er) {
         console.log(er);
     }
 };
-
+start();
 app.use(bodyParser());
 app.use(router.routes()).use(router.allowedMethods());
 app.use(async (ctx: Context) => {
     ctx.body = "Invalid URL, please provide correct url";
     ctx.status = 400;
 });
-start();
-const server = app.listen(port, () => console.log("port on ", port));
 
 
-module.exports = server;
+
+
+//module.exports = server;

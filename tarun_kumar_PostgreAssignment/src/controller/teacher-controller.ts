@@ -10,9 +10,9 @@ export async function addTeacher(ctx: Context) {
         const name: string = requestData.name.trim();
         const sex: string | null = requestData.sex;
         const age: number | null = requestData.age;
-        const tsub: string | null = requestData.tsub;
+        const subid: string | null = requestData.subid;
 
-        await teacherService.addTeacher(id, name, sex, age, tsub);
+        await teacherService.addTeacher(id, name, sex, age, subid);
         ctx.status = 201;
         ctx.body = {
             message: `teacher with id: ${id} created`,

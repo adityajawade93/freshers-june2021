@@ -55,3 +55,48 @@ export async function getStudentMarks(id: string) {
         throw new Error(e);
     }
 }
+
+
+export async function getStudentClassId(classid: string) {
+    try {
+
+        const query2 = `select * from student where classid =$1`;
+        const res = await (dbQuery(query2, [classid]));
+
+        return res.rows;
+    } catch (e) {
+        throw new Error(e.message);
+    }
+}
+
+export async function getStudentSubjectId(subid: string) {
+    try {
+
+        const query2 = ` select student.studentid,student.name
+        from student
+        inner join schedule on student.classid = schedule.classid
+                inner join subject on schedule.subjectid=subject.subid 
+                where subject.subid = $1;`;
+        const res = await (dbQuery(query2, [subid]));
+
+        return res.rows;
+    } catch (e) {
+        throw new Error(e.message);
+    }
+}
+export async function getStudentTeacherId(teacherid: string) {
+    try {
+
+        const query2 = ` select student.studentid, student.name
+        from student
+               inner join schedule on student.classid = schedule.classid
+               inner join teacher on schedule.teacherid=teacher.teacherid 
+                where teacher.teacherid= $1;`;
+        const res = await (dbQuery(query2, [teacherid]));
+
+        return res.rows;
+    } catch (e) {
+        throw new Error(e.message);
+    }
+}
+

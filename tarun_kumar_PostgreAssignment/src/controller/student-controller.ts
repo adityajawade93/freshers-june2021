@@ -42,6 +42,7 @@ export async function getStudents(ctx: Context) {
     }
 }
 
+
 export async function getStudentMarks(ctx: Context) {
     try {
         const studentid: string = ctx.params.studentid;
@@ -58,3 +59,57 @@ export async function getStudentMarks(ctx: Context) {
         ctx.body = { error: e.message };
     }
 }
+
+export async function getStudentClassId(ctx: Context) {
+    try {
+        const classid: string = ctx.params.classid;
+        const studentClass = await studentService.getStudentClassId(classid);
+
+        ctx.body = {
+            count: studentClass.length,
+            data: studentClass,
+        };
+    } catch (e) {
+        ctx.status = 404;
+        if (e.status) ctx.status = e.status;
+
+        ctx.body = { error: e.message };
+    }
+}
+
+
+export async function getStudentSubjectId(ctx: Context) {
+    try {
+        const subid: string = ctx.params.subid;
+        const studentSub = await studentService.getStudentSubjectId(subid);
+
+        ctx.body = {
+            count: studentSub.length,
+            data: studentSub
+        };
+    } catch (e) {
+        ctx.status = 404;
+        if (e.status) ctx.status = e.status;
+
+        ctx.body = { error: e.message };
+    }
+}
+
+export async function getStudentTeacherId(ctx: Context) {
+    try {
+        const teacherid: string = ctx.params.teacherid;
+        const student = await studentService.getStudentTeacherId(teacherid);
+
+        ctx.body = {
+            count: student.length,
+            data: student
+        };
+    } catch (e) {
+        ctx.status = 404;
+        if (e.status) ctx.status = e.status;
+
+        ctx.body = { error: e.message };
+    }
+}
+
+

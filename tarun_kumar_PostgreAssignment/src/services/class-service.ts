@@ -33,7 +33,7 @@ export async function getClasses() {
         const query = 'select * from classes';
         const result = await dbQuery(query);
 
-        console.log(result.rows);
+        // console.log(result.rows);
         return result.rows;
     } catch (e) {
         throw Error(e);

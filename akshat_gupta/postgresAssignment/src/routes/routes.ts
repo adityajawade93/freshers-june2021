@@ -1,5 +1,4 @@
-import Koa = require("koa");
-import koaRouter = require("koa-router");
+import Router from 'koa-router';
 
 import { addClass, getClassId, getClasses } from '../controller/class-controller';
 import { addMarks, updateMarks } from '../controller/mark-controller';
@@ -7,14 +6,11 @@ import { getStudents, addStudent, getStudentMarks, getStudentClassId, getStudent
 import { getSubjects, addSubject } from '../controller/subject-controller';
 import { getTeachers, addTeacher } from '../controller/teacher-controller';
 
-
-const app = new Koa();
-export const router = new koaRouter();
-const port = 3001;
+export const router = new Router();
 
 //class
-router.get("/class", getClasses);
-router.get("/class/:id", getClassId);
+router.get('/class', getClasses);
+router.get('/class/:id', getClassId);
 router.post('/class', addClass);
 
 //mark

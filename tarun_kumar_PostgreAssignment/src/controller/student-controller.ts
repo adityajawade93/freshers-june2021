@@ -27,11 +27,14 @@ export async function addStudent(ctx: Context) {
 
 export async function getStudents(ctx: Context) {
     try {
-        const totalStudent: number = await studentService.countStudents();
-        const allStudents = await studentService.getStudents();
+        const page: number = Number.parseInt(ctx.query.page)
+        const size: number = Number.parseInt(ctx.query.size);
+        //console.log(page + " " + size);
+        //const totalStudent: number = await studentService.countStudents();
+        const allStudents = await studentService.getStudents(page, size);
 
         ctx.body = {
-            total_students: totalStudent,
+            // total_students: totalStudent,
             data: allStudents,
         };
     } catch (e) {

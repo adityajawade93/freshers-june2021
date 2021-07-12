@@ -27,14 +27,29 @@ export async function countStudents() {
     }
 }
 
-export async function getStudents() {
+export async function getStudents(page: number, size: number) {
     try {
         // offset = null & limit = null ==> fetches all data
-        const query = `select * from student`;
-        const res = await (dbQuery(query));
+        if (page === 0 && size === 0) {
+            const query = `select * from student`;
+            const res = await (dbQuery(query));
 
-        return res.rows;
+            return res.rows;
+
+        } else {
+            const query = `SELECT *
+            FROM student
+             LIMIT  ${size} OFFSET  ${page * size};`;
+            //console.log(query);
+            const res = await (dbQuery(query));
+
+            return res.rows;
+
+        }
+
+
     } catch (e) {
+
         throw new Error(e);
     }
 }
@@ -123,7 +138,7 @@ export async function getTopScorerEachSub() {//given subid get top ten students 
         inner join student on student.studentid = mark.studentid 
         inner join subject on subject.subid = mark.subid
         where marks in (select max(marks) from mark group by subid) ;`;
-        const res = await (dbQuery(query1, []));
+        const res = await (dbQuery(query1));
 
         return res.rows;
     } catch (e) {

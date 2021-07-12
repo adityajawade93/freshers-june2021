@@ -112,4 +112,36 @@ export async function getStudentTeacherId(ctx: Context) {
     }
 }
 
+export async function getTopTenMarks(ctx: Context) {//given subject id list top ten students;
+    try {
+        const subid: string = ctx.params.subid;
+        const student = await studentService.getTopTenMarks(subid);
+
+        ctx.body = {
+            data: student
+        };
+    } catch (e) {
+        ctx.status = 404;
+        if (e.status) ctx.status = e.status;
+
+        ctx.body = { error: e.message };
+    }
+}
+
+export async function getTopScorerEachSub(ctx: Context) {// list top scorer of each subject;
+    try {
+        //const subid: string = ctx.params.subid;
+        const student = await studentService.getTopScorerEachSub();
+
+        ctx.body = {
+            data: student
+        };
+    } catch (e) {
+        ctx.status = 404;
+        if (e.status) ctx.status = e.status;
+
+        ctx.body = { error: e.message };
+    }
+}
+
 

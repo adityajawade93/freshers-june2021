@@ -100,3 +100,34 @@ export async function getStudentTeacherId(teacherid: string) {
     }
 }
 
+export async function getTopTenMarks(subid: string) {//given subid get top ten students by marks on that subject
+    try {
+
+        const query2 = ` SELECT student.studentid, marks,student.name FROM mark 
+        inner join student on student.studentid = mark.studentid where 
+        subid=$1
+        ORDER BY marks DESC limit 10;`;
+        const res = await (dbQuery(query2, [subid]));
+
+        return res.rows;
+    } catch (e) {
+        throw new Error(e.message);
+    }
+}
+
+export async function getTopScorerEachSub() {//given subid get top ten students by marks on that subject
+    try {
+
+        const query1 = ` 
+        select student.name,subject.subname,mark.marks from mark
+        inner join student on student.studentid = mark.studentid 
+        inner join subject on subject.subid = mark.subid
+        where marks in (select max(marks) from mark group by subid) ;`;
+        const res = await (dbQuery(query1, []));
+
+        return res.rows;
+    } catch (e) {
+        throw new Error(e.message);
+    }
+}
+

@@ -1,0 +1,23 @@
+{
+  "name": "day_6",
+  "version": "1.0.0",
+  "description": "",
+  "main": "toDoKoa.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "jest"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "koa": "^2.13.1",
+    "koa-bodyparser": "^4.3.0",
+    "koa-router": "^10.0.0",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "eslint": "^7.29.0",
+    "jest": "^27.0.4",
+    "supertest": "^6.1.3"
+  }
+}

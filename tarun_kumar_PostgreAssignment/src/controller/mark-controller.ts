@@ -1,18 +1,19 @@
 import { Context } from 'vm';
-import * as subjectService from '../services/subject-service';
+
 import * as markService from '../services/mark-service';
+import markSchema from '../validation/mark-validator';
+
+interface markSchemaI {
+    studentid: string,
+    subid: string,
+    marks: number,
+}
 
 
-export async function addMarks(ctx: Context) {
+export async function addMarks(ctx: Context): Promise<void> {
     try {
-        const requestData = ctx.request.body;
-
-        // const student_id: string = requestData.student_id;
-        //const subject_name: string = requestData.subject_name.toLowerCase();
-        // const marks: number = requestData.marks;
-        // const subject_id: string = requestData.subject_id;
-
-        //await markService.addMark(student_id, subject_id, marks);
+        const requestData: markSchemaI = ctx.request.body;
+        await markSchema.validateAsync(requestData);
         await markService.addMark(requestData);
         ctx.status = 201;
         ctx.body = {
@@ -24,14 +25,9 @@ export async function addMarks(ctx: Context) {
     }
 }
 
-export async function updateMarks(ctx: Context) {
+export async function updateMarks(ctx: Context): Promise<void> {
     try {
         const requestData = ctx.request.body;
-        // const student_id: string = requestData.student_id;
-        // const subject_name: string = requestData.subject_name.toLowerCase();
-        // const marks: number = requestData.marks;
-        // const subject_id: string = await subjectService.getSubjectId(subject_name);
-
         await markService.updateMark(requestData);
         ctx.body = {
             message: `marks for student with ${requestData.studentid} is updated`,

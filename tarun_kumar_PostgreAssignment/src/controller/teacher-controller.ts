@@ -1,10 +1,19 @@
 import { Context } from 'vm';
 import { v4 as uuidv4 } from 'uuid';
 import * as teacherService from '../services/teacher-service';
+import teacherSchema from '../validation/teacher-validator';
 
-export async function addTeacher(ctx: Context) {
+interface teacherSchemaI {
+    name: string,
+    sex: string,
+    age: number,
+    subid: string,
+}
+
+export async function addTeacher(ctx: Context): Promise<void> {
     try {
-        const requestData = ctx.request.body;
+        const requestData: teacherSchemaI = ctx.request.body;
+        await teacherSchema.validateAsync(requestData);
 
         const id: string = uuidv4();
         const name: string = requestData.name.trim();
@@ -23,7 +32,7 @@ export async function addTeacher(ctx: Context) {
     }
 }
 
-export async function getTeachers(ctx: Context) {
+export async function getTeachers(ctx: Context): Promise<void> {
     try {
         const totalTeacher: number = await teacherService.countTeachers();
 

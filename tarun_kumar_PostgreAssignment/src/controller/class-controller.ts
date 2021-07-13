@@ -1,10 +1,16 @@
 import { Context } from 'vm';
 import { v4 as uuidv4 } from 'uuid';
 import * as classService from '../services/class-service';
+import classSchema from '../validation/class-validator';
 
-export async function addClass(ctx: Context) {
+interface classSchemaI {
+    name: string,
+}
+
+export async function addClass(ctx: Context): Promise<void> {
     try {
-        const requestData: any = ctx.request.body;
+        const requestData: classSchemaI = ctx.request.body;
+        await classSchema.validateAsync(requestData);
 
         const id: string = uuidv4();
         const name: string = requestData.name.toLowerCase().trim();
@@ -21,7 +27,7 @@ export async function addClass(ctx: Context) {
     }
 }
 
-export async function getClasses(ctx: Context) {
+export async function getClasses(ctx: Context): Promise<void> {
     try {
         const allClasses = await classService.getClasses();
 
@@ -38,7 +44,7 @@ export async function getClasses(ctx: Context) {
 }
 
 
-export async function getClassId(ctx: Context) {
+export async function getClassId(ctx: Context): Promise<void> {
     try {
         const id: string = ctx.params.id;
         const classdata = await classService.getClassId(id);

@@ -1,11 +1,17 @@
 import { Context } from 'vm';
 import { v4 as uuidv4 } from 'uuid';
 import * as subjectService from '../services/subject-service';
+import subjectSchema from '../validation/subject-validator';
 
-export async function addSubject(ctx: Context) {
+interface subjectSchemaI {
+    id: string,
+    name: string,
+}
+
+export async function addSubject(ctx: Context): Promise<void> {
     try {
-        const requestData = ctx.request.body;
-
+        const requestData: subjectSchemaI = ctx.request.body;
+        await subjectSchema.validateAsync(requestData);
         const id: string = uuidv4();
         const name: string = requestData.name.toLowerCase();
 
@@ -20,7 +26,7 @@ export async function addSubject(ctx: Context) {
     }
 }
 
-export async function getSubjects(ctx: Context) {
+export async function getSubjects(ctx: Context): Promise<void> {
     try {
         const allSubjects = await subjectService.getSubjects();
 

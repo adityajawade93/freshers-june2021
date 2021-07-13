@@ -15,24 +15,24 @@ router.get('/student',student.getStudentData);
 router.get('/studentclass/:classId',student.studentData_by_classId);
 router.get('/studentsubject/:subjectId',student.studentData_subjectId);
 router.get('/studentteacher/:teacherId',student.studentData_teacherId);
-router.post('/addstudent',student.add_student_in_table);
+router.post('/student',student.add_student_in_table);
 
 router.get('/teacher',teacher.getTeacherData);
-router.post('/addteacher',teacher.add_teacher_in_table);
+router.post('/teacher',teacher.add_teacher_in_table);
 
 router.get('/class',clas.getClassInfo);
-router.post('/addclasses',clas.addStudentInClass);
+router.post('/classes',clas.addStudentInClass);
 
 router.get('/subject',subject.getSubjectData);
-router.post('/addsubject',subject.add_subject_in_table);
+router.post('/subject',subject.add_subject_in_table);
 
 
 router.get('/result',result.getResultData); 
-router.post('/addresult',result.add_reasultData_in_table);
-router.put('/updateresult/:stId/:subjId',result.updateResult_by_studentId_and_subjectId);
+router.post('/result',result.add_reasultData_in_table);
+router.put('/result/:studentId/:subjectId',result.updateResult_by_studentId_and_subjectId);
 
 router.get('/classschedule',schedule.getClass_scheduleData);
-router.post('/addschedule',schedule.add_class_schedule_in_table);
+router.post('/schedule',schedule.add_class_schedule_in_table);
 
 router.get('/subjectmarks/:studentId',mark.getSubjectMarks_by_studentId);
 

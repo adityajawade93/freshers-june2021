@@ -1,4 +1,12 @@
 import { Context } from "vm";
+const Joi = require("joi");
+
+const studentSchema = Joi.object().keys({
+  studentId: Joi.number().required(),
+  name: Joi.string().trim().required(),
+  dob: Joi.date().required(),
+  gender: Joi.string().required(),
+});
 
 const studentController = require("../services/student");
 
@@ -11,10 +19,10 @@ interface IStudentInfo {
 }
 
 interface IStudentDetails {
-  studentId: number,
-  name: string,
-  dob:Date,
-  gender:CharacterData
+  studentId: number;
+  name: string;
+  dob: Date;
+  gender: CharacterData;
 }
 
 exports.getStudentData = async (ctx: Context) => {
@@ -49,7 +57,7 @@ exports.getStudentData = async (ctx: Context) => {
     const startid = page * size;
     const endid = Math.min((page + 1) * size, length.rows[0].count);
     let data = rows.rows;
-    data = (data).slice(startid, endid);
+    data = data.slice(startid, endid);
 
     ctx.response.status = 200;
     ctx.response.type = "application/json";
@@ -131,37 +139,8 @@ exports.studentData_subjectId = async (ctx: Context) => {
 
 exports.add_student_in_table = async (ctx: Context) => {
   try {
-    let req: IStudentInfo = ctx.request.body;
-    if (
-      req.studentId === undefined ||
-      req.name === undefined ||
-      req.dob === undefined ||
-      req.gender === undefined
-    ) {
-      ctx.response.status = 400;
-      ctx.response.type = "text/html";
-      ctx.body = "Bad Request";
-      return;
-    }
-
-    if (req.name.trim() === "") {
-      ctx.response.status = 400;
-      ctx.response.type = "text/html";
-      ctx.body = "Bad Request";
-      return;
-    }
-
-    if (
-      typeof req.studentId !== "number" ||
-      typeof req.name !== "string" ||
-      typeof req.dob !== "string" ||
-      typeof req.gender !== "string"
-    ) {
-      ctx.response.status = 400;
-      ctx.response.type = "text/html";
-      ctx.body = "Bad Request";
-      return;
-    }
+    let req: IStudentDetails = ctx.request.body;
+    await studentSchema.validateAsync(req);
 
     await studentController.add_student(
       req.studentId,

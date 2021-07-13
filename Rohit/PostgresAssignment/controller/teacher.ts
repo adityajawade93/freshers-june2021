@@ -1,5 +1,13 @@
 import { Context } from "vm";
 
+const Joi = require('joi');
+const teacherSchema = Joi.object().keys({
+  teacherId: Joi.number().required(),
+  teacher_fname: Joi.string().trim().required(),
+  teacher_lname: Joi.string().trim().required(),
+  gender: Joi.string().required()
+});
+
 const teacherController = require('../services/teacher')
 
 interface ITeacherInfo {
@@ -28,36 +36,8 @@ exports.getTeacherData = async (ctx: Context) => {
   exports.add_teacher_in_table = async (ctx: Context) => {
     try {
       let req: ITeacherInfo = ctx.request.body;
-      if (
-        req.teacherId === undefined ||
-        req.teacher_fname === undefined ||
-        req.teacher_lname === undefined ||
-        req.gender === undefined
-      ) {
-        ctx.response.status = 400;
-        ctx.response.type = "text/html";
-        ctx.body = "Bad Request";
-        return;
-      }
-  
-      if (req.teacher_fname.trim() === "" || req.teacher_lname.trim() === "") {
-        ctx.response.status = 400;
-        ctx.response.type = "text/html";
-        ctx.body = "Bad Request";
-        return;
-      }
-  
-      if (
-        typeof req.teacherId !== "number" ||
-        typeof req.teacher_fname !== "string" ||
-        typeof req.teacher_lname !== "string" ||
-        typeof req.gender !== "string"
-      ) {
-        ctx.response.status = 400;
-        ctx.response.type = "text/html";
-        ctx.body = "Bad Request";
-        return;
-      }
+      await teacherSchema.validateAsync(req);
+
       await teacherController.add_teacher(req.teacherId, req.teacher_fname, req.teacher_lname, req.gender);
   
       ctx.response.status = 201;

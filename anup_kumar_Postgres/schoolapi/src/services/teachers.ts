@@ -1,9 +1,9 @@
 import { query } from "../database/index";
-import { handleError } from "../helper/index";
+import { handle_error } from "../helper/index";
 
-export async function Allteacher() {
+export async function all_teachers() {
   try {
-    const [response, responseError] = await handleError(
+    const [response, responseError] = await handle_error(
       query("select * from school.teacher")
     );
 
@@ -15,9 +15,9 @@ export async function Allteacher() {
   }
 }
 
-export async function TeacherStudent(id: string) {
+export async function student_of_teachers(id: string) {
   try {
-    const [response, responseError] = await handleError(
+    const [response, responseError] = await handle_error(
       query(
         `select * 
           from school.student as st, school.subject as sb
@@ -32,9 +32,9 @@ export async function TeacherStudent(id: string) {
   }
 }
 
-export async function AddTeacher(name: string) {
+export async function add_teachers(name: string) {
   try {
-    const [, responseError] = await handleError(
+    const [, responseError] = await handle_error(
       query(`INSERT INTO school.teacher(name) VALUES ('${name}')`)
     );
     if (responseError) throw new Error(responseError);

@@ -1,9 +1,9 @@
 import { query } from "../database/index";
-import { handleError } from "../helper/index";
+import { handle_error } from "../helper/index";
 
-export const AllStudents = async (limit: number, offset: number) => {
+export const all_students = async (limit: number, offset: number) => {
   try {
-    const [response, responseError] = await handleError(
+    const [response, responseError] = await handle_error(
       query(`SELECT * FROM school.student LIMIT ${limit} OFFSET ${offset}`)
     );
 
@@ -15,9 +15,9 @@ export const AllStudents = async (limit: number, offset: number) => {
   }
 };
 
-export async function AddStudent(name: string, classid: string) {
+export async function add_students(name: string, classid: string) {
   try {
-    const [response, responseError] = await handleError(
+    const [response, responseError] = await handle_error(
       query(
         `INSERT INTO school.student(name, classid) VALUES ('${name}','${classid}')`
       )

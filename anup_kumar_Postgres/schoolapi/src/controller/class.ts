@@ -1,9 +1,9 @@
 import { Context } from "vm";
-import { AllClasses, addClass, classStudent } from "../services/class";
+import { all_classes as allclasses, add_class as addclass , student_of_class as studentofclass } from "../services/class";
 
 export async function all_classes(ctx: Context) {
   try {
-    const response = await AllClasses();
+    const response = await allclasses();
     ctx.body = response.rows;
     ctx.response.status = 200;
     return;
@@ -19,7 +19,7 @@ export async function student_of_class(ctx: Context) {
   // console.log(id);
   if (id) {
     try {
-      const [response, responseError] = await classStudent(id);
+      const [response, responseError] = await studentofclass(id);
       ctx.body = response.rows;
       return;
     } catch (e) {
@@ -40,7 +40,7 @@ export async function add_class(ctx: Context) {
 
   if (name && typeof name == "string") {
     try {
-      const response = await addClass(name);
+      const response = await addclass(name);
       ctx.response.status = 201;
       ctx.body = "data added succefully";
     } catch (e) {

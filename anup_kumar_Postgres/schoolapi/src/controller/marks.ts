@@ -1,10 +1,10 @@
 
 import { Context } from "vm";
-import { AllMarks, AddMarks, Topper } from "../services/marks";
+import { all_marks as allmarks, add_marks as addmarks,topper as topper1, all_marks } from "../services/marks";
 
 export async function get_marks(ctx: Context) {
   try {
-    const response = await AllMarks();
+    const response = await all_marks();
     ctx.body = response.rows;
     ctx.response.status = 200;
     return;
@@ -25,7 +25,7 @@ export async function add_marks(ctx: Context) {
     typeof marks == "number"
   ) {
     try {
-      const response = await AddMarks(studentid, subjectid, marks);
+      const response = await add_marks(studentid, subjectid, marks);
       ctx.body = { Message: "data added succesfully" };
       ctx.response.status = 201;
     } catch (e) {
@@ -44,7 +44,7 @@ async function topper(ctx: Context) {
 
   if (typeof num === "number") {
     try {
-      const [response, responseError] = await Topper(num);
+      const response = await topper1(num);
       ctx.body = response.rows;
       ctx.response.status = 200;
     } catch (e) {

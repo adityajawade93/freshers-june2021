@@ -65,7 +65,7 @@ async function getStudentFromClassID(id: string) {
 async function getStudentFromSubjectID(id: string) {
   return new Promise((resolve, reject) => {
     client.query(`
-        select s.studentid, s.name, class.classid, subject.subjectid
+        select s.name, class.classid, subject.name as subject_name
         from school.student s
         left join school.studies_in on studies_in.studentid = s.studentid
         left join school.class on class.classid = studies_in.classid
@@ -82,7 +82,7 @@ async function getStudentFromSubjectID(id: string) {
 async function getStudentFromTeacherID(id: string) {
   return new Promise((resolve, reject) => {
     client.query(`
-        select s.studentid, s.name, class.classid, teacher.teacherid
+        select s.name, class.classid, teacher.name AS teacher_name
         from school.student s
         left join school.studies_in on studies_in.studentid = s.studentid
         left join school.class on class.classid = studies_in.classid

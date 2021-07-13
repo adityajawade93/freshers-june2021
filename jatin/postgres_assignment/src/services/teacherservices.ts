@@ -29,7 +29,7 @@ async function getTeacher() {
   // eslint-disable-next-line no-console
   console.log('hey teacher list');
   return new Promise((resolve, reject) => {
-    client.query('select * from school.teacher', [], (err: any, res: { rows: unknown }) => {
+    client.query('select * from school.teacher order by name', [], (err: any, res: { rows: unknown }) => {
       if (err) {
         reject(err);
       } else resolve(res.rows);

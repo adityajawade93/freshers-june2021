@@ -63,7 +63,8 @@ async function getMarks(ctx: any) {
 
 async function getHighestMarksPerSubject(ctx: any) {
   try {
-    const report = await database.getHighestMarksPerSubject();
+    const { Classid } = ctx.request.params;
+    const report = await database.getHighestMarksPerSubject(Classid);
     ctx.response.status = 200;
     ctx.body = {
       data: report,

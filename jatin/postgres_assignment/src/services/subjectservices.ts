@@ -18,7 +18,7 @@ async function addSubject(subjectID: string, name: string) {
 async function getSubject() {
   console.log('hey, you asked for subject list');
   return new Promise((resolve, reject) => {
-    const query = 'select * from school.subject';
+    const query = 'select * from school.subject order by name';
     client.query(query, [], (err: any, res: { rows: unknown; }) => {
       if (err) {
         reject(err);

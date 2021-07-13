@@ -22,7 +22,7 @@ async function updateMarks(studentID: string, subjectID: string, marks: number) 
 
 async function getMarks(studentID: string) {
   return new Promise((resolve, reject) => {
-    client.query('SELECT s.name , r.marks FROM school.result r LEFT JOIN school.subject s ON r.subjectid = s.subjectid WHERE r.studentid = $1', [studentID],
+    client.query('SELECT s.name , r.marks FROM school.result r LEFT JOIN school.subject s ON r.subjectid = s.subjectid WHERE r.studentid = $1 order by s.name', [studentID],
       (err: any, res: any) => {
         if (err) reject(err);
         else resolve(res.rows);
@@ -30,9 +30,16 @@ async function getMarks(studentID: string) {
   });
 }
 
-async function getHighestMarksPerSubject() {
+async function getHighestMarksPerSubject(Classid: string) {
   return new Promise((resolve, reject) => {
-    client.query('select subjectid, max(marks) as maxmark from school.result group by subjectid', [], (err: any, res: { rows: unknown; }) => {
+    client.query(`select subject.name as subjectname , max(result.marks) as max_marks
+    from school.class c
+    left join school.having_subject on having_subject.classid = c.classid
+    left join school.subject on subject.subjectid = having_subject.subjectid
+    left join school.result on result.subjectid = subject.subjectid
+    where c.classid= $1
+    group by subject.subjectid
+    order by subjectname`, [Classid], (err: any, res: { rows: unknown; }) => {
       if (err) reject(err);
       else resolve(res.rows);
     });

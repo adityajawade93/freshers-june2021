@@ -31,7 +31,7 @@ router.get('/student/teacher/:Teacherid', studentcontroller.getStudentFromTeache
 router.post('/addMarks', resultcontroller.addMarks);
 router.post('/updateMarks', resultcontroller.updateMarks);
 router.get('/getMarks/:Studentid', resultcontroller.getMarks);
-router.get('/getHighestMarksPerSubject', resultcontroller.getHighestMarksPerSubject);
+router.get('/getHighestMarksPerSubject/:Classid', resultcontroller.getHighestMarksPerSubject);
 router.get('/getToppersMarks/:Classid/:toplimit', resultcontroller.getToppersMarks);
 
 app.use(router.routes());

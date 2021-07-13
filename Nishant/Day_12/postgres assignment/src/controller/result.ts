@@ -2,12 +2,26 @@ import { Context } from "vm";
 
 import * as serviceresult from '../services/result';
 
+import Joi from 'joi';
+
+const schema=Joi.object().keys({
+  studentid:Joi.number().required(),
+  subjectid:Joi.number().required(),
+  marks:Joi.number().required(),
+});
+
 interface IResult{
     result_id:number;
     studentid:number;
     clas_id:number;
     subjectid:number;
     marks:number;
+}
+
+interface IResultUpdate{
+  studentid:number;
+  subjectid:number;
+  marks:number;
 }
 
 export async function addResult(ctx: Context){
@@ -41,22 +55,10 @@ export async function addResult(ctx: Context){
 
 export async function updateResult(ctx: Context){
   try{
-      let req:IResult=ctx.request.body;
+      let req:IResultUpdate=ctx.request.body;
       let [rows]: Array<{rows: any}>=[];
-      if( req.studentid===undefined ||  req.subjectid===undefined || req.marks===undefined){
-        ctx.response.status = 400;
-        ctx.response.type = 'text/html';
-        ctx.body = "Bad Request"; 
-        return ;
-      }
+     await schema.validateAsync(req);
 
-      
-        if(typeof req.studentid!=='number' || typeof req.subjectid!=='number' || typeof req.marks!=='number'){
-        ctx.response.status = 400;
-        ctx.response.type = 'text/html';
-        ctx.body = "Bad Request"; 
-        return ;
-        }
          let flag=0;
        rows= await serviceresult.check_subject(req.studentid);
        let length =await serviceresult.subject_length(req.studentid);
@@ -82,10 +84,18 @@ export async function updateResult(ctx: Context){
         ctx.response.status = 200;
         ctx.response.type = 'text/html';
         ctx.body="marks are updated in result table";
-      }catch{
+      }catch(e){
+        if(e.isJoi===true){
+          ctx.response.status = 400;
+            ctx.response.type = 'text/html';
+            ctx.body = "Bad Request"; 
+            return ;
+        }
+        else{
         ctx.response.status = 500;
         ctx.response.type = 'text/html';
         ctx.body = "internal server error"; 
         return ; 
+        }
       }
 }

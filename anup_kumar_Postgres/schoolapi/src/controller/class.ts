@@ -1,8 +1,7 @@
-import { ValidatePage } from "../helper/index";
 import { Context } from "vm";
 import { AllClasses, addClass, classStudent } from "../services/class";
 
-export async function getClasses(ctx: Context) {
+export async function all_classes(ctx: Context) {
   try {
     const response = await AllClasses();
     ctx.body = response.rows;
@@ -15,7 +14,7 @@ export async function getClasses(ctx: Context) {
   }
 }
 
-export async function studentsOfClass(ctx: Context) {
+export async function student_of_class(ctx: Context) {
   const id = ctx.params.id.trim();
   // console.log(id);
   if (id) {
@@ -35,7 +34,7 @@ export async function studentsOfClass(ctx: Context) {
   }
 }
 
-export async function createClass(ctx: Context) {
+export async function add_class(ctx: Context) {
   const name = ctx.request.body.name;
   // console.log(name);
 

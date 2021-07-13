@@ -1,13 +1,13 @@
-import { ValidatePage} from "../helper/index";
+import { validate_page} from "../helper/index";
 import { Context } from "vm";
 import { AddStudent, AllStudents } from "../services/student";
 
-export const getStudents = async (ctx: Context) => {
+export const all_students = async (ctx: Context) => {
   const page = parseInt(ctx.request.query.page);
   const size = parseInt(ctx.request.query.size);
   // console.log(page,size);
 
-  var isValid = ValidatePage(page, size);
+  var isValid = validate_page(page, size);
 
   if (isValid.result === "valid") {
     let limit = size;
@@ -29,7 +29,7 @@ export const getStudents = async (ctx: Context) => {
   }
 };
 
-export async function addStudents(ctx: Context) {
+export async function add_students(ctx: Context) {
   const name = ctx.request.body.name;
   const classid = ctx.request.body.classid;
 

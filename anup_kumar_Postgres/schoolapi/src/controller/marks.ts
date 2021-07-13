@@ -1,8 +1,8 @@
-import { ValidatePage } from "../helper/index";
+
 import { Context } from "vm";
 import { AllMarks, AddMarks, Topper } from "../services/marks";
 
-export async function getMarks(ctx: Context) {
+export async function get_marks(ctx: Context) {
   try {
     const response = await AllMarks();
     ctx.body = response.rows;
@@ -14,7 +14,7 @@ export async function getMarks(ctx: Context) {
   }
 }
 
-export async function addMarks(ctx: Context) {
+export async function add_marks(ctx: Context) {
   const studentid = ctx.request.body.studentid;
   const subjectid = ctx.request.body.subjectid;
   const marks = ctx.request.body.marks;

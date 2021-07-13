@@ -1,14 +1,14 @@
-import {ValidatePage } from "../helper/index";
+import {validate_page } from "../helper/index";
 import { Context } from "vm";
 import { AddSubject, AllSubjects, SubjectStudent } from "../services/subject";
 
-export async function allSubjects(ctx: Context) {
+export async function all_subjects(ctx: Context) {
   var page = parseInt(ctx.request.query.page);
   var size = parseInt(ctx.request.query.size);
   console.log(page);
   console.log(size);
 
-  var isValid = ValidatePage(page, size);
+  var isValid = validate_page(page, size);
   if (isValid.result === "valid") {
     let limit = size;
     let offset = page * size;
@@ -23,7 +23,7 @@ export async function allSubjects(ctx: Context) {
   }
 }
 
-export async function subjectStudent(ctx: Context) {
+export async function student_of_subject(ctx: Context) {
   var id = ctx.params.id;
   if (id) {
     try {
@@ -39,7 +39,7 @@ export async function subjectStudent(ctx: Context) {
   }
 }
 
-export async function addSubject(ctx: Context) {
+export async function add_subject(ctx: Context) {
   const name = ctx.request.body.name;
   const classid = ctx.request.body.classid;
   const subjectid = ctx.request.body.subjectid;

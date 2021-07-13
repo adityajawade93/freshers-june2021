@@ -1,4 +1,4 @@
-export const ValidatePage = function (
+export const validate_page = function (
   page: number,
   size: number
 ): { result: string } {

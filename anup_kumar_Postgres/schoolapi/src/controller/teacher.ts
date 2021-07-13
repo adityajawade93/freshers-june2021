@@ -1,8 +1,8 @@
-import { ValidatePage} from "../helper/index";
+
 import { Allteacher, TeacherStudent, AddTeacher } from "../services/teachers";
 import { Context } from "vm";
 
-export async function getTeachers(ctx: Context) {
+export async function all_teachers(ctx: Context) {
   try {
     const response = await Allteacher();
     ctx.response.status = 200;
@@ -15,7 +15,7 @@ export async function getTeachers(ctx: Context) {
   }
 }
 
-export async function teacherStudent(ctx: Context) {
+export async function student_of_teacher(ctx: Context) {
   const id = ctx.params.id;
   if (id) {
     try {
@@ -35,7 +35,7 @@ export async function teacherStudent(ctx: Context) {
   }
 }
 
-export async function addTeacher(ctx: Context) {
+export async function add_teacher(ctx: Context) {
   const name = ctx.request.body.name;
   if (name && typeof name === "string") {
     try {

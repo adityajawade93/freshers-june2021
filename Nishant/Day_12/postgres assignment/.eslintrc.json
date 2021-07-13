@@ -15,5 +15,9 @@
         "@typescript-eslint"
     ],
     "rules": {
+        "no-console":"off",
+        "linebreak-style":"off",
+        "no-underscore-dangle":"off"
+        
     }
 }

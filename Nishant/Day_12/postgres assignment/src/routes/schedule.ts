@@ -1,9 +1,13 @@
+/* eslint-disable import/prefer-default-export */
+/* eslint-disable new-cap */
+/* eslint-disable import/no-unresolved */
+/* eslint-disable import/extensions */
 import koarouter from '@koa/router';
 
-const router=new koarouter();
+import { addClassSchedule } from '../controller/schedule';
 
-import {addClassSchedule} from '../controller/schedule';
+const router = new koarouter();
 
-router.post('/schedule',addClassSchedule);
+router.post('/schedule', addClassSchedule);
 
-export {router};
+export { router };

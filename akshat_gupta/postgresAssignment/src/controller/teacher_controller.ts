@@ -1,5 +1,5 @@
 import uuid from 'uniqid';
-import teacher from '../services/teacher_services.ts';
+import * as teacher from '../services/teacher_services';
 
 const errorMessage = (ctx: any, err: any) => {
 	ctx.response.status = 400;
@@ -9,7 +9,7 @@ const errorMessage = (ctx: any, err: any) => {
 	};
 };
 
-async function addTeacher(ctx: { request: { body: any; }; response: { status: number; type: string; }; body: { msg: string; data_added?: any; }; }) {
+export async function addTeacher(ctx: { request: { body: any; }; response: { status: number; type: string; }; body: { msg: string; data_added?: any; }; }) {
 	const obj = ctx.request.body;
 	if (obj.name == null || obj.sex == null || obj.phone == null || obj.subjectID == null) {
 		ctx.response.status = 400;
@@ -34,7 +34,7 @@ async function addTeacher(ctx: { request: { body: any; }; response: { status: nu
 	}
 }
 
-async function getTeacher(ctx: { response: { status: number; }; body: { msg: string; data?: any; }; }) {
+export async function getTeacher(ctx: { response: { status: number; }; body: { msg: string; data?: any; }; }) {
 	try {
 		const allTeachers = await teacher.getTeacher();
 		ctx.response.status = 200;
@@ -46,7 +46,3 @@ async function getTeacher(ctx: { response: { status: number; }; body: { msg: str
 		errorMessage(ctx, err);
 	}
 }
-
-module.exports = {
-	addTeacher, getTeacher,
-};

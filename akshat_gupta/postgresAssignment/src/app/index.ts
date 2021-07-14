@@ -2,11 +2,11 @@ import Koa from 'koa';
 import Router from 'koa-router';
 import bodyParser from 'koa-bodyparser';
 
-import studentcontroller from './controller/student_controller.ts';
-import teachercontroller from './controller/teacher_controller.ts';
-import subjectcontroller from './controller/subject_controller.ts';
-import classcontroller from './controller/class_controller.ts';
-import resultcontroller from './controller/result_controller.ts';
+import * as studentcontroller from '../controller/student_controller';
+import * as teachercontroller from '../controller/teacher_controller';
+import * as subjectcontroller from '../controller/subject_controller';
+import * as classcontroller from '../controller/class_controller';
+import * as resultcontroller from '../controller/result_controller';
 
 const app = new Koa();
 const router = new Router();

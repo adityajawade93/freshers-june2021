@@ -1,6 +1,6 @@
-import client from '../db/db.ts';
+import { client } from '../db/db';
 
-async function addStudent(studentID: string, name: string, gender: string, phone: string, classID: string) {
+export async function addStudent(studentID: string, name: string, gender: string, phone: string, classID: string) {
 	return new Promise((resolve, reject) => {
 		client.query('begin')
 			.then(() => {
@@ -20,8 +20,8 @@ async function addStudent(studentID: string, name: string, gender: string, phone
 	});
 }
 
-async function getStudentCount() {
-	return new Promise((resolve, reject) => {
+export async function getStudentCount() {
+	return new Promise((resolve, reject): any => {
 		client.query('SELECT COUNT(*) as count from school.student', [], (err: any, res: any) => {
 			if (err) reject(err);
 			else resolve(res.rows[0].count);
@@ -29,7 +29,7 @@ async function getStudentCount() {
 	});
 }
 
-async function getStudent(page: number, size: number) {
+export async function getStudent(page: number, size: number) {
 	return new Promise((resolve, reject) => {
 		const query = 'SELECT * from school.student ORDER BY name offset $1 limit $2';
 		client.query(query, [page * size, size], (err: any, res: any) => {
@@ -42,7 +42,7 @@ async function getStudent(page: number, size: number) {
 	});
 }
 
-async function getStudentFromClassID(id: string) {
+export async function getStudentFromClassID(id: string) {
 	return new Promise((resolve, reject) => {
 		client.query(`
         SELECT s.studentid, s.name, class.classid
@@ -57,7 +57,7 @@ async function getStudentFromClassID(id: string) {
 	});
 }
 
-async function getStudentFromSubjectID(id: string) {
+export async function getStudentFromSubjectID(id: string) {
 	return new Promise((resolve, reject) => {
 		client.query(`
         SELECT s.name, class.classid, subject.name as subject_name
@@ -74,7 +74,7 @@ async function getStudentFromSubjectID(id: string) {
 	});
 }
 
-async function getStudentFromTeacherID(id: string) {
+export async function getStudentFromTeacherID(id: string) {
 	return new Promise((resolve, reject) => {
 		client.query(`
         SELECT s.name, class.classid, teacher.name AS teacher_name
@@ -92,12 +92,3 @@ async function getStudentFromTeacherID(id: string) {
 		});
 	});
 }
-
-module.exports = {
-	addStudent,
-	getStudent,
-	getStudentCount,
-	getStudentFromClassID,
-	getStudentFromSubjectID,
-	getStudentFromTeacherID,
-};

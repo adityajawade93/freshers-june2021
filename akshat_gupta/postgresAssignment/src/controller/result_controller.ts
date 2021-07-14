@@ -1,6 +1,6 @@
-import database from '../services/result_services.ts';
+import * as results from '../services/result_services';
 
-async function addMarks(ctx: any) {
+export async function addMarks(ctx: any) {
 	const obj = ctx.request.body;
 	if (obj.studentID == null || obj.subjectID == null || obj.marks == null) {
 		ctx.response.status = 400;
@@ -10,7 +10,7 @@ async function addMarks(ctx: any) {
 
 	try {
 		// eslint-disable-next-line camelcase
-		const added_marks = await database.addMarks(obj.studentID, obj.subjectID, obj.marks);
+		const added_marks = await results.addMarks(obj.studentID, obj.subjectID, obj.marks);
 		ctx.response.status = 200;
 		ctx.body = {
 			msg: 'marks added',
@@ -22,7 +22,7 @@ async function addMarks(ctx: any) {
 	}
 }
 
-async function updateMarks(ctx: any) {
+export async function updateMarks(ctx: any) {
 	const obj = ctx.request.body;
 	if (obj.studentID == null || obj.subjectID == null || obj.marks == null) {
 		ctx.response.status = 400;
@@ -32,7 +32,7 @@ async function updateMarks(ctx: any) {
 
 	try {
 		// eslint-disable-next-line camelcase
-		const updated_marks = await database.updateMarks(obj.studentID, obj.subjectID, obj.marks);
+		const updated_marks = await results.updateMarks(obj.studentID, obj.subjectID, obj.marks);
 		ctx.response.status = 200;
 		ctx.body = {
 			msg: 'data updated',
@@ -44,10 +44,10 @@ async function updateMarks(ctx: any) {
 	}
 }
 
-async function getMarks(ctx: any) {
+export async function getMarks(ctx: any) {
 	try {
 		const { Studentid } = ctx.request.params;
-		const markslist = await database.getMarks(Studentid);
+		const markslist = await results.getMarks(Studentid);
 		ctx.response.status = 200;
 		ctx.body = {
 			msg: `all subject marks for studentID ${Studentid}`,
@@ -59,10 +59,10 @@ async function getMarks(ctx: any) {
 	}
 }
 
-async function getHighestMarksPerSubject(ctx: any) {
+export async function getHighestMarksPerSubject(ctx: any) {
 	try {
 		const { Classid } = ctx.request.params;
-		const report = await database.getHighestMarksPerSubject(Classid);
+		const report = await results.getHighestMarksPerSubject(Classid);
 		ctx.response.status = 200;
 		ctx.body = {
 			data: report,
@@ -73,12 +73,12 @@ async function getHighestMarksPerSubject(ctx: any) {
 	}
 }
 
-async function getToppersMarks(ctx: any) {
+export async function getToppersMarks(ctx: any) {
 	const { Classid } = ctx.request.params;
 	const { toplimit } = ctx.request.params;
 
 	try {
-		const listoftopten = await database.getToppersMarks(Classid, toplimit);
+		const listoftopten = await results.getToppersMarks(Classid, toplimit);
 		ctx.response.status = 200;
 		ctx.body = listoftopten;
 	} catch (err) {
@@ -88,11 +88,3 @@ async function getToppersMarks(ctx: any) {
 		};
 	}
 }
-
-module.exports = {
-	addMarks,
-	updateMarks,
-	getMarks,
-	getHighestMarksPerSubject,
-	getToppersMarks,
-};

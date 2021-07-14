@@ -1,6 +1,6 @@
-import database from '../services/class_services.ts';
+import * as classes from '../services/class_services';
 
-async function addClass(ctx: any) {
+export async function addClass(ctx: any) {
 	const obj = ctx.request.body;
 	if (obj.classID == null || obj.room == null || obj.subjectID == null) {
 		ctx.response.status = 404;
@@ -11,7 +11,7 @@ async function addClass(ctx: any) {
 		return;
 	}
 	try {
-		const newclass = await database.addClass(obj.classID, obj.room, obj.subjectID);
+		const newclass = await classes.addClass(obj.classID, obj.room, obj.subjectID);
 		ctx.response.status = 200;
 		ctx.response.type = 'application/json';
 		ctx.body = {
@@ -26,10 +26,10 @@ async function addClass(ctx: any) {
 	}
 }
 
-async function getClass(ctx: any) {
+export async function getClass(ctx: any) {
 	try {
 		ctx.response.status = 200;
-		const allClasses = await database.getClass();
+		const allClasses = await classes.getClass();
 		ctx.body = {
 			msg: 'list of all classes',
 			data: allClasses,
@@ -41,7 +41,3 @@ async function getClass(ctx: any) {
 		};
 	}
 }
-
-module.exports = {
-	addClass, getClass,
-};

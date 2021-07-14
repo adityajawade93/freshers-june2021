@@ -1,6 +1,6 @@
-import client from '../db/db.ts';
+import { client } from '../db/db';
 
-async function addMarks(studentID: string, subjectID: string, marks: number) {
+export async function addMarks(studentID: string, subjectID: string, marks: number) {
 	return new Promise((resolve, reject) => {
 		client.query('INSERT INTO school.result values ($1,$2,$3)', [studentID, subjectID, marks], (err: any) => {
 			if (err) reject(err);
@@ -9,7 +9,7 @@ async function addMarks(studentID: string, subjectID: string, marks: number) {
 	});
 }
 
-async function updateMarks(studentID: string, subjectID: string, marks: number) {
+export async function updateMarks(studentID: string, subjectID: string, marks: number) {
 	return new Promise((resolve, reject) => {
 		client.query('UPDATE school.result set marks = $3 where studentid = $1 and subjectid = $2', [studentID, subjectID, marks], (err: any) => {
 			if (err) reject(err);
@@ -18,7 +18,7 @@ async function updateMarks(studentID: string, subjectID: string, marks: number) 
 	});
 }
 
-async function getMarks(studentID: string) {
+export async function getMarks(studentID: string) {
 	return new Promise((resolve, reject) => {
 		client.query('SELECT s.name , r.marks FROM school.result r LEFT JOIN school.subject s ON r.subjectid = s.subjectid WHERE r.studentid = $1 order by s.name', [studentID],
 			(err: any, res: any) => {
@@ -28,7 +28,7 @@ async function getMarks(studentID: string) {
 	});
 }
 
-async function getHighestMarksPerSubject(Classid: string) {
+export async function getHighestMarksPerSubject(Classid: string) {
 	return new Promise((resolve, reject) => {
 		client.query(`select subject.name as subjectname , max(result.marks) as max_marks
     from school.class c
@@ -44,7 +44,7 @@ async function getHighestMarksPerSubject(Classid: string) {
 	});
 }
 
-async function getToppersMarks(classid: any, toplimit: any) {
+export async function getToppersMarks(classid: any, toplimit: any) {
 	const query = `select s.studentid, s.name, sum(result.marks) as total_marks
     from school.student s
     inner join school.result on result.studentid = s.studentid
@@ -62,7 +62,3 @@ async function getToppersMarks(classid: any, toplimit: any) {
 		});
 	});
 }
-
-module.exports = {
-	addMarks, updateMarks, getMarks, getHighestMarksPerSubject, getToppersMarks,
-};

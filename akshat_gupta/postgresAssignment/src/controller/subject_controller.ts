@@ -1,7 +1,7 @@
 import uuid from 'uniqid';
-import database from '../services/subject_services.ts';
+import * as subjects from '../services/subject_services';
 
-async function addSubject(ctx: any) {
+export async function addSubject(ctx: any) {
 	const obj = ctx.request.body;
 	if (obj.name == null) {
 		ctx.response.status = 400;
@@ -12,7 +12,7 @@ async function addSubject(ctx: any) {
 	}
 	try {
 		const id = uuid('SUB');
-		const newSubject = await database.addSubject(id, obj.name);
+		const newSubject = await subjects.addSubject(id, obj.name);
 		ctx.response.status = 200;
 		ctx.body = {
 			msg: 'subject added',
@@ -25,10 +25,10 @@ async function addSubject(ctx: any) {
 	}
 }
 
-async function getSubject(ctx: any) {
+export async function getSubject(ctx: any) {
 	try {
 		ctx.response.status = 200;
-		const allSubject = await database.getSubject();
+		const allSubject = await subjects.getSubject();
 		ctx.body = {
 			data: allSubject,
 		};
@@ -39,7 +39,3 @@ async function getSubject(ctx: any) {
 		};
 	}
 }
-
-module.exports = {
-	addSubject, getSubject,
-};

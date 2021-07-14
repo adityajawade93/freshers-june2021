@@ -1,6 +1,6 @@
-import client from '../db/db.ts';
+import { client } from '../db/db';
 
-async function addTeacher(teacherID: string, name: string, gender: string, phone: string, subjectID: string) {
+export async function addTeacher(teacherID: string, name: string, gender: string, phone: string, subjectID: string) {
 	return new Promise((resolve, reject) => {
 		client.query('begin')
 			.then(() => {
@@ -22,7 +22,7 @@ async function addTeacher(teacherID: string, name: string, gender: string, phone
 	});
 }
 
-async function getTeacher() {
+export async function getTeacher() {
 	return new Promise((resolve, reject) => {
 		client.query('SELECT * from school.teacher ORDER BY name', [], (err: any, res: { rows: unknown }) => {
 			if (err) {
@@ -31,7 +31,3 @@ async function getTeacher() {
 		});
 	});
 }
-
-module.exports = {
-	addTeacher, getTeacher,
-};

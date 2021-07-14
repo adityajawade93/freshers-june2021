@@ -1,5 +1,5 @@
 import uuid from 'uniqid';
-import student from '../services/student_services.ts';
+import * as student from '../services/student_services';
 
 const errorMessage = (ctx: any, err: any) => {
 	ctx.response.status = 400;
@@ -9,7 +9,7 @@ const errorMessage = (ctx: any, err: any) => {
 	};
 };
 
-async function addStudent(ctx: any) {
+export async function addStudent(ctx: any) {
 	const obj = ctx.request.body;
 	if (obj.name == null || obj.gender == null || obj.phone == null || obj.classID == null) {
 		ctx.response.status = 400;
@@ -34,7 +34,7 @@ async function addStudent(ctx: any) {
 	}
 }
 
-async function getStudent(ctx: any) {
+export async function getStudent(ctx: any) {
 	const { page } = ctx.request.query;
 	const { size } = ctx.request.query;
 
@@ -43,7 +43,7 @@ async function getStudent(ctx: any) {
 		ctx.body = 'Missing one or more query parameters.';
 	}
 
-	const totalstudent: number = await student.getStudentCount();
+	const totalstudent: any = await student.getStudentCount();
 	const totalpages: number = Math.ceil(totalstudent / size);
 
 	if (page < 0 || page >= totalpages || size === 0) {
@@ -64,7 +64,7 @@ async function getStudent(ctx: any) {
 		errorMessage(ctx, err);
 	}
 }
-async function getStudentFromClassID(ctx: any) {
+export async function getStudentFromClassID(ctx: any) {
 	try {
 		const { Classid } = ctx.request.params;
 		const requiredStudent = await student.getStudentFromClassID(Classid);
@@ -78,7 +78,7 @@ async function getStudentFromClassID(ctx: any) {
 	}
 }
 
-async function getStudentFromSubjectID(ctx: any) {
+export async function getStudentFromSubjectID(ctx: any) {
 	try {
 		const { Subjectid } = ctx.request.params;
 		const requiredStudent = await student.getStudentFromSubjectID(Subjectid);
@@ -89,7 +89,7 @@ async function getStudentFromSubjectID(ctx: any) {
 	}
 }
 
-async function getStudentFromTeacherID(ctx: any) {
+export async function getStudentFromTeacherID(ctx: any) {
 	try {
 		const { Teacherid } = ctx.request.params;
 		const requiredStudent = await student.getStudentFromTeacherID(Teacherid);
@@ -99,11 +99,3 @@ async function getStudentFromTeacherID(ctx: any) {
 		errorMessage(ctx, err);
 	}
 }
-
-module.exports = {
-	addStudent,
-	getStudent,
-	getStudentFromClassID,
-	getStudentFromSubjectID,
-	getStudentFromTeacherID,
-};

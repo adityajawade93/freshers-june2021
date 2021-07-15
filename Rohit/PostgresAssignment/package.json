@@ -9,13 +9,20 @@
     "koa": "^2.13.1",
     "koa-bodyparser": "^4.3.0",
     "koa-json": "^2.0.2",
+    "nodemon": "^2.0.12",
     "pg": "^8.6.0"
   },
   "devDependencies": {
-    "@types/node": "^15.14.0"
+    "@types/node": "^15.14.0",
+    "@typescript-eslint/eslint-plugin": "^4.28.3",
+    "@typescript-eslint/parser": "^4.28.3",
+    "eslint": "^7.30.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.23.4"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon server.ts",
+    "lint": "eslint ./"
   },
   "author": "",
   "license": "ISC"

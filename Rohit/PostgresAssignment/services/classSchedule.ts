@@ -18,10 +18,9 @@ exports.add_class_schedule = async (
   teacher_fname: string
 ) => {
   try {
-    await scheduleClient.query("set search_path to myschool");
     const data = [cls_Id, classno, subjId, subject_name, teach_Id, teacher_fname];
     return await scheduleClient.query(
-      "insert into class_schedule values($1,$2,$3,$4,$5,$6)",
+      "insert into myschool.class_schedule(cls_Id, classno, subjId, subject_name, teach_Id, teacher_fname) values($1,$2,$3,$4,$5,$6)",
       data
     );
   } catch (err) {

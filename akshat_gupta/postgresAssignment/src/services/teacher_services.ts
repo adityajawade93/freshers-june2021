@@ -1,6 +1,6 @@
 import { client } from '../db/db';
 
-export async function addTeacher(teacherID: string, name: string, gender: string, phone: string, subjectID: string) {
+export async function addTeacher(teacherID: string, name: string, gender: string, phone: string, subjectID: string): Promise<any> {
 	return new Promise((resolve, reject) => {
 		client.query('begin')
 			.then(() => {
@@ -22,7 +22,7 @@ export async function addTeacher(teacherID: string, name: string, gender: string
 	});
 }
 
-export async function getTeacher() {
+export async function getTeacher(): Promise<any> {
 	return new Promise((resolve, reject) => {
 		client.query('SELECT * from school.teacher ORDER BY name', [], (err: any, res: { rows: unknown }) => {
 			if (err) {

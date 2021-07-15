@@ -1,43 +1,38 @@
+import uuid from 'uniqid';
 import * as classes from '../services/class_services';
+import * as error from '../error/error';
+import Joi from 'joi';
 
-export async function addClass(ctx: any) {
+export async function addClass(ctx: any): Promise<any> {
 	const obj = ctx.request.body;
-	if (obj.classID == null || obj.room == null || obj.subjectID == null) {
-		ctx.response.status = 404;
-		ctx.response.type = 'application/json';
-		ctx.body = {
-			msg: 'data missing in class body',
-		};
-		return;
-	}
+	const schema = Joi.object({
+		subjectId: Joi.string().required(),
+		room: Joi.string().required()
+	});
 	try {
-		const newclass = await classes.addClass(obj.classID, obj.room, obj.subjectID);
+		await schema.validateAsync({ subjectId: obj.subjectId, room: obj.room });
+		obj.classId = uuid('C');
+		const newclass = await classes.addClass(obj.classId, obj.room, obj.subjectId);
 		ctx.response.status = 200;
 		ctx.response.type = 'application/json';
 		ctx.body = {
-			msg: 'class added',
+			message: 'Class added Successfully.',
 			data: newclass,
 		};
 	} catch (err) {
-		console.log(err);
-		ctx.body = {
-			msg: `something wrong  + ${err}`,
-		};
+		error.pureError(ctx, err);
 	}
 }
 
-export async function getClass(ctx: any) {
+export async function getClass(ctx: any): Promise<any> {
 	try {
 		ctx.response.status = 200;
 		const allClasses = await classes.getClass();
 		ctx.body = {
-			msg: 'list of all classes',
+			msg: 'List of all classes...',
 			data: allClasses,
 		};
 	} catch (err) {
-		ctx.response.status = 404;
-		ctx.body = {
-			msg: `something wrong in getting all classes + ${err}`,
-		};
+		error.pureError(ctx, err);
 	}
 }

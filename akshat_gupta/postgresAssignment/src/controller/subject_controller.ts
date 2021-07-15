@@ -1,41 +1,40 @@
+import * as error from '../error/error';
 import uuid from 'uniqid';
 import * as subjects from '../services/subject_services';
 
-export async function addSubject(ctx: any) {
+export async function addSubject(ctx: any): Promise<any> {
 	const obj = ctx.request.body;
-	if (obj.name == null) {
-		ctx.response.status = 400;
-		ctx.body = {
-			msg: 'properties of subject not defined',
-		};
+	if (typeof obj.name === undefined) {
+		error.incompleteError(ctx);
+		return;
+	}
+	if(typeof obj.name !== 'string') {
+		error.wrongFormatError(ctx);
 		return;
 	}
 	try {
 		const id = uuid('SUB');
 		const newSubject = await subjects.addSubject(id, obj.name);
 		ctx.response.status = 200;
+		ctx.response.type = 'application/json';
 		ctx.body = {
-			msg: 'subject added',
+			message: 'Subject added Successfully.',
 			data: newSubject,
 		};
 	} catch (err) {
-		ctx.body = {
-			msg: `something wrong while adding subject + ${err}`,
-		};
+		error.pureError(ctx, err);
 	}
 }
 
-export async function getSubject(ctx: any) {
+export async function getSubject(ctx: any): Promise<any> {
 	try {
-		ctx.response.status = 200;
 		const allSubject = await subjects.getSubject();
+		ctx.response.status = 200;
+		ctx.response.type = 'application/json';
 		ctx.body = {
 			data: allSubject,
 		};
 	} catch (err) {
-		ctx.response.status = 400;
-		ctx.body = {
-			msg: `something went worng in getting all subjects + ${err}`,
-		};
+		error.pureError(ctx, err);
 	}
 }

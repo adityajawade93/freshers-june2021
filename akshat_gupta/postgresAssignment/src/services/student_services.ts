@@ -1,6 +1,6 @@
 import { client } from '../db/db';
 
-export async function addStudent(studentID: string, name: string, gender: string, phone: string, classID: string) {
+export async function addStudent(studentID: string, name: string, gender: string, phone: string, classID: string): Promise<any> {
 	return new Promise((resolve, reject) => {
 		client.query('begin')
 			.then(() => {
@@ -20,7 +20,7 @@ export async function addStudent(studentID: string, name: string, gender: string
 	});
 }
 
-export async function getStudentCount() {
+export async function getStudentCount(): Promise<any> {
 	return new Promise((resolve, reject): any => {
 		client.query('SELECT COUNT(*) as count from school.student', [], (err: any, res: any) => {
 			if (err) reject(err);
@@ -29,7 +29,7 @@ export async function getStudentCount() {
 	});
 }
 
-export async function getStudent(page: number, size: number) {
+export async function getStudent(page: number, size: number): Promise<any> {
 	return new Promise((resolve, reject) => {
 		const query = 'SELECT * from school.student ORDER BY name offset $1 limit $2';
 		client.query(query, [page * size, size], (err: any, res: any) => {
@@ -42,7 +42,7 @@ export async function getStudent(page: number, size: number) {
 	});
 }
 
-export async function getStudentFromClassID(id: string) {
+export async function getStudentFromClassID(id: string): Promise<any> {
 	return new Promise((resolve, reject) => {
 		client.query(`
         SELECT s.studentid, s.name, class.classid
@@ -57,7 +57,7 @@ export async function getStudentFromClassID(id: string) {
 	});
 }
 
-export async function getStudentFromSubjectID(id: string) {
+export async function getStudentFromSubjectID(id: string): Promise<any> {
 	return new Promise((resolve, reject) => {
 		client.query(`
         SELECT s.name, class.classid, subject.name as subject_name
@@ -74,7 +74,7 @@ export async function getStudentFromSubjectID(id: string) {
 	});
 }
 
-export async function getStudentFromTeacherID(id: string) {
+export async function getStudentFromTeacherID(id: string): Promise<any> {
 	return new Promise((resolve, reject) => {
 		client.query(`
         SELECT s.name, class.classid, teacher.name AS teacher_name

@@ -1,6 +1,6 @@
 import { client } from '../db/db';
 
-export async function addClass(classID: string, room: string, subjectID: string) {
+export async function addClass(classID: string, room: string, subjectID: string): Promise<any> {
 	return new Promise((resolve, reject) => {
 		client.query('INSERT INTO school.class values ($1,$2)', [classID, room])
 			.then(() => {
@@ -15,7 +15,7 @@ export async function addClass(classID: string, room: string, subjectID: string)
 	});
 }
 
-export async function getClass() {
+export async function getClass(): Promise<any> {
 	return new Promise((resolve, reject) => {
 		client.query('select * from school.class order by classid', [], (err: any, res: any) => {
 			if (err) {

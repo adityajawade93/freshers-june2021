@@ -1,6 +1,6 @@
 import { client } from '../db/db';
 
-export async function addSubject(subjectID: string, name: string) {
+export async function addSubject(subjectID: string, name: string): Promise<any> {
 	return new Promise((resolve, reject) => {
 		client.query('INSERT INTO school.subject values ($1,$2)', [subjectID, name])
 			.then(() => {
@@ -12,7 +12,7 @@ export async function addSubject(subjectID: string, name: string) {
 	});
 }
 
-export async function getSubject() {
+export async function getSubject(): Promise<any> {
 	return new Promise((resolve, reject) => {
 		const query = 'SELECT * from school.subject ORDER BY name';
 		client.query(query, [], (err: any, res: { rows: unknown; }) => {

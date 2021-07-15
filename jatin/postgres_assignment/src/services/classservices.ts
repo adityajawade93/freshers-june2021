@@ -19,7 +19,7 @@ async function addClass(classID: string, room: string, subjectID: string) {
 
 async function getClass() {
   return new Promise((resolve, reject) => {
-    client.query('select * from school.class order by classid', [], (err: any, res: any) => {
+    client.query('select * from school.class order by room', [], (err: any, res: any) => {
       if (err) {
         reject(err);
       } else {

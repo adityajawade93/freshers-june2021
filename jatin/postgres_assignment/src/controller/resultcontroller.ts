@@ -1,17 +1,15 @@
+/* eslint-disable no-console */
+/* eslint-disable camelcase */
 export { };
 
 const database = require('../services/resultservices.ts');
+const validation = require('../helpers/validation_schema.ts');
 
 async function addMarks(ctx: any) {
   const obj = ctx.request.body;
-  if (obj.studentID == null || obj.subjectID == null || obj.marks == null) {
-    ctx.response.status = 400;
-    ctx.body = 'data missing';
-    return;
-  }
-
   try {
-    // eslint-disable-next-line camelcase
+    const req_body = await validation.resultSchema.validate(obj);
+    console.log(req_body);
     const added_marks = await database.addMarks(obj.studentID, obj.subjectID, obj.marks);
     ctx.response.status = 200;
     ctx.body = {
@@ -19,21 +17,21 @@ async function addMarks(ctx: any) {
       data: added_marks,
     };
   } catch (err) {
-    ctx.response.status = 400;
-    ctx.body = `something went wrong in adding marks + ${err}`;
+    if (err.isJoi === true) {
+      ctx.response.status = 422;
+      console.log('validation error');
+    } else {
+      ctx.response.status = 400;
+      ctx.body = `something went wrong in adding marks + ${err}`;
+    }
   }
 }
 
 async function updateMarks(ctx: any) {
   const obj = ctx.request.body;
-  if (obj.studentID == null || obj.subjectID == null || obj.marks == null) {
-    ctx.response.status = 400;
-    ctx.body = 'data missing';
-    return;
-  }
-
   try {
-    // eslint-disable-next-line camelcase
+    const req_body = validation.resultSchema.validate(obj);
+    console.log(req_body);
     const updated_marks = await database.updateMarks(obj.studentID, obj.subjectID, obj.marks);
     ctx.response.status = 200;
     ctx.body = {
@@ -41,8 +39,13 @@ async function updateMarks(ctx: any) {
       data: updated_marks,
     };
   } catch (err) {
-    ctx.response.status = 400;
-    ctx.body = `something went wrong in update marks + ${err}`;
+    if (err.isJoi) {
+      ctx.response.status = 422;
+      console.log('validation error');
+    } else {
+      ctx.response.status = 400;
+      ctx.body = `something went wrong in update marks + ${err}`;
+    }
   }
 }
 

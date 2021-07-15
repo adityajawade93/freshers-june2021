@@ -4,19 +4,13 @@ export { };
 
 const uuid = require('uniqid');
 const database = require('../services/studentservices.ts');
+const validation = require('../helpers/validation_schema.ts');
 
 async function addStudent(ctx: any) {
   const obj = ctx.request.body;
-  if (obj.name == null || obj.gender == null || obj.phone == null || obj.classID == null) {
-    ctx.response.status = 400;
-    ctx.response.type = 'application/json';
-    ctx.body = {
-      msg: 'data missing in student body',
-    };
-    return;
-  }
-
   try {
+    const req_body = await validation.studentSchema.validate(obj);
+    console.log(req_body);
     const id: string = uuid('S');
     const newStudent = await database.addStudent(id, obj.name, obj.gender, obj.phone, obj.classID);
     ctx.response.status = 200;
@@ -26,12 +20,16 @@ async function addStudent(ctx: any) {
       data_added: newStudent,
     };
   } catch (err) {
-    console.log(err);
-    ctx.response.status = 400;
-    ctx.response.type = 'application/json';
-    ctx.body = {
-      msg: `something went wrong in adding students ${err}`,
-    };
+    console.log('oh no');
+    if (err.isJoi === true) {
+      ctx.response.status = 422;
+    } else {
+      ctx.response.status = 400;
+      ctx.response.type = 'application/json';
+      ctx.body = {
+        msg: `something went wrong in adding students ${err}`,
+      };
+    }
   }
 }
 
@@ -63,7 +61,7 @@ async function getStudent(ctx: any) {
     };
   } catch (err) {
     console.log(err);
-    ctx.response.status = 404;
+    ctx.response.status = 400;
     ctx.response.type = 'application/json';
     ctx.body = {
       msg: `can't get all students something wrong ${err}`,

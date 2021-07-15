@@ -1,19 +1,15 @@
+/* eslint-disable camelcase */
 /* eslint-disable no-console */
 export { };
 
 const database = require('../services/classservices.ts');
+const validation = require('../helpers/validation_schema.ts');
 
 async function addClass(ctx: any) {
   const obj = ctx.request.body;
-  if (obj.classID == null || obj.room == null || obj.subjectID == null) {
-    ctx.response.status = 404;
-    ctx.response.type = 'application/json';
-    ctx.body = {
-      msg: 'data missing in class body',
-    };
-    return;
-  }
   try {
+    const req_body = await validation.classSchema.validate(obj);
+    console.log(req_body);
     const newclass = await database.addClass(obj.classID, obj.room, obj.subjectID);
     ctx.response.status = 200;
     ctx.response.type = 'application/json';
@@ -22,10 +18,14 @@ async function addClass(ctx: any) {
       data: newclass,
     };
   } catch (err) {
-    console.log(err);
-    ctx.body = {
-      msg: `something wrong  + ${err}`,
-    };
+    if (err.isJoi === true) {
+      ctx.response.status = 422;
+    } else {
+      console.log(err);
+      ctx.body = {
+        msg: `something wrong  + ${err}`,
+      };
+    }
   }
 }
 
@@ -38,7 +38,7 @@ async function getClass(ctx: any) {
       data: allClasses,
     };
   } catch (err) {
-    ctx.response.status = 404;
+    ctx.response.status = 400;
     ctx.body = {
       msg: `something wrong in getting all classes + ${err}`,
     };

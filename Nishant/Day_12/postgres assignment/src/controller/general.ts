@@ -24,7 +24,7 @@ export async function gettopperByclassIdAndSubjectId(ctx: Context) {
       return;
     }
     let [rows]: Array<{rows: ITopper}> = [];
-    rows = await servicegeneral.get_topper_by_classid_and_subjectid(classId, subjectId);
+    rows = await servicegeneral.gettopperByclassIdAndSubjectIdService(classId, subjectId);
 
     ctx.response.status = 200;
     ctx.response.type = 'application/json';
@@ -48,7 +48,7 @@ export async function gettopstudent(ctx: Context) {
       return;
     }
     let [rows]: Array<{rows: ITopper}> = [];
-    rows = await servicegeneral.get_top_students(classId, count);
+    rows = await servicegeneral.gettopstudentService(classId, count);
 
     ctx.response.status = 200;
     ctx.response.type = 'application/json';

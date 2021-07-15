@@ -1,41 +1,41 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable import/extensions */
-/* eslint-disable camelcase */
+
 import { client as sqlclient } from '../database/db';
 
-export async function add_result(result_id:number, studentid:number, clas_id:number,
-  subjectid:number, marks:number) {
+export async function addResultService(resultId:number, studentId:number, clasId:number,
+  subjectId:number, marks:number) {
   try {
     await sqlclient.query('SET search_path TO College');
-    const data = [result_id, studentid, clas_id, subjectid, marks];
+    const data = [resultId, studentId, clasId, subjectId, marks];
     return (await sqlclient.query('INSERT INTO result values($1,$2,$3,$4,$5)', data));
   } catch (e) {
     throw Error(e);
   }
 }
 
-export async function update_result(studentid:number, subjectid:number, marks:number) {
+export async function updateResultService(studentId:number, subjectId:number, marks:number) {
   try {
     await sqlclient.query('SET search_path TO College');
-    return (await sqlclient.query(`Update result SET marks=${marks} WHERE studentid=${studentid} AND subjectid=${subjectid}`));
+    return (await sqlclient.query(`Update result SET marks=${marks} WHERE studentid=${studentId} AND subjectid=${subjectId}`));
   } catch (e) {
     throw Error(e);
   }
 }
 
-export async function check_subject(studentid:number) {
+export async function checkSubject(studentId:number) {
   try {
     await sqlclient.query('SET search_path TO College');
-    return (await sqlclient.query(`SELECT subj_id FROM class_schedule,class_student WHERE studid=${studentid} AND classid=class_id`));
+    return (await sqlclient.query(`SELECT subj_id FROM class_schedule,class_student WHERE studid=${studentId} AND classid=class_id`));
   } catch (e) {
     throw Error(e);
   }
 }
 
-export async function subject_length(studentid:number) {
+export async function subjectLength(studentId:number) {
   try {
     await sqlclient.query('SET search_path TO College');
-    return (await sqlclient.query(`SELECT COUNT(*) FROM (SELECT subj_id FROM class_schedule,class_student WHERE studid=${studentid} AND classid=class_id) AS S`));
+    return (await sqlclient.query(`SELECT COUNT(*) FROM (SELECT subj_id FROM class_schedule,class_student WHERE studid=${studentId} AND classid=class_id) AS S`));
   } catch (e) {
     throw Error(e);
   }

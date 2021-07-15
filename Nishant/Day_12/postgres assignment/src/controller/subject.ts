@@ -24,7 +24,7 @@ interface IMarks{
 export async function getSubject(ctx: Context) {
   try {
     let [rows]: Array<{rows: ISubject}> = [];
-    rows = await servicesubject.get_subject();
+    rows = await servicesubject.getSubjectService();
 
     ctx.response.status = 200;
     ctx.response.type = 'application/json';
@@ -47,7 +47,7 @@ export async function getStudentBySubjectId(ctx: Context) {
       return;
     }
     let [rows]: Array<{rows: IStudentDetails}> = [];
-    rows = await servicesubject.get_student_by_subjectid(subjectId);
+    rows = await servicesubject.getStudentBySubjectIdService(subjectId);
     ctx.response.status = 200;
     ctx.response.type = 'application/json';
     ctx.body = rows.rows;
@@ -69,7 +69,7 @@ export async function getSubjectMarksByStudentId(ctx: Context) {
       return;
     }
     let [rows]: Array<{rows: IMarks}> = [];
-    rows = await servicesubject.get_subjectmarks_by_studentid(studentId);
+    rows = await servicesubject.getSubjectMarksByStudentIdService(studentId);
     ctx.response.status = 200;
     ctx.response.type = 'application/json';
     ctx.body = rows.rows;
@@ -89,7 +89,7 @@ export async function addSubject(ctx: Context) {
       ctx.body = 'Bad Request';
       return;
     }
-    await servicesubject.add_subject(req.subject_id, req.subject_name);
+    await servicesubject.addSubjectService(req.subject_id, req.subject_name);
 
     ctx.response.status = 200;
     ctx.response.type = 'text/html';

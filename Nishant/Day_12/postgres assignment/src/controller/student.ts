@@ -1,6 +1,4 @@
 /* eslint-disable max-len */
-/* eslint-disable radix */
-/* eslint-disable no-unused-vars */
 /* eslint-disable camelcase */
 /* eslint-disable import/no-unresolved */
 /* eslint-disable import/extensions */
@@ -22,8 +20,8 @@ interface IStudent{
 export async function getStudent(ctx: Context) {
   try {
     let [rows]: Array<{rows: IStudent}> = [];
-    rows = await studentService.get_student();
-    const length = await studentService.get_student_length();
+    rows = await studentService.getStudentService();
+    const length = await studentService.getStudentLengthService();
     const page = parseInt(ctx.request.query.page);
     const size = parseInt(ctx.request.query.size);
     const totalPages = Math.ceil(length.rows[0].count / size);
@@ -80,7 +78,7 @@ export async function addStudent(ctx: Context) {
       return;
     }
 
-    await studentService.add_student(req.student_id, req.fname, req.mname, req.lname, req.dob, req.gender, req.address);
+    await studentService.addStudentService(req.student_id, req.fname, req.mname, req.lname, req.dob, req.gender, req.address);
 
     ctx.response.status = 200;
     ctx.response.type = 'text/html';

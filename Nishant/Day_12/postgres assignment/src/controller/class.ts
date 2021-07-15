@@ -28,7 +28,7 @@ interface IStudentDetails{
 export async function getClass(ctx: Context) {
   try {
     let [rows]: Array<{rows: ISchedule}> = [];
-    rows = await serviceclass.get_class();
+    rows = await serviceclass.getClassService();
     ctx.response.status = 200;
     ctx.response.type = 'application/json';
     ctx.body = rows.rows;
@@ -49,7 +49,7 @@ export async function getStudentByClassId(ctx: Context) {
       return;
     }
     let [rows]: Array<{rows: IStudentDetails}> = [];
-    rows = await serviceclass.get_student_by_classid(classId);
+    rows = await serviceclass.getStudentByClassIdService(classId);
     ctx.response.status = 200;
     ctx.response.type = 'application/json';
     ctx.body = rows.rows;
@@ -69,7 +69,7 @@ export async function addStudentInClass(ctx: Context) {
       ctx.body = 'Bad Request';
       return;
     }
-    await serviceclass.add_student_in_class(req.class_id, req.studid);
+    await serviceclass.addStudentInClassService(req.class_id, req.studid);
 
     ctx.response.status = 200;
     ctx.response.type = 'text/html';

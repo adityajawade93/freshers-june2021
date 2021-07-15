@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-/* eslint-disable no-plusplus */
 /* eslint-disable camelcase */
 /* eslint-disable import/no-unresolved */
 /* eslint-disable import/extensions */
@@ -44,7 +43,7 @@ export async function addResult(ctx: Context) {
       ctx.body = 'Bad Request';
       return;
     }
-    await serviceresult.add_result(req.result_id, req.studentid, req.clas_id, req.subjectid, req.marks);
+    await serviceresult.addResultService(req.result_id, req.studentid, req.clas_id, req.subjectid, req.marks);
 
     ctx.response.status = 200;
     ctx.response.type = 'text/html';
@@ -63,8 +62,8 @@ export async function updateResult(ctx: Context) {
     await schema.validateAsync(req);
 
     let flag = 0;
-    rows = await serviceresult.check_subject(req.studentid);
-    const length = await serviceresult.subject_length(req.studentid);
+    rows = await serviceresult.checkSubject(req.studentid);
+    const length = await serviceresult.subjectLength(req.studentid);
     for (let i = 0; i < length.rows[0].count; i++) {
       if (req.subjectid === rows.rows[i].subj_id) {
         flag = 1;
@@ -79,7 +78,7 @@ export async function updateResult(ctx: Context) {
       return;
     }
 
-    await serviceresult.update_result(req.studentid, req.subjectid, req.marks);
+    await serviceresult.updateResultService(req.studentid, req.subjectid, req.marks);
 
     ctx.response.status = 200;
     ctx.response.type = 'text/html';

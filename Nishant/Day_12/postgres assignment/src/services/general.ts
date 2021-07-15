@@ -1,9 +1,8 @@
-/* eslint-disable camelcase */
 /* eslint-disable import/no-unresolved */
 /* eslint-disable import/extensions */
 import { client as sqlclient } from '../database/db';
 
-export async function get_topper_by_classid_and_subjectid(classId:number, subjectId:number) {
+export async function gettopperByclassIdAndSubjectIdService(classId:number, subjectId:number) {
   try {
     await sqlclient.query('SET search_path TO College');
     return (await sqlclient.query(`SELECT student_id,fname,S.marks FROM (SELECT * FROM result WHERE clas_id=${classId} AND subjectid=${subjectId} ORDER BY marks DESC) AS S,Student WHERE S.studentid=student_id LIMIT 1`));
@@ -12,7 +11,7 @@ export async function get_topper_by_classid_and_subjectid(classId:number, subjec
   }
 }
 
-export async function get_top_students(classId:number, count:number) {
+export async function gettopstudentService(classId:number, count:number) {
   try {
     await sqlclient.query('SET search_path TO College');
     return (await sqlclient.query(`SELECT s.student_id , s.fname , a.total_marks

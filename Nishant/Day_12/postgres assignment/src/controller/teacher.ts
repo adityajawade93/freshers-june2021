@@ -24,7 +24,7 @@ interface IStudentDetails{
 export async function getTeacher(ctx: Context) {
   try {
     let [rows]: Array<{rows: ITeacher}> = [];
-    rows = await serviceteacher.get_teacher();
+    rows = await serviceteacher.getTeacherService();
 
     ctx.response.status = 200;
     ctx.response.type = 'application/json';
@@ -47,7 +47,7 @@ export async function getStudentByTeacherId(ctx: Context) {
       return;
     }
     let [rows]: Array<{rows: IStudentDetails}> = [];
-    rows = await serviceteacher.get_student_by_teacherid(teacherId);
+    rows = await serviceteacher.getStudentByTeacherIdService(teacherId);
 
     ctx.response.status = 200;
     ctx.response.type = 'application/json';
@@ -83,7 +83,7 @@ export async function addTeacher(ctx: Context) {
       ctx.body = 'Bad Request';
       return;
     }
-    await serviceteacher.add_teacher(req.teacher_id, req.fname, req.mname, req.lname, req.dob, req.gender, req.address);
+    await serviceteacher.addTeacherService(req.teacher_id, req.fname, req.mname, req.lname, req.dob, req.gender, req.address);
 
     ctx.response.status = 200;
     ctx.response.type = 'text/html';

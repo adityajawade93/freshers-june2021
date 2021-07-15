@@ -39,7 +39,7 @@ export async function addClassSchedule(ctx: Context) {
       ctx.body = 'Bad Request';
       return;
     }
-    await serviceschedule.add_class_schedule(req.classid, req.classno, req.subj_id, req.subj_name, req.t_id, req.t_fname);
+    await serviceschedule.addClassScheduleService(req.classid, req.classno, req.subj_id, req.subj_name, req.t_id, req.t_fname);
 
     ctx.response.status = 200;
     ctx.response.type = 'text/html';

@@ -36,7 +36,12 @@ router.get('/getToppersMarks/:Classid/:toplimit', resultcontroller.getToppersMar
 
 app.use(router.routes());
 
+require('dotenv').config();
+
+const { port } = process.env;
+const { host } = process.env;
+
 app.listen(3000, () => {
   // eslint-disable-next-line no-console
-  console.log('server is listening at port 3000');
+  console.log(`server is listening at ${host}:${port}`);
 });

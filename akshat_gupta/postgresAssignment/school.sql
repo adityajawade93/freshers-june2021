@@ -3,11 +3,12 @@ create schema school;
 set search_path to school;
 
 
+CREATE TYPE sex AS ENUM ('M', 'F');
 create table student(
 	studentID varchar(255) not null primary key,
 	name varchar(255) not null,
-	gender enum('M', 'F') not null,
-	phone varchar(15) null,
+	gender sex,
+	phone varchar(255) not null
 );
 
 create table class( 
@@ -23,7 +24,7 @@ create table subject(
 create table teacher(
 	teacherID varchar(255) not null primary key,
 	name varchar(255) not null,
-	gender enum('M', 'F') not null,
+	gender sex,
 	phone varchar(15)
 );
 
@@ -63,5 +64,3 @@ create table result(
 	foreign key (studentID) references student(studentID),
 	foreign key (subjectID) references subject(subjectID)
 );
-
-

@@ -1,53 +1,50 @@
 import { setpath } from "../database/clientdb"
 import * as sechduleservice from "../services/sechdule"
+import * as hsechdule from "../helper/hsechdule"
+import * as dataoutput from "../customoutput/dataoutput"
+import * as messageoutput from "../customoutput/messageoutput"
 
-type sechduletype = {
+export type Isechdule = {
     subjectname: string
-    tid: string
-    std: number
+    teacher_id: string
+    classid: string
 }
 
-export var getsechdulebyclass = async (ctx: any) => {
+export const getSechduleByClass = async (ctx: any) => {
 
-    var std: any = await ctx.params.std
-    if (std === "null" || std === "undefined") {
+    let classid: any = ctx.params.classid
+    if (classid === "null" || classid === "undefined") {
         ctx.response.status = 400
-        ctx.body = 'please give a proper standard'
+        ctx.body = await messageoutput.costomerror(400, 'please give a proper standard')
 
     } else {
-        await setpath()
-        var res = await sechduleservice.getsechdulebyclass(std)
-        if (res.rows.length == 0) {
-            ctx.response.status = 404
-            ctx.body = `no classes are sechduled for the class ${std}`
-            return
+        try {
+            await setpath()
+            let res = await sechduleservice.getSechduleByClass(classid)
+            if (res.rows.length == 0) {
+                ctx.response.status = 404
+                ctx.body = await messageoutput.costommessage(404, `no classes are sechduled for the class ${classid}`)
+                return
+            }
+            ctx.response.status = 200
+            ctx.body = await dataoutput.outputdata(res.rows.length, res.rows)
+        } catch (e) {
+            ctx.body = await messageoutput.costomerror(406, e.message)
         }
-
-        ctx.body = JSON.stringify(res.rows, null, 2)
     }
 }
 
-export var createsechdule = async (ctx: any) => {
-    var req: sechduletype = ctx.request.body
-    var std, subjectname, tid
-    if (req.std && req.subjectname && req.tid) {
-        std = req.std
-        subjectname = req.subjectname
-        tid = req.tid
-
-        if (std != null && subjectname != null && tid != null && typeof std != 'number' && typeof subjectname != 'string' && typeof tid != 'string') {
-            await setpath()
-            var res = await sechduleservice.createsechdule(subjectname,tid,std)
-            ctx.response.status = 200
-            ctx.body = 'sechdule created successfully'
-        } else {
-            ctx.response.status = 400
-            ctx.body = 'please give a proper class ,subjectname,teacherid'
-        }
-    } else {
-        ctx.response.status = 400
-        ctx.body = 'please give class ,subjectname,teacherid'
-
+export const addSechdule = async (ctx: any) => {
+    let req: Isechdule = ctx.request.body
+    try {
+        await hsechdule.sechdule_sechma.validateAsync(req)
+        await setpath()
+        let res = await sechduleservice.addSechdule(req)
+        ctx.response.status = 200
+        ctx.body = await messageoutput.costommessage(200,'sechdule created successfully')
+        
+    } catch (e) {
+        ctx.body = await messageoutput.costomerror(406,e.message)
     }
 
 }

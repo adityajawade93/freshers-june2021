@@ -1,27 +1,36 @@
 import { setpath } from "../database/clientdb"
 import * as subjectservice from "../services/subject"
+import * as hsubjects from "../helper/hsubjects"
+import * as dataoutput from "../customoutput/dataoutput"
+import * as messageoutput from "../customoutput/messageoutput"
 
-type subjecttype = {
+export type Isubject = {
     subname: string
 }
 
 
-export var getsubjects = async (ctx: any) => {
-    await setpath()
-    var res = await subjectservice.getsubjects()
-    ctx.body = JSON.stringify(res.rows, null, 2)
+export const getSubjects = async (ctx: any) => {
+    try {
+        await setpath()
+        let res = await subjectservice.getSubjects()
+        ctx.response.status = 200
+        ctx.body = await dataoutput.outputdata(res.rows.length,res.rows)
+    } catch (e) {
+        ctx.body = await messageoutput.costomerror(406,e.message)
+    }
+
 }
 
-export var createsubjects = async (ctx: any) => {
-    var req: subjecttype = ctx.request.body
-    if (req.subname && req.subname != null && typeof req.subname == 'string') {
+export const addSubjects = async (ctx: any) => {
+    let req: Isubject = ctx.request.body
+    try {
+        await hsubjects.subject_sechma.validateAsync(req)
         await setpath()
-        var res = await subjectservice.createsubjects(req.subname)
+        let res = await subjectservice.addSubjects(req)
         ctx.response.status = 200
-        ctx.body = "subject is successfully added"
-    } else {
-        ctx.response.status = 400
-        ctx.body = "please give a subject name"
+        ctx.body = await messageoutput.costommessage(200,"subject is successfully added")
+    } catch (e) {
+        ctx.body = await messageoutput.costomerror(406,e.message)
     }
 
 }

@@ -1,84 +1,62 @@
 import { setpath } from "../database/clientdb"
 import * as teacherservice from "../services/teachers"
+import * as hteachers from "../helper/hteachers"
+import * as dataoutput from "../customoutput/dataoutput"
+import * as messageoutput from "../customoutput/messageoutput"
 
-type teachertype = {
+export type Iteacher = {
     tfname: string
-    tlname?: string|null
-    tsubject: string
-    joindate?: Date|null|undefined
+    tlname?: any
+    tsubject_id: string
+    joindate?: Date | null | undefined
 }
 
 
-export var getteachers = async (ctx: any) => {
-    await setpath()
-    var res = await teacherservice.getteachers()
-    ctx.body = JSON.stringify(res.rows, null, 2)
+export const getTeachers = async (ctx: any) => {
+    try {
+        await setpath()
+        let res = await teacherservice.getTeachers()
+        ctx.body = await dataoutput.outputdata(res.rows.length,res.rows)
+    } catch (e) {
+        ctx.body = await messageoutput.costomerror(406,e.message)
+    }
+
 }
 
-export var getteacherbyid = async (ctx: any) => {
-    var teacherid: any = await ctx.params.id
+export const getTeacherById = async (ctx: any) => {
+    let teacherid: any = ctx.params.teacherid
     if (teacherid === "null" || teacherid === "undefined") {
         ctx.response.status = 400
-        ctx.body = 'please give a proper id'
+        ctx.body = await messageoutput.costomerror(400,'please give a proper id')
 
     } else {
-        await setpath()
-        var res = await teacherservice.getteacherbyid(teacherid)    
-        if (res.rows.length == 0) {
-            ctx.response.status = 404
-            ctx.body = 'teacher is not found'
-            return
+        try {
+            await setpath()
+            let res = await teacherservice.getTeacherById(teacherid)
+            if (res.rows.length == 0) {
+                ctx.response.status = 404
+                ctx.body = await messageoutput.costommessage(404,'teacher is not found')
+                return
+            }
+            ctx.response.status = 200
+            ctx.body = await dataoutput.outputdata(res.rows.length,res.rows)
+        } catch (e) {
+            ctx.body = await messageoutput.costomerror(406,e.message)
         }
-        ctx.response.status = 200
-        ctx.body = JSON.stringify(res.rows, null, 2)
     }
-
 }
 
-export var createteachers = async (ctx: any) => {
-    var req: teachertype = ctx.request.body
+export const addTeachers = async (ctx: any) => {
+    let req: Iteacher = ctx.request.body
 
-    var tfname, tlname, doj, tsubject
-    if (req.tfname && req.tsubject) {
-        if (req.tfname != null && req.tsubject != null && typeof req.tfname == 'string' && typeof req.tsubject == 'string') {
-            tfname = req.tfname
-            tsubject = req.tsubject
-        } else {
-            ctx.response.status = 400
-            ctx.body = 'please give a proper firstname and subject'
-            return
+        try {
+            await hteachers.teachers_sechma.validateAsync(req)
+            await setpath()
+            let res = await teacherservice.addTeachers(req)
+            ctx.response.status = 200
+            ctx.body = await messageoutput.costommessage(200,"teacher is successfully added")
+           
+        } catch (e) {
+            ctx.body = await messageoutput.costomerror(406,e.message)
         }
-
-        if (req.tlname) {
-            if (req.tlname != null && typeof req.tlname == 'string') {
-                tlname = req.tlname
-            } else {
-                ctx.response.status = 400
-                ctx.body = 'please give a proper lastname'
-                return
-            }
-        } else {
-            tlname = null
-        }
-
-        if (req.joindate) {
-            if (req.joindate != null && typeof req.joindate == 'string') {
-                doj = req.joindate
-            } else {
-                ctx.response.status = 400
-                ctx.body = 'please give a proper joining date'
-                return
-            }
-        } else {
-            tlname = null
-        }
-
-        await setpath()
-        var res = await teacherservice.createteachers(tfname,tlname,tsubject,doj)                                               
-        ctx.response.status = 200
-        ctx.body = "teacher is successfully added"
-    } else {
-        ctx.response.status = 400
-        ctx.body = 'please give firstname and subject'
-    }
 }

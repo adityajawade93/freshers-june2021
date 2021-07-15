@@ -1,19 +1,20 @@
+import { Isubject } from "../controller/subjects"
 import { query } from "../database/clientdb"
 
 
-export var getsubjects =  () => {
+export const getSubjects =  async () => {
     try {
-        var res = query('select * from subjects')
+        let res = await query('select * from subjects')
         return res
     } catch (e) {
         throw new Error(e)
     }
 }
 
-export var createsubjects =  (subname:any) => {
+export const addSubjects =  async (req:Isubject) => {
 
     try {
-        var res = query(`insert into subjects(subname) values ('${subname}')`)
+        let res = await query(`insert into subjects(subname) values ('${req.subname}')`)
         return res
     } catch (e) {
         throw new Error(e)

@@ -1,14 +1,13 @@
 const Koa = require('koa')
 const Router = require('@koa/router')
 const bodyParser = require('koa-bodyparser')
-
 import * as student from '../controller/students'
 import * as teacher from '../controller/teachers'
 import * as subjects from '../controller/subjects'
 import * as sechdule from '../controller/sechdule'
 import * as classes from '../controller/classes'
 import * as marks from '../controller/marks'
-
+import * as standards from '../controller/standards'
 
 /*
 getstudents,
@@ -30,62 +29,64 @@ gethighestmarks,
 createmarks, 
 topteninclass */
 
-var app = new Koa();
-var router = new Router();
+const app = new Koa()
+const router = new Router()
 
 //students
 //get students 
-router.get('/school/students', student.getstudents)
+router.get('/school/students', student.getStudents)
 //get studentbyid
-router.get('/school/students/:studentid',student.getstudentbysid)
+router.get('/school/studentid/:studentid/students', student.getStudentByStudentId)
 //get students by teacherid
-router.get('/school/studentsbytid/:teacherid',student.getstudentsbytid)
+router.get('/school/teacherid/:teacherid/students', student.getStudentsByTeacherId)
 //get students by subjectid
-router.get('/school/studentsbysub/:subjectname',student.getstudentsbysubname)
+router.get('/school/subjectname/:subjectname/students', student.getStudentsBySubName)
 //create student
-router.post('/school/students',student.createstudents)
+router.post('/school/addstudent/students', student.addStudents)
 
 //teachers
 //get teachers
-router.get('/school/teachers',teacher.getteachers)
+router.get('/school/teachers', teacher.getTeachers)
 //get teacherbyid
-router.get('/school/teachers/:id',teacher.getteacherbyid)
+router.get('/school/teacherid/:teacherid/teachers', teacher.getTeacherById)
 //create teacher
-router.post('/school/teachers',teacher.createteachers)
+router.post('/school/addteacher/teachers', teacher.addTeachers)
 
 //subjects
 //get subjects
-router.get('/school/subjects',subjects.getsubjects)
+router.get('/school/subjects', subjects.getSubjects)
 //create subjects
-router.post('/school/subjects',subjects.createsubjects)
+router.post('/school/addsubject/subjects', subjects.addSubjects)
 
 //sechdule
 //get sechdule by class
-router.get('/school/sechdule/:std',sechdule.getsechdulebyclass)
+router.get('/school/classid/:classid/sechdule', sechdule.getSechduleByClass)
 //create sechdule
-router.post('/school/sechdule',sechdule.createsechdule)
+router.post('/school/addsechdule/sechdule', sechdule.addSechdule)
 
 //class
 //get students by class
-router.get('/school/classes/:std',classes.getstudentsbyclass)
+router.get('/school/student_classid/:student_classid/classes', classes.getStudentsByClass)
 //add students to class
-router.post('/school/classes',classes.addstudentstoclass)
+router.post('/school/addstudentstoclass/classes', classes.addStudentsToClass)
 
 //marks
 //all subject marks given student id
-router.get('/school/marks/:studentid',marks.getstudentmarksbyid)
-
+router.get('/school/studentid/:studentid/marks', marks.getStudentMarksById)
 // get highest mark of a student per subject given class and subject 
-router.get('/school/marks',marks.gethighestmarks)
-
+router.get('/school/highestmarks/marks', marks.getHighestMarks)
 //create marks
-router.post('/school/marks',marks.createmarks)
-
+router.post('/school/addmarks/marks', marks.addMarks)
 //get top 10 students in class
-router.get('/school/topten/:std',marks.topteninclass)
+router.get('/school/topten/:student_class_id/marks', marks.topTenInClass)
+// update marks
+router.put('/school/updateMarks/marks', marks.updateMarks)
 
-
-
+//standards
+//get standards
+router.get('/school/standards',standards.getstandard)
+//add standards
+router.post('/school/addstandards/standards',standards.addStandard)
 
 app.use(bodyParser())
 app.use(router.routes())

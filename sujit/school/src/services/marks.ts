@@ -1,28 +1,27 @@
 import { query} from "../database/clientdb"
+import { IResult } from "../controller/marks"
 
 
-
-export var getstudentmarksbyid = async (studentid: string) => {
+export const getStudentMarksById = async (studentid: string) => {
 
     try {
-        var res = await query(`select R.*,S.fname
+        let res = await query(`select R.*,S.fname
                                 from results as R ,students as S 
-                                where R.rsid ='${studentid}'and S.studentid ='${studentid}'`)
+                                where R.rstudent_id ='${studentid}'and S.studentid ='${studentid}'`)
         return res
     } catch (e) {
         throw new Error(e)
     }
 
-
 }
 
-export var gethighestmarks = async (subjectname: string, std: number) => {
+export const getHighestMarks = async (rsubject_id: string, rstudent_class_id: string) => {
 
     try {
-        var res = await query(`select students. * ,results.rmarks from students
+        let res = await query(`select students. * ,results.rmarks from students
         inner join results
-        on students.studentid = results.rsid
-        where results.rsubject = '${subjectname}' and results.rstd ='${std}'
+        on students.studentid = results.rstudent_id
+        where results.rsubject_id = '${rsubject_id}' and results.rstudent_class_id ='${rstudent_class_id}'
         order by results.rmarks desc
         limit 1`)
         return res
@@ -35,10 +34,10 @@ export var gethighestmarks = async (subjectname: string, std: number) => {
 
 }
 
-export var createmarks = async (rsid:string, rstd:number, rsubject:string, rmarks:number) => {
+export const addMarks = async (req:IResult) => {
 
     try {
-        var res = await query(`insert into results values('${rsid}','${rstd}','${rsubject}','${rmarks}')`)
+        let res = await query(`insert into results values('${req.rstudent_id}','${req.rstudent_class_id}','${req.rsubject_id}','${req.rmarks}')`)
         return res
     } catch (e) {
         throw new Error(e)
@@ -46,15 +45,15 @@ export var createmarks = async (rsid:string, rstd:number, rsubject:string, rmark
 
 }
 
-export var topteninclass = async (std:number) => {
+export const topTenInClass = async (rstudent_class_id:string) => {
 
     try {
-        var res = await query(`select studentid,rstd,fname,sum(rmarks)
+        let res = await query(`select studentid,rstudent_class_id,fname,sum(rmarks)
                                from students
                                inner join results
-                               on studentid = rsid
-                               where rstd='${std}'
-                               group by studentid,rstd
+                               on studentid = rstudent_id
+                               where rstudent_class_id='${rstudent_class_id}'
+                               group by studentid,rstudent_class_id
                                order by sum desc
                                limit 10`)
         return res
@@ -63,4 +62,18 @@ export var topteninclass = async (std:number) => {
     }
 
 
+}
+
+export const updateMarks = async (req:IResult) =>{
+
+    try {
+        let res = await query(`update results
+        set rmarks = ${req.rmarks}
+        where rstudent_id = '${req.rstudent_id}' and rstudent_class_id = '${req.rstudent_class_id}'
+        and rsubject_id = '${req.rsubject_id}'`)
+
+        return res
+    } catch (e) {
+        throw new Error(e)
+    }
 }

@@ -1,126 +1,135 @@
 import { setpath } from "../database/clientdb"
 import * as studentservice from "../services/students"
+import * as hstudents from "../helper/hstudents"
+import * as hpagination from "../helper/hpagination"
+import * as dataoutput from "../customoutput/dataoutput"
+import * as messageoutput from "../customoutput/messageoutput"
 
 
-export type studenttype = {
+
+export type Istudent = {
     fname: string
-    lname?: string|null
+    lname?: any
     dateofbirth: Date
 
 }
 
+export type Ipagination = {
+    page: number
+    size: number
+}
 
-export var getstudents = async (ctx: any) => {
+
+export const getStudents = async (ctx: any) => {
+    let reqparams: Ipagination = ctx.request.query
     try {
+        await hpagination.pagination_schema.validateAsync(reqparams)
         await setpath()
-        var res = await studentservice.getstudents()
-        var studentsrows = await res.rows
+        let res = await studentservice.getStudents(reqparams)
         ctx.response.status = 200
-        ctx.body = JSON.stringify(studentsrows, null, 2)
+        ctx.body = await dataoutput.outputdata(res.rows.length, res.rows)
+
     } catch (e) {
-        ctx.response.status = 400
-        ctx.body = e.message
+        ctx.response.status = 406
+        ctx.body = await messageoutput.costomerror(406, e.message)
 
     }
 
 }
 
-export var getstudentbysid = async (ctx: any) => {
-    var studentid: any = await ctx.params.studentid
+export const getStudentByStudentId = async (ctx: any) => {
+    let studentid: any = ctx.params.studentid
     if (studentid === "null" || studentid === "undefined") {
         ctx.response.status = 400
-        ctx.body = 'please give a proper id'
+        ctx.body = await messageoutput.costomerror(400, 'please give a proper id')
 
     } else {
-        await setpath()
-        var res = await studentservice.getstudentsbysid(studentid)    
-        if (res.rows.length == 0) {
-            ctx.response.status = 404
-            ctx.body = 'student is not found'
-            return
+        try {
+
+            await setpath()
+            let res = await studentservice.getStudentsByStudentId(studentid)
+            if (res.rows.length == 0) {
+                ctx.response.status = 404
+                ctx.body = await messageoutput.costommessage(404, 'student is not found')
+                return
+            }
+            ctx.response.status = 200
+            ctx.body = await dataoutput.outputdata(res.rows.length, res.rows)
+
+        } catch (e) {
+            ctx.response.status = 406
+            ctx.body = await messageoutput.costomerror(406, e.message)
         }
-        ctx.response.status = 200
-        ctx.body = JSON.stringify(res.rows, null, 2)
+
     }
 
 }
 
-export var getstudentsbytid = async (ctx: any) => {
+export const getStudentsByTeacherId = async (ctx: any) => {
 
-    var teacherid: any = await ctx.params.teacherid
+    let teacherid: any = ctx.params.teacherid
 
     if (teacherid === "null" || teacherid === "undefined") {
         ctx.response.status = 400
-        ctx.body = 'please give a proper id'
+        ctx.body = await messageoutput.costomerror(400, 'please give a proper id')
     } else {
-        await setpath()
-        var res = await studentservice.getstudentsbytid(teacherid)
-        if (res.rows.length == 0) {
-            ctx.response.status = 404
-            ctx.body = 'student is not found'
-            return
+        try {
+            await setpath()
+            let res = await studentservice.getStudentsByTeacherId(teacherid)
+            if (res.rows.length == 0) {
+                ctx.response.status = 404
+                ctx.body = await messageoutput.costommessage(404, 'student is not found')
+                return
+            }
+            ctx.response.status = 200
+            ctx.body = await dataoutput.outputdata(res.rows.length, res.rows)
+
+        } catch (e) {
+            ctx.status = 407
+            ctx.body = await messageoutput.costomerror(406, e.message)
         }
-        ctx.response.body = 200
-        ctx.body = JSON.stringify(res.rows, null, 2)
+
     }
 
 
 }
 
-export var getstudentsbysubname = async (ctx: any) => {
+export const getStudentsBySubName = async (ctx: any) => {
 
 
-    var subjectname: any = await ctx.params.subjectname
+    let subjectname: any = ctx.params.subjectname
 
     if (subjectname === "null" || subjectname === "undefined") {
         ctx.response.status = 400
-        ctx.body = 'please give a proper id'
+        ctx.body = await messageoutput.costomerror(400, 'please give a proper id')
     } else {
-        await setpath()
-        var res = await studentservice.getstudentsbysubname(subjectname)
-        if (res.rows.length == 0) {
-            ctx.response.status = 404
-            ctx.body = 'student with subject name not found'
-            return
+        try {
+            await setpath()
+            let res = await studentservice.getStudentsBySubName(subjectname)
+            if (res.rows.length == 0) {
+                ctx.response.status = 404
+                ctx.body = await messageoutput.costommessage(404, 'student not found in that subject')
+                return
+            }
+            ctx.response.status = 200
+            ctx.body = await dataoutput.outputdata(res.rows.length, res.rows)
+
+        } catch (e) {
+            ctx.body = await messageoutput.costomerror(406, e.message)
         }
-        ctx.response.status = 200
-        ctx.body = JSON.stringify(res.rows, null, 2)
     }
 }
 
-export var createstudents = async (ctx: any) => {
-    var req: studenttype = ctx.request.body
-    var fname, lname, dob
-    if (req.fname && req.dateofbirth) {
-        if (req.fname != null && req.dateofbirth != null && typeof req.fname == 'string' && typeof req.dateofbirth == 'string') {
-            fname = req.fname
-            dob = req.dateofbirth
-        } else {
-            ctx.response.status = 400
-            ctx.body = 'please give a proper firstname and date of birth'
-            return
-        }
-
-        if (req.lname) {
-            if (req.lname != null && typeof req.lname == 'string') {
-                lname = req.lname
-            } else {
-                ctx.response.status = 400
-                ctx.body = 'please give a proper lastname'
-                return
-            }
-        } else {
-            lname = null
-        }
+export const addStudents = async (ctx: any) => {
+    let req: Istudent = ctx.request.body
+    try {
+        await hstudents.students_sechma.validateAsync(req)
         await setpath()
-        var res  = await studentservice.createstudents(fname,lname,dob) 
-        ctx.body = "student successfully added"
-    } else {
-
-        ctx.response.status = 400
-        ctx.body = 'please give firstname and date of birth'
-        return
-
+        let res = await studentservice.addStudents(req)
+        ctx.response.status = 200
+        ctx.body = await messageoutput.costommessage(200,"student successfully added")
+    } catch (e) {
+        ctx.body = await messageoutput.costomerror(406,e.message)
     }
 
 

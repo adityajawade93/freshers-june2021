@@ -1,9 +1,11 @@
 import { query } from "../database/clientdb"
+import { Ipagination, Istudent } from "../controller/students"
 
-export var getstudents = () => {
-
+export const getStudents = async (reqparams :Ipagination ) => {
+    let limit = reqparams.size
+    let offset = reqparams.size* reqparams.page
     try {
-        var result = query('select * from students')
+        let result = await query(`select * from students offset ${offset} limit ${limit}`)
         return result
     } catch (e) {
         throw new Error(e)
@@ -11,10 +13,10 @@ export var getstudents = () => {
 
 }
 
-export var getstudentsbysid = (studentid: any) => {
+export const getStudentsByStudentId = async (studentid: any) => {
 
     try {
-        var result = query(`select * from students
+        let result = await query(`select * from students
                              where studentid = '${studentid}'`)
         return result
     } catch (e) {
@@ -22,15 +24,15 @@ export var getstudentsbysid = (studentid: any) => {
     }
 }
 
-export var getstudentsbytid = (teacherid: any) => {
+export const getStudentsByTeacherId = async (teacherid: any) => {
 
     try {
-        var result = query(`select students.* from students
-        inner join classes
-        on classes.cstudentid = students.studentid
+        let result = await query(`select students.* from students
+        inner join student_class
+        on student_class.cstudentid = students.studentid
         inner join sechdule
-        on sechdule.std = classes.cstandard
-        where sechdule.tid ='${teacherid}'`)
+        on sechdule.classid = student_class.student_classid
+        where sechdule.teacher_id ='${teacherid}'`)
         return result
     } catch (e) {
         throw new Error(e)
@@ -39,16 +41,16 @@ export var getstudentsbytid = (teacherid: any) => {
 
 }
 
-export var getstudentsbysubname = (subjectname: any) => {
+export const getStudentsBySubName = async (subjectname: any) => {
 
 
     try {
-        var result = query(`select students.*
+        let result = await query(`select students.*
         from students 
-        inner join classes
-        on classes.cstudentid =students.studentid
+        inner join student_class
+        on student_class.cstudentid =students.studentid
         inner join sechdule
-        on sechdule.std = classes.cstandard
+        on sechdule.classid = student_class.student_classid
         where sechdule.subjectname = '${subjectname}'`)
         return result
     } catch (e) {
@@ -56,10 +58,10 @@ export var getstudentsbysubname = (subjectname: any) => {
     }
 }
 
-export var createstudents = (fname: string, lname: string | null, dob: Date) => {
+export const addStudents = async (req:Istudent) => {
 
     try{
-        var result = query(`insert into students(fname,lname,bdate) values('${fname}','${lname}','${dob}')`)
+        let result = await query(`insert into students(fname,lname,bdate) values('${req.fname}','${req.lname}','${req.dateofbirth}')`)
         return result
     }catch(e){
         throw new Error(e)

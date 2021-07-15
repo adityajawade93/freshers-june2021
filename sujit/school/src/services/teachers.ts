@@ -1,9 +1,10 @@
+import { Iteacher } from "../controller/teachers"
 import { query } from "../database/clientdb"
 
 
-export var getteachers = () => {
+export const getTeachers = async () => {
     try {
-        var res = query('select * from teachers')
+        let res = await query('select * from teachers')
         return res
     } catch (e) {
         throw new Error(e)
@@ -12,10 +13,10 @@ export var getteachers = () => {
 
 }
 
-export var getteacherbyid = (teacherid: any) => {
+export const getTeacherById = async (teacherid: any) => {
 
     try {
-        var res = query(`select * from teachers
+        let res = await query(`select * from teachers
             where teacherid = '${teacherid}'`)
         return res
     } catch (e) {
@@ -25,10 +26,10 @@ export var getteacherbyid = (teacherid: any) => {
 
 }
 
-export var createteachers = async (tfname: string, tlname: string | null, tsubject: string, doj: Date | null | undefined) => {
+export const addTeachers = async (req:Iteacher) => {
     try {
-        var res = await query(`insert into teachers(tfname,tlname,tsubject,joindate) 
-                                                       values('${tfname}','${tlname}','${tsubject}','${doj}')`)
+        let res = await query(`insert into teachers(tfname,tlname,tsubject,joindate) 
+                                                       values('${req.tfname}','${req.tlname}','${req.tsubject_id}','${req.joindate}')`)
         return res
     } catch (e) {
         throw new Error(e)

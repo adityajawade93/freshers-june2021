@@ -1,11 +1,12 @@
+import { Isechdule } from "../controller/sechdule"
 import { query } from "../database/clientdb"
 
 
 
-export var getsechdulebyclass = (std: any) => {
+export const getSechduleByClass = async (classid: any) => {
 
     try {
-        var res = query(`select * from sechdule where std ='${std}'`)
+        let res = await query(`select * from sechdule where classid ='${classid}'`)
         return res
     } catch (e) {
         throw new Error(e)
@@ -13,10 +14,10 @@ export var getsechdulebyclass = (std: any) => {
     
 }
 
-export var createsechdule = async (subjectname:string,tid:string,std:number) => {
+export var addSechdule = async (req:Isechdule) => {
 
     try {
-        var res = await query(`insert into sechdule values('${subjectname}','${tid}','${std}')`)
+        var res = await query(`insert into sechdule values('${req.subjectname}','${req.teacher_id}','${req.classid}')`)
         return res
     } catch (e) {
         throw new Error(e)

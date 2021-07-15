@@ -1,10 +1,11 @@
+import { Iclasses } from "../controller/classes"
 import { query } from "../database/clientdb"
 
 
-export var getstudentsbyclass = async (std: any) => {
+export const getStudentsByClass = async (student_classid: any) => {
 
     try {
-        var res = query(`select * from classes where cstandard ='${std}'`)
+        let res = await query(`select * from student_class where student_classid ='${student_classid}'`)
         return res
     } catch (e) {
         throw new Error(e)
@@ -12,10 +13,10 @@ export var getstudentsbyclass = async (std: any) => {
 
 }
 
-export var addstudentstoclass = async (cstudentid: string, cstandard: number) => {
+export const addStudentsToClass = async (req:Iclasses) => {
 
     try {
-        var res = await query(`insert into classes values('${cstudentid}','${cstandard}')`)
+        let res = await query(`insert into student_class values('${req.cstudentid}','${req.student_classid}')`)
         return res
     } catch (e) {
         throw new Error(e)

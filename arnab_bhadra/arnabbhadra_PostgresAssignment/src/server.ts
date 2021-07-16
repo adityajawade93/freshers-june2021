@@ -1,4 +1,4 @@
-const {app} = require("./src/Application/app");
+import {app} from "./Application/app";
 app.listen(3000,()=>{
     console.log("Server started at 3000");
 });

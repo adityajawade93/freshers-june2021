@@ -1,28 +1,24 @@
-import {page} from "../Utility/Page";
-import {validationPageAndPageSize} from "../Utility/Validation";
-import * as message from "../Utility/message";
+import {page} from "../Middleware/Page";
+import {validationPageAndPageSize} from "../Middleware/Validation";
+import * as message from "../Middleware/message";
 import * as koa from "koa";
 import * as uuid from 'uuid';
-import {Teacher} from "../Entity/Teacher";
-import * as teacherController from "../DBController/TeacherController";
+import {Teacher} from "../Services/Teacher";
+import * as teacherModel from "../Services/TeacherModel";
 
-export const getTeacherInfo = async (ctx: koa.Context, next: koa.Next) => {
-    const promiseDB: Promise<unknown> = new Promise(teacherController.getTeacherInfoFromDB);
-    var teacherinfo: any;
-    var pageSizeData: page = {
+export const getTeacherInfo = async (ctx: koa.Context, next: koa.Next) : Promise<any>=> {
+
+    const pageSizeData: page = {
         page: Number(ctx.query.page),
         size: Number(ctx.query.size)
     }
-
-    await promiseDB.then((data) => {
-        teacherinfo = data;
-        console.log(teacherinfo);
+    try{
+        const teacherinfo: any=teacherModel.getTeacherInfoFromDB();
         if (teacherinfo.length === 0) {
             ctx.status = 200;
             ctx.body = "There is no teacher information.";
         }
-        else {
-
+        else{
             const rangeOfInformation: boolean | Array<number> = validationPageAndPageSize(pageSizeData, teacherinfo.length);
             if (rangeOfInformation === false) {
                 ctx.status = 406;
@@ -30,20 +26,21 @@ export const getTeacherInfo = async (ctx: koa.Context, next: koa.Next) => {
             }
             else {
                 ctx.status = 200;
-                ctx.body = teacherinfo.slice(rangeOfInformation[0], rangeOfInformation[1]);
+                const rangeNumber:any =rangeOfInformation;
+                ctx.body = teacherinfo.slice(rangeNumber[0], rangeNumber[1]);
             }
         }
-    }).catch((data) => {
+    }
+    catch{
         ctx.status = 400;
-
         ctx.body = message.errorMessage;
-    });
+    }
 }
 
-export const insertTeacherInfo = async (ctx: koa.Context, next: koa.Next) => {
-    var teacherInfo: any = ctx.request.body;
+export const insertTeacherInfo = async (ctx: koa.Context, next: koa.Next): Promise<any> => {
+    const teacherInfo: any = ctx.request.body;
     if (teacherInfo !== undefined && teacherInfo.name !== undefined && teacherInfo.contactno !== undefined) {
-        var specialization: null | string = null;
+        let specialization: null | string = null;
         if (teacherInfo.specialization !== undefined) {
             specialization = teacherInfo.specialization;
         }
@@ -53,15 +50,19 @@ export const insertTeacherInfo = async (ctx: koa.Context, next: koa.Next) => {
             contactno: teacherInfo.contactno,
             specialization: specialization
         }
-        await teacherController.insertTeacherInfoIntoDB([teacherEntity.tid, teacherEntity.tname, teacherEntity.specialization, teacherEntity.contactno]).then((data) => {
+        try{
+            await teacherModel.insertTeacherInfoIntoDB([teacherEntity.tid, teacherEntity.tname, teacherEntity.specialization, teacherEntity.contactno])
             ctx.status = 200;
             ctx.body = "Data inserted successfully";
-        }).catch((data) => {
-            ctx.status = 406;
+        }
+        catch{
+            ctx.status = 400;
             ctx.body = message.errorMessage;
-        });
+        }
+
     }
     else {
+        ctx.status=406;
         ctx.body = message.invalidInputMessage;
     }
 }

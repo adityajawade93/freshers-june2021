@@ -1,17 +1,17 @@
-import {page} from "../Utility/Page";
-import {validationPageAndPageSize} from "../Utility/Validation";
-import * as message from "../Utility/message";
+import {page} from "../Middleware/Page";
+import {validationPageAndPageSize} from "../Middleware/Validation";
+import * as message from "../Middleware/message";
 import * as koa from "koa";
 import * as uuid from 'uuid';
-import * as subjectController from "../DBController/SubjectController";
-import {Subject} from "../Entity/Subject";
+import * as subjectModel from "../Services/SubjectModel";
+import {Subject} from "../Services/Subject";
 
-export const insertSubjectInfo = async (ctx: koa.Context, next: koa.Next) => {
-    var subjectInfo: any = ctx.request.body;
+export const insertSubjectInfo = async (ctx: koa.Context, next: koa.Next): Promise<any> => {
+    const subjectInfo: any = ctx.request.body;
     if (subjectInfo.name !== undefined) {
-        var suid: string | null = uuid.v4();
-        var alternatetid: string | null = null;
-        var tid: string | null = null;
+        const suid: string | null = uuid.v4();
+        let alternatetid: string | null = null;
+        let tid: string | null = null;
         if (subjectInfo.tid !== undefined) {
             tid = subjectInfo.tid;
         }
@@ -19,41 +19,39 @@ export const insertSubjectInfo = async (ctx: koa.Context, next: koa.Next) => {
             alternatetid = subjectInfo.atid;
         }
         const subjectEntity: Subject = {
-            suid: uuid.v4(),
+            suid: suid,
             sname: subjectInfo.name,
             tid: tid,
             alternatetid: alternatetid
         }
-        await subjectController.insertSubjectInfoIntoDB([subjectEntity.suid, subjectEntity.sname, subjectEntity.tid, subjectEntity.alternatetid]).then(() => {
+        try{
+            await subjectModel.insertSubjectInfoIntoDB([subjectEntity.suid, subjectEntity.sname, subjectEntity.tid, subjectEntity.alternatetid]);
             ctx.status = 200;
             ctx.body = "Data inserted successfully";
-        }).catch(() => {
+        }
+        catch{
             ctx.status = 406;
             ctx.body = message.errorMessage;
-        });
+        }
+
     }
     else {
         ctx.body = message.invalidInputMessage;
     }
 }
 
-export const getSubjectInfo = async (ctx: koa.Context, next: koa.Next) => {
-    const promiseDB: Promise<unknown> = new Promise(subjectController.getSubjectInfoFromDB);
-    var subjectinfo: any;
-    var pageSizeData: page = {
+export const getSubjectInfo = async (ctx: koa.Context, next: koa.Next): Promise<any> => {
+    const pageSizeData: page = {
         page: Number(ctx.query.page),
         size: Number(ctx.query.size)
     }
-
-    await promiseDB.then((data) => {
-        subjectinfo = data;
-        console.log(subjectinfo);
+    try{
+        const subjectinfo: any=subjectModel.getSubjectInfoFromDB();
         if (subjectinfo.length === 0) {
             ctx.status = 200;
             ctx.body = "There is no subject information.";
         }
-        else {
-
+        else{
             const rangeOfInformation: boolean | Array<number> = validationPageAndPageSize(pageSizeData, subjectinfo.length);
             if (rangeOfInformation === false) {
                 ctx.status = 406;
@@ -64,8 +62,10 @@ export const getSubjectInfo = async (ctx: koa.Context, next: koa.Next) => {
                 ctx.body = subjectinfo.slice(rangeOfInformation[0], rangeOfInformation[1]);
             }
         }
-    }).catch((data) => {
+    }
+    catch{
         ctx.status = 400;
         ctx.body = message.errorMessage;
-    });
+    }
+
 }

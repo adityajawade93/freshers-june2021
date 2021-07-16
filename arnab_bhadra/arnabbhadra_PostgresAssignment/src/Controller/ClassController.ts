@@ -1,13 +1,11 @@
-import {page} from "../Utility/Page";
-import {validationPageAndPageSize} from "../Utility/Validation";
-import * as message from "../Utility/message";
+import * as message from "../Middleware/message";
 import * as koa from "koa";
 import * as uuid from 'uuid';
-import {ClassSchedule} from "../Entity/ClassSchedule";
-import * as classController from "../DBController/ClassController";
+import {ClassSchedule} from "../Services/ClassSchedule";
+import * as classModel from "../Services/ClassModel";
 
-export const insertClassScheduleInfo = async (ctx: koa.Context, next: koa.Next) => {
-    var classScheduleInfo: any = ctx.request.body;
+export const insertClassScheduleInfo = async (ctx: koa.Context, next: koa.Next): Promise<any> => {
+    const classScheduleInfo: any = ctx.request.body;
     if (classScheduleInfo !== undefined && classScheduleInfo.ssid !== undefined && classScheduleInfo.start !== undefined && classScheduleInfo.end !== undefined) {
         const classScheduleEntity: ClassSchedule = {
             cid: uuid.v4(),
@@ -15,13 +13,16 @@ export const insertClassScheduleInfo = async (ctx: koa.Context, next: koa.Next) 
             starttime: classScheduleInfo.start,
             endtime: classScheduleInfo.end
         }
-        await classController.insertClassScheduleInfoIntoDB([classScheduleEntity.cid, classScheduleEntity.ssid, classScheduleEntity.starttime, classScheduleEntity.endtime]).then(() => {
+        try{
+            classModel.insertClassScheduleInfoIntoDB([classScheduleEntity.cid, classScheduleEntity.ssid, classScheduleEntity.starttime, classScheduleEntity.endtime])
             ctx.status = 200;
             ctx.body = "Data inserted successfully";
-        }).catch(() => {
+        }
+        catch{
             ctx.status = 406;
             ctx.body = message.errorMessage;
-        });
+        }
+
     }
     else {
         ctx.body = message.invalidInputMessage;

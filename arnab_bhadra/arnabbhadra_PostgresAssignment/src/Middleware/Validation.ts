@@ -6,7 +6,7 @@ const validationPageAndPageSize = function (pageSize: page, noOfrecords: number)
         let minIndex = 0;
         if (pageSize.page < maxNumberOfPages) {
             minIndex = pageSize.page * pageSize.size;
-            let maxIndex = noOfrecords < pageSize.size ? noOfrecords : pageSize.size * (pageSize.page + 1);
+            const maxIndex = noOfrecords < pageSize.size ? noOfrecords : pageSize.size * (pageSize.page + 1);
             return [minIndex, maxIndex];
         }
         else {

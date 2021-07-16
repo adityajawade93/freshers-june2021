@@ -1,8 +1,8 @@
 import Router from '@koa/router';
 const router = new Router();
 
-const schedule = require('../controller/schedule');
+import * as schedule from '../controller/schedule';
 
-router.post("/schedule", schedule.createSchedule); 
+router.post("/schedule", schedule.createSchedule);
 
-module.exports = router;
+export default router;

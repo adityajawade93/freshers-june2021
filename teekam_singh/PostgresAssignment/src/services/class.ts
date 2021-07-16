@@ -1,45 +1,32 @@
-import { query, setpath, start } from "../db/database";
+import { query } from "../db/database";
 
 export async function createClass(id: string, name: string) {
-
     try {
-        await start();
-        await setpath();
-        var res = await query(`insert into classes values (${id},${name})`);
+        await query("insert into classes values ($1,$2)", [id, name]);
     }
-    catch (error) {
-        console.log(`something went wrong  ${error}`);
-        throw new error;
+    catch (err) {
+        throw new Error(err);
     }
 
 }
 
-export async function classList (){
+export async function classList() {
     try {
-        await start();
-        await setpath();
-        let res: any = await query("select * from classes");
+        const res: any = await query("select * from classes");
         return res;
     }
-    catch (error) {
-        console.log(`something went wrong  ${error}`);
-        throw new error;
+    catch (err) {
+        throw new Error(err);
     }
-
 }
 
-export async function studentListFromClassid (class_id: string) {
-
+export async function studentListFromClassid(classid: string) {
     try {
-        await start();
-        await setpath();
-        var sql: string = `select students.student_id,student_name from students,student_class where student_class.class_id = '${class_id}' and students.student_id = student_class.student_id;`
-        let res: any = await query(sql);
+        const sql: string = "select students.student_id,student_name from students,student_class where student_class.class_id = $1 and students.student_id = student_class.student_id;"
+        const res: any = await query(sql, [classid]);
         return res;
     }
-    catch (error) {
-        console.log(`something went wrong  ${error}`);
-        throw new error;
+    catch (err) {
+        throw new Error(err);
     }
-
 }

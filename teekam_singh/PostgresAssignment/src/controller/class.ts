@@ -1,66 +1,65 @@
-const services = require('../services/class');
+import { Context } from 'vm';
+import * as services from '../services/class';
+import uuid from 'uniqid';
 
-export const createClass = async (ctx: any, next: any) => {
+export const createClass = async (ctx: Context) => {
 
     try {
-        let req: any = ctx.request.body;
-        let id: string = req["id"];
-        let name: string = req["name"];
+        const requestBody: any = ctx.request.body;
 
-        if (!id || !name) {
+        if (!requestBody.name) {
             ctx.status = 400;
             ctx.body = "Please enter all the details";
             return;
         }
-        if (typeof (id) != 'string' || typeof (name) != 'string') {
+        if (typeof (requestBody.name) !== 'string') {
             ctx.status = 400;
             ctx.body = "Please enter all the details in correct format";
             return;
         }
-
-        await services.createClass(id, name);
+        const id:string = uuid();
+        await services.createClass(id, requestBody.name);
         ctx.status = 200;
-        ctx.body = "class created.";
+        ctx.body = "class created."
     }
     catch (error) {
-        console.log(`something went wrong  ${error}`);
-        ctx.status = 400;
-        ctx.body = "something went wrong";
+        ctx.status = 500;
+        if(error.status) {ctx.status = error.status;}
+        ctx.body = error.message;
     }
 
 }
 
-export const classList = async (ctx: any, next: any) => {
+export const classList = async (ctx: Context) => {
     try {
-        let res: any = await services.classList();
+        const res: any = await services.classList();
         ctx.status = 200;
         ctx.body = res.rows;
     }
     catch (error) {
-        console.log(`something went wrong  ${error}`);
-        ctx.status = 400;
-        ctx.body = "something went wrong";
+        ctx.status = 500;
+        if(error.status) {ctx.status = error.status;}
+        ctx.body = error.message;
     }
 
 }
 
-export const studentListFromClassid = async (ctx: any, next: any) => {
+export const studentListFromClassid = async (ctx: Context)=> {
 
     try {
-        let class_id: string = ctx.query.id.toString();
-        if (!class_id || class_id == null) {
+        const classid: string = ctx.params.classid;
+        if (!classid || classid == null) {
             ctx.status = 400;
             ctx.body = "Please enter class id.";
         }
-
-        let res: any = await services.studentListFromClassid(class_id);
+        const res: any = await services.studentListFromClassid(classid);
         ctx.status = 200;
         ctx.body = res.rows;
     }
     catch (error) {
-        console.log(`something went wrong  ${error}`);
-        ctx.status = 400;
-        ctx.body = "something went wrong";
+        ctx.status = 500;
+        if(error.status) {ctx.status = error.status;}
+        ctx.body = error.message;
     }
 
 }

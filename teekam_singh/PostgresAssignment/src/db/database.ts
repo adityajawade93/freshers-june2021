@@ -1,10 +1,10 @@
 import { Client } from "pg";
 
-const connectionString: string = 'postgressql://postgres:postgres@localhost:5432/practice';
+const ConnectionString: string = 'postgressql://postgres:postgres@localhost:5432/practice';
 
 let client: any;
 export async function start() {
-    client = new Client({ connectionString: connectionString });
+    client = new Client({ connectionString: ConnectionString });
     await client.connect();
 
 }
@@ -14,14 +14,14 @@ export async function setpath(){
         await client.query('set search_path to school')
     }catch(er){
         throw new Error(er)
-    }   
+    }
 }
 
-export async function query(querystring:string){
+export async function query(querystring:string, values: any[] = []){
     try{
-        var result = await client.query(querystring)
+        const result = await client.query(querystring, values)
         return result
     }catch(er){
         throw new Error(er);
-    }    
+    }
 }

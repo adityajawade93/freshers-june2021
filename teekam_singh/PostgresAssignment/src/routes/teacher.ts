@@ -1,10 +1,10 @@
 import Router from '@koa/router';
 const router = new Router();
 
-const teacher = require('../controller/teacher');
+import * as teacher from '../controller/teacher';
 
 router.post("/teacher", teacher.createTeacher);
 router.get("/teacher", teacher.teacherList);
-router.get("/student/teacherid", teacher.studentListTeacherid); 
+router.get("/teacher/:id/students", teacher.studentListByTeacherid);
 
-module.exports = router;
+export default router;

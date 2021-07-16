@@ -1,124 +1,121 @@
-const services = require('../services/result');
+import { Context } from 'vm';
+import * as services from '../services/result';
 
-export const createResult = async (ctx: any, next: any) => {
+interface ResultRequest {
+    studentId: string;
+    classId?: string;
+    subjectId: string;
+    marks: number;
+}
 
+export const createResult = async (ctx: Context) => {
     try {
-        let req: any = ctx.request.body;
-        let student_id: string = req["student_id"];
-        let class_id: string = req["class_id"];
-        let sub_id: string = req["sub_id"];
-        let marks: string = req["marks"];
+        const requestBody: ResultRequest = ctx.request.body;
 
-        if (!student_id || !class_id || !sub_id || !marks) {
+        if (!requestBody.studentId || !requestBody.classId || !requestBody.subjectId || !requestBody.marks) {
             ctx.status = 400;
             ctx.body = "Please enter all the details";
             return;
         }
-        if (typeof (student_id) != 'string' || typeof (class_id) != 'string' || typeof (sub_id) != 'string' || typeof (marks) != 'number') {
+        if (typeof (requestBody.studentId) !== 'string' || typeof (requestBody.classId) !== 'string' || typeof (requestBody.subjectId) !== 'string' || typeof (requestBody.marks) !== 'number') {
             ctx.status = 400;
             ctx.body = "Please enter all the details in correct format";
             return;
         }
 
-        await services.createResult(student_id, class_id, sub_id, marks);
+        await services.createResult(requestBody);
         ctx.status = 200;
         ctx.body = "result created.";
     }
     catch (error) {
-        console.log(`something went wrong  ${error}`);
-        ctx.status = 400;
-        ctx.body = "something went wrong";
+        ctx.status = 500;
+        if (error.status) { ctx.status = error.status; }
+        ctx.body = error.message;
     }
 
 }
 
-export const updateResult = async (ctx: any, next: any) => {
-
+export const updateResult = async (ctx: Context) => {
     try {
-        let req: any = ctx.request.body;
-        let st_id: string = req["student_id"].trim();
-        let sub_id: string = req["sub_id"].trim();
-        let marks: number = req["marks"];
+        const requestBody: ResultRequest = ctx.request.body;
 
-        if (!st_id || !sub_id || !marks) {
+        if (!requestBody.studentId || !requestBody.subjectId || !requestBody.marks) {
             ctx.status = 400;
             ctx.body = "Please enter all the details";
             return;
         }
-        if (typeof (st_id) != 'string' || typeof (sub_id) != 'string' || typeof (marks) != 'number') {
+        if (typeof (requestBody.studentId) !== 'string' || typeof (requestBody.subjectId) !== 'string' || typeof (requestBody.marks) !== 'string') {
             ctx.status = 400;
             ctx.body = "Please enter all the details in correct format";
             return;
         }
-        await services.updateResult(st_id, sub_id, marks);
+        await services.updateResult(requestBody);
         ctx.status = 200;
         ctx.body = "result updated.";
     }
     catch (error) {
-        console.log(`something went wrong  ${error}`);
-        ctx.status = 400;
-        ctx.body = "something went wrong";
+        ctx.status = 500;
+        if (error.status) { ctx.status = error.status; }
+        ctx.body = error.message;
     }
 }
 
-export const MarksStudentid = async (ctx: any, next: any) => {
-
+export const marksByStudentId = async (ctx: Context) => {
     try {
-        let student_id: string = ctx.query.studentid.toString();
+        const studentId: string = ctx.params.studentId;
 
-        if (!student_id) {
+        if (!studentId) {
             ctx.status = 400;
             ctx.body = "Please enter class id and subject id.";
         }
-        let res: any = await services.MarksStudentid(student_id);
+        const res: any = await services.marksByStudentId(studentId);
         ctx.status = 200;
         ctx.body = res.rows;
     }
     catch (error) {
-        console.log(`something went wrong  ${error}`);
-        ctx.status = 400;
-        ctx.body = "something went wrong";
+        ctx.status = 500;
+        if (error.status) { ctx.status = error.status; }
+        ctx.body = error.message;
     }
 
 }
 
-export const highestMarks = async (ctx: any, next: any) => {
-
+export const highestMarks = async (ctx: Context) => {
     try {
-        let class_id: string = ctx.query.classid.toString();
-        let sub_id: string = ctx.query.subid.toString();
+        const classId: string = ctx.params.classId;
+        const subjectId: string = ctx.params.subjectId;
 
-        if (!class_id || !sub_id) {
+        if (!classId || !subjectId) {
             ctx.status = 400;
             ctx.body = "Please enter class id and subject id.";
         }
-        let res: any = await services.highestMarks(class_id, sub_id);
+        const res: any = await services.highestMarks(classId, subjectId);
         ctx.status = 200;
         ctx.body = res.rows;
     }
     catch (error) {
-        console.log(`something went wrong  ${error}`);
-        ctx.status = 400;
-        ctx.body = "something went wrong";
+        ctx.status = 500;
+        if (error.status) { ctx.status = error.status; }
+        ctx.body = error.message;
     }
 
 }
 
-export const topNstudents = async (ctx: any, next: any) => {
+export const topNstudents = async (ctx: Context) => {
     try {
-        let n: number = Number(ctx.query.num);
-        if (!n) {
+        const limit: number = Number(ctx.params.limit);
+        if (!limit) {
             ctx.status = 400;
             ctx.body = "Please enter number of students.";
         }
-        let res: any = await services.topNstudents(n);
+        const res: any = await services.topNstudents(limit);
         ctx.status = 200;
         ctx.body = res.rows;
     }
     catch (error) {
-        console.log(`something went wrong  ${error}`);
-        ctx.status = 400;
-        ctx.body = "something went wrong";
+        ctx.status = 500;
+        if (error.status) { ctx.status = error.status; }
+        ctx.body = error.message;
     }
 
 }

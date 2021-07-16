@@ -1,62 +1,65 @@
-const services = require('../services/teacher');
+import { Context } from 'vm';
+import * as services from '../services/teacher';
+import uuid from 'uniqid';
 
+interface TeacherRequest{
+    name: string;
+    subjectId: string;
+}
 
-export const createTeacher = async (ctx: any, next: any) => {
+export const createTeacher = async (ctx: Context) => {
     try {
-        let req: any = ctx.request.body;
-        let id: string = req["id"];
-        let name: string = req["name"];
-        let sub_id: string = req["sub_id"];
+        const requestBody: TeacherRequest = ctx.request.body;
 
-        if (!id || !name || !sub_id) {
+        if (!requestBody.name || !requestBody.subjectId) {
             ctx.status = 400;
             ctx.body = "Please enter all the details";
             return;
         }
-        if (typeof (id) != 'string' || typeof (name) != 'string' || typeof (sub_id) != 'string') {
+        if (typeof (requestBody.name) !== 'string' || typeof (requestBody.subjectId) !== 'string') {
             ctx.status = 400;
             ctx.body = "Please enter all the details in correct format";
             return;
         }
-        await services.createTeacher(id, name, sub_id);
+        const id = uuid();
+        await services.createTeacher(id, requestBody.name, requestBody.subjectId);
         ctx.status = 200;
         ctx.body = "teacher created.";
     }
     catch (error) {
-        console.log(`something went wrong  ${error}`);
-        ctx.status = 400;
-        ctx.body = "something went wrong";
+        ctx.status = 500;
+        if(error.status) {ctx.status = error.status;}
+        ctx.body = error.message;
     }
 }
 
-export const teacherList = async (ctx: any, next: any) => {
-
+export const teacherList = async (ctx: Context) => {
     try {
-        let res: any = await services.teacherList();
+        const res: any = await services.teacherList();
         ctx.status = 200;
         ctx.body = res.rows;
     }
     catch (error) {
-        console.log(`something went wrong  ${error}`);
-        ctx.status = 400;
-        ctx.body = "something went wrong";
+        ctx.status = 500;
+        if(error.status) {ctx.status = error.status;}
+        ctx.body = error.message;
     }
 }
 
-export const studentListTeacherid = async (ctx: any, next: any) => {
+export const studentListByTeacherid = async (ctx: Context) => {
     try {
-        let teacher_id: string = ctx.query.id.toString();
-        if (!teacher_id) {
+        const teacherId: string = ctx.params.id;
+        if (!teacherId) {
             ctx.status = 400;
             ctx.body = "Please enter teacher id.";
         }
-        let res: any = await services.studentListTeacherid(teacher_id);
+        const res: any = await services.studentListByTeacherid(teacherId);
         ctx.status = 200;
         ctx.body = res.rows;
     }
     catch (error) {
-        console.log(`something went wrong  ${error}`);
-        ctx.status = 400;
-        ctx.body = "something went wrong";
+        ctx.status = 500;
+        if(error.status) {ctx.status = error.status;}
+        ctx.body = error.message;
     }
 }

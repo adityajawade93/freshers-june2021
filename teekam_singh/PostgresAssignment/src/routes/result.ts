@@ -1,12 +1,12 @@
 import Router from '@koa/router';
 const router = new Router();
 
-const result = require('../controller/result');
+import * as result from '../controller/result';
 
 router.post("/result", result.createResult);
 router.put("/result", result.updateResult);
-router.get("/marks/studentid", result.MarksStudentid);
-router.get("/topper", result.highestMarks ); 
-router.get("/top/students", result.topNstudents); 
+router.get("/marks/:studentId", result.marksByStudentId);
+router.get("/topper/class/:classId/subject/:subjectId", result.highestMarks );
+router.get("/top/students/:limit", result.topNstudents);
 
-module.exports = router;
+export default router;

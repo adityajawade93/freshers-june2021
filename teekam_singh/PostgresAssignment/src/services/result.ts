@@ -1,66 +1,57 @@
-import { query, setpath, start } from "../db/database";
+import { query } from "../db/database";
 
-export async function createResult (student_id: string, class_id: string, sub_id: string, marks: number){
+interface ResultRequest {
+    studentId: string;
+    classId?: string;
+    subjectId: string;
+    marks: number;
+}
 
+export async function createResult(requestBody: ResultRequest) {
     try {
-        await start();
-        await setpath();
-        await query(`insert into results values (${student_id},${class_id},${sub_id},${marks})`);
+        await query("insert into results values ($1,$2,$3,$4)", [requestBody.studentId, requestBody.classId, requestBody.subjectId, requestBody.marks]);
     }
-    catch (error) {
-        console.log(`something went wrong  ${error}`);
-        throw new error;
+    catch (err) {
+        throw new Error(err);
     }
 
 }
 
-export async function updateResult (st_id: string, sub_id: string, marks: number) {
+export async function updateResult(requestBody: ResultRequest) {
     try {
-        await start();
-        await setpath();
-        await query(`update results set marks = ${marks} where student_id = '${st_id}' and subject_id = '${sub_id}'`);
+        await query("update results set marks = $1 where student_id = $2 and subject_id = $3", [requestBody.marks, requestBody.studentId, requestBody.subjectId]);
     }
-    catch (error) {
-        console.log(`something went wrong  ${error}`);
-        throw new error;
+    catch (err) {
+        throw new Error(err);
     }
 }
 
-export async function MarksStudentid (student_id: string) {
+export async function marksByStudentId(studentId: string) {
     try {
-        await start();
-        await setpath();
-        var sql: string = `select subject_id,marks from results where student_id = ${student_id};`
-        let res: any = await query(sql);
+        const res: any = await query("select subject_id,marks from results where student_id = $1", [studentId]);
         return res;
     }
-    catch (error) {
-        console.log(`something went wrong  ${error}`);
-        throw new error;
+    catch (err) {
+        throw new Error(err);
     }
 
 }
 
-export async function highestMarks (class_id: string, sub_id: string) {
-    try{
-        await start();
-        await setpath();
-        var sql: string = `select results.student_id,student_name,marks from students,results where students.student_id = results.student_id and class_id = '${class_id}' and subject_id = '${sub_id}' and marks = (select max(marks) from results where class_id = '${class_id}' and subject_id = '${sub_id}');`
-        let res: any = await query(sql);
+export async function highestMarks(classId: string, subjectId: string) {
+    try {
+        const sql: string = "select results.student_id,student_name,marks from students,results where students.student_id = results.student_id and class_id = $1 and subject_id = $2 and marks = (select max(marks) from results where class_id = $1 and subject_id = $2)";
+        const res: any = await query(sql, [classId, subjectId]);
         return res;
     }
-    catch (error) {
-        console.log(`something went wrong  ${error}`);
-        throw new error;
+    catch (err) {
+        throw new Error(err);
     }
 
 }
 
-export async function topNstudents (n: number){
-    try{
-        await start();
-        await setpath();
-        var sql: string = `select student_id,student_name,class_id,marks from (
+export async function topNstudents(limit: number) {
+    try {
+        const sql: string = `select student_id,student_name,class_id,marks from (
             select student_id,student_name,class_id, marks,  dense_rank() OVER (
                 PARTITION BY class_id
                 ORDER BY marks DESC ) ab
@@ -69,13 +60,12 @@ export async function topNstudents (n: number){
             ax.student_id,student_name,class_id, sum(marks) as marks
             from results ax inner join students bx on ax.student_id = bx.student_id
             group by ax.student_id,student_name, class_id) as hd) as bd
-            where ab<= ${n};`;
-        let res: any = await query(sql);
+            where ab<= $1`;
+        const res: any = await query(sql, [limit]);
         return res;
     }
-    catch (error) {
-        console.log(`something went wrong  ${error}`);
-        throw new error;
+    catch (err) {
+        throw new Error(err);
     }
 
 }

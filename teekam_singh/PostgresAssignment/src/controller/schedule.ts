@@ -1,32 +1,34 @@
-const services = require('../services/schedule');
+import { Context } from 'vm';
+import * as services from '../services/schedule';
 
-export const createSchedule = async (ctx: any, next: any) => {
+interface ScheduleRequest{
+    classId: string;
+    subjectId: string;
+    teacherId: string;
+}
 
+export const createSchedule = async (ctx: Context) => {
     try {
-        let req: any = ctx.request.body;
-        let sub_id: string = req["sub_id"];
-        let class_id: string = req["class_id"];
-        let teacher_id: string = req["teacher_id"];
+        const requestBody: ScheduleRequest = ctx.request.body;
 
-        if (!sub_id || !class_id || !teacher_id) {
+        if ( !requestBody.classId || requestBody.subjectId || !requestBody.teacherId) {
             ctx.status = 400;
             ctx.body = "Please enter all the details";
             return;
         }
-        if (typeof (sub_id) != 'string' || typeof (class_id) != 'string' || typeof (teacher_id) != 'string') {
+        if (typeof (requestBody.classId) !== 'string' || typeof (requestBody.subjectId) !== 'string' || typeof (requestBody.teacherId) !== 'string') {
             ctx.status = 400;
             ctx.body = "Please enter all the details in correct format";
             return;
         }
-
-        await services.createSchedule(sub_id, class_id, teacher_id);
+        await services.createSchedule(requestBody);
         ctx.status = 200;
         ctx.body = "schedule created.";
     }
     catch (error) {
-        console.log(`something went wrong  ${error}`);
-        ctx.status = 400;
-        ctx.body = "something went wrong";
+        ctx.status = 500;
+        if(error.status) {ctx.status = error.status;}
+        ctx.body = error.message;
     }
 
 }

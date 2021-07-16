@@ -1,15 +1,17 @@
-import { query, setpath, start } from "../db/database";
+import { query } from "../db/database";
 
-export async function createSchedule (sub_id: string, class_id: string, teacher_id: string ) {
+interface ScheduleRequest{
+    classId: string;
+    subjectId: string;
+    teacherId: string;
+}
 
+export async function createSchedule ( requestBody: ScheduleRequest ) {
     try {
-        await start();
-        await setpath();
-        await query(`insert into schedule values (${sub_id},${class_id},${teacher_id})`);
+        await query("insert into schedule values ($1, $2, $3)", [requestBody.subjectId, requestBody.classId, requestBody.teacherId]);
     }
-    catch (error) {
-        console.log(`something went wrong  ${error}`);
-        throw new error;
+    catch (err) {
+        throw new Error(err);
     }
 
 }

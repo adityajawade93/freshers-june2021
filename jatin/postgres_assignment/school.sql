@@ -2,11 +2,11 @@
 create schema school;
 set search_path to school;
 
-
+create tyoe as sex enum('male','female','others');
 create table student(
 	studentID varchar(20) not null primary key,
-	name char(40) not null,
-	gender enum('M','O','F') not null,
+	name varchar(40) not null,
+	gender sex not null,
 	phone varchar(10) null,
 );
 
@@ -17,13 +17,13 @@ create table class(
 
 create table subject(
 	subjectID varchar(20) not null primary key,
-	name char(40) not null
+	name varchar(40) not null
 );
 
 create table teacher(
 	teacherID varchar(20) not null primary key,
-	name char(40) not null,
-	sex enum('M','F','O') not null,
+	name varchar(40) not null,
+	sex sex not null,
 	phone varchar(10)
 );
 
@@ -40,7 +40,7 @@ create table studies_in(
 create table having_subject(
 	classID varchar(10),
 	subjectID varchar(20),
-	primary key (classID, subjectID)
+	primary key (classID, subjectID),
 
 	foreign key (classID) references class(classID),
 	foreign key (subjectID) references subject(subjectID)

@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 /* eslint-disable no-console */
 export { };
 
@@ -8,8 +7,8 @@ const validation = require('../helpers/validation_schema.ts');
 async function addClass(ctx: any) {
   const obj = ctx.request.body;
   try {
-    const req_body = await validation.classSchema.validate(obj);
-    console.log(req_body);
+    const reqBody = await validation.classSchema.validate(obj);
+    console.log(reqBody);
     const newclass = await database.addClass(obj.classID, obj.room, obj.subjectID);
     ctx.response.status = 200;
     ctx.response.type = 'application/json';

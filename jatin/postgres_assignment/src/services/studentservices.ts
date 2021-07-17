@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /* eslint-disable max-len */
 export { };
 
@@ -34,7 +33,6 @@ async function getStudentCount() {
 }
 
 async function getStudent(page: number, size: number) {
-  console.log('hey student list');
   return new Promise((resolve, reject) => {
     const query = 'select * from school.student order by name offset $1 limit $2';
     client.query(query, [page * size, size], (err: any, res: any) => {
@@ -52,8 +50,8 @@ async function getStudentFromClassID(id: string) {
     client.query(`
         select s.studentid, s.name, class.classid
         from school.student s
-        left join school.studies_in on studies_in.studentid = s.studentid
-        left join school.class on class.classid = studies_in.classid
+        join school.studies_in on studies_in.studentid = s.studentid
+        join school.class on class.classid = studies_in.classid
         where class.classid = $1 order by s.name`, [id],
     (err: any, res: any) => {
       if (err) reject(err);
@@ -67,10 +65,10 @@ async function getStudentFromSubjectID(id: string) {
     client.query(`
         select s.name, class.classid, subject.name as subject_name
         from school.student s
-        left join school.studies_in on studies_in.studentid = s.studentid
-        left join school.class on class.classid = studies_in.classid
-        left join school.having_subject on class.classid = having_subject.classid
-        left join school.subject on subject.subjectid = having_subject.subjectid
+        join school.studies_in on studies_in.studentid = s.studentid
+        join school.class on class.classid = studies_in.classid
+        join school.having_subject on class.classid = having_subject.classid
+        join school.subject on subject.subjectid = having_subject.subjectid
         where subject.subjectid = $1 order by s.name`, [id],
     (err: any, res: any) => {
       if (err) reject(err);
@@ -84,12 +82,12 @@ async function getStudentFromTeacherID(id: string) {
     client.query(`
         select s.name, class.classid, teacher.name AS teacher_name
         from school.student s
-        left join school.studies_in on studies_in.studentid = s.studentid
-        left join school.class on class.classid = studies_in.classid
-        left join school.having_subject on class.classid = having_subject.classid
-        left join school.subject on subject.subjectid = having_subject.subjectid
-        left join school.takes on subject.subjectid = takes.subjectid
-        left join school.teacher on teacher.teacherid = takes.teacherid
+        join school.studies_in on studies_in.studentid = s.studentid
+        join school.class on class.classid = studies_in.classid
+        join school.having_subject on class.classid = having_subject.classid
+        join school.subject on subject.subjectid = having_subject.subjectid
+        join school.takes on subject.subjectid = takes.subjectid
+        join school.teacher on teacher.teacherid = takes.teacherid
         where teacher.teacherid = $1 order by s.name`, [id],
     (err: any, res: any) => {
       if (err) reject(err);

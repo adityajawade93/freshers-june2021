@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-/* eslint-disable camelcase */
 export { };
 
 const database = require('../services/resultservices.ts');
@@ -8,13 +7,13 @@ const validation = require('../helpers/validation_schema.ts');
 async function addMarks(ctx: any) {
   const obj = ctx.request.body;
   try {
-    const req_body = await validation.resultSchema.validate(obj);
-    console.log(req_body);
-    const added_marks = await database.addMarks(obj.studentID, obj.subjectID, obj.marks);
+    const reqBody = await validation.resultSchema.validate(obj);
+    console.log(reqBody);
+    const addedMarks = await database.addMarks(obj.studentID, obj.subjectID, obj.marks);
     ctx.response.status = 200;
     ctx.body = {
       msg: 'marks added',
-      data: added_marks,
+      data: addedMarks,
     };
   } catch (err) {
     if (err.isJoi === true) {
@@ -30,13 +29,13 @@ async function addMarks(ctx: any) {
 async function updateMarks(ctx: any) {
   const obj = ctx.request.body;
   try {
-    const req_body = validation.resultSchema.validate(obj);
-    console.log(req_body);
-    const updated_marks = await database.updateMarks(obj.studentID, obj.subjectID, obj.marks);
+    const reqbody = validation.resultSchema.validate(obj);
+    console.log(reqbody);
+    const updatedMarks = await database.updateMarks(obj.studentID, obj.subjectID, obj.marks);
     ctx.response.status = 200;
     ctx.body = {
       msg: 'data updated',
-      data: updated_marks,
+      data: updatedMarks,
     };
   } catch (err) {
     if (err.isJoi) {

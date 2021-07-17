@@ -26,8 +26,6 @@ async function addTeacher(teacherID: string, name: string, gender: string, phone
 }
 
 async function getTeacher() {
-  // eslint-disable-next-line no-console
-  console.log('hey teacher list');
   return new Promise((resolve, reject) => {
     client.query('select * from school.teacher order by name', [], (err: any, res: { rows: unknown }) => {
       if (err) {

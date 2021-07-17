@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-/* eslint-disable camelcase */
 export { };
 
 const uuid = require('uniqid');
@@ -9,8 +8,8 @@ const validation = require('../helpers/validation_schema.ts');
 async function addStudent(ctx: any) {
   const obj = ctx.request.body;
   try {
-    const req_body = await validation.studentSchema.validate(obj);
-    console.log(req_body);
+    const reqBody = await validation.studentSchema.validate(obj);
+    console.log(reqBody);
     const id: string = uuid('S');
     const newStudent = await database.addStudent(id, obj.name, obj.gender, obj.phone, obj.classID);
     ctx.response.status = 200;
@@ -20,9 +19,9 @@ async function addStudent(ctx: any) {
       data_added: newStudent,
     };
   } catch (err) {
-    console.log('oh no');
     if (err.isJoi === true) {
       ctx.response.status = 422;
+      console.log('validation error');
     } else {
       ctx.response.status = 400;
       ctx.response.type = 'application/json';
@@ -72,11 +71,11 @@ async function getStudentFromClassID(ctx: any) {
   try {
     const { Classid } = ctx.request.params;
     console.log('hello');
-    const required_student = await database.getStudentFromClassID(Classid);
+    const requiredStudent = await database.getStudentFromClassID(Classid);
     ctx.response.status = 200;
     ctx.body = {
       msg: 'required student detail',
-      data: required_student,
+      data: requiredStudent,
     };
   } catch (err) {
     ctx.response.status = 400;
@@ -89,9 +88,9 @@ async function getStudentFromClassID(ctx: any) {
 async function getStudentFromSubjectID(ctx: any) {
   try {
     const { Subjectid } = ctx.request.params;
-    const required_student = await database.getStudentFromSubjectID(Subjectid);
+    const requiredStudent = await database.getStudentFromSubjectID(Subjectid);
     ctx.response.status = 200;
-    ctx.body = required_student;
+    ctx.body = requiredStudent;
   } catch (err) {
     ctx.response.status = 400;
     ctx.body = {
@@ -103,9 +102,9 @@ async function getStudentFromSubjectID(ctx: any) {
 async function getStudentFromTeacherID(ctx: any) {
   try {
     const { Teacherid } = ctx.request.params;
-    const required_student = await database.getStudentFromTeacherID(Teacherid);
+    const requiredStudent = await database.getStudentFromTeacherID(Teacherid);
     ctx.response.status = 200;
-    ctx.body = required_student;
+    ctx.body = requiredStudent;
   } catch (err) {
     ctx.response.status = 400;
     ctx.body = {

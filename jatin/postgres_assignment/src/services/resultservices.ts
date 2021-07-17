@@ -22,11 +22,16 @@ async function updateMarks(studentID: string, subjectID: string, marks: number) 
 
 async function getMarks(studentID: string) {
   return new Promise((resolve, reject) => {
-    client.query('SELECT s.name , r.marks FROM school.result r LEFT JOIN school.subject s ON r.subjectid = s.subjectid WHERE r.studentid = $1 order by s.name', [studentID],
-      (err: any, res: any) => {
-        if (err) reject(err);
-        else resolve(res.rows);
-      });
+    client.query(`
+    select s.name as studentName, subject.name as subjectName,result.marks
+    from school.student s
+    join school.result on s.studentid = result.studentid
+    join school.subject on result.subjectid = subject.subjectid
+    where s.studentid =$1`, [studentID],
+    (err: any, res: any) => {
+      if (err) reject(err);
+      else resolve(res.rows);
+    });
   });
 }
 
@@ -34,9 +39,9 @@ async function getHighestMarksPerSubject(Classid: string) {
   return new Promise((resolve, reject) => {
     client.query(`select subject.name as subjectname , max(result.marks) as max_marks
     from school.class c
-    left join school.having_subject on having_subject.classid = c.classid
-    left join school.subject on subject.subjectid = having_subject.subjectid
-    left join school.result on result.subjectid = subject.subjectid
+    join school.having_subject on having_subject.classid = c.classid
+    join school.subject on subject.subjectid = having_subject.subjectid
+    join school.result on result.subjectid = subject.subjectid
     where c.classid= $1
     group by subject.subjectid
     order by subjectname`, [Classid], (err: any, res: { rows: unknown; }) => {
@@ -49,9 +54,9 @@ async function getHighestMarksPerSubject(Classid: string) {
 async function getToppersMarks(classid: any, toplimit: any) {
   const query = `select s.studentid, s.name, sum(result.marks) as total_marks
     from school.student s
-    inner join school.result on result.studentid = s.studentid
-    left join school.studies_in on studies_in.studentid = s.studentid
-    left join school.class on class.classid = studies_in.classid
+    join school.result on result.studentid = s.studentid
+    join school.studies_in on studies_in.studentid = s.studentid
+    join school.class on class.classid = studies_in.classid
     where class.classid = $1
     group by s.studentid 
     order by total_marks desc

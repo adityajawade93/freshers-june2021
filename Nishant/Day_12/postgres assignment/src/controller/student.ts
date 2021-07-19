@@ -3,16 +3,16 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable import/extensions */
 import { Context } from 'vm';
-
 import * as studentService from '../services/student';
+import addStudentSchema from '../helper/studentvalidation';
 
 interface IStudent{
   student_id: number;
   fname:string;
   mname:string;
   lname:string;
-  dob :Date;
-  gender: CharacterData;
+  dob :string;
+  gender: string;
   address:string;
   slice(a:number, b:number): IStudent;
 }
@@ -57,35 +57,21 @@ export async function addStudent(ctx: Context) {
   try {
     const req:IStudent = ctx.request.body;
 
-    if (req.student_id === undefined || req.fname === undefined || req.mname === undefined || req.lname === undefined || req.dob === undefined || req.gender === undefined || req.address === undefined) {
-      ctx.response.status = 400;
-      ctx.response.type = 'text/html';
-      ctx.body = 'Bad Request';
-      return;
-    }
-
-    if (req.fname.trim() === '' || req.mname.trim() === '' || req.lname.trim() === '' || req.address.trim() === '') {
-      ctx.response.status = 400;
-      ctx.response.type = 'text/html';
-      ctx.body = 'Bad Request';
-      return;
-    }
-
-    if (typeof req.student_id !== 'number' || typeof req.fname !== 'string' || typeof req.mname !== 'string' || typeof req.lname !== 'string' || typeof req.dob !== 'string' || typeof req.gender !== 'string' || typeof req.address !== 'string') {
-      ctx.response.status = 400;
-      ctx.response.type = 'text/html';
-      ctx.body = 'Bad Request';
-      return;
-    }
-
+    await addStudentSchema.validateAsync(req);
     await studentService.addStudentService(req.student_id, req.fname, req.mname, req.lname, req.dob, req.gender, req.address);
 
     ctx.response.status = 200;
     ctx.response.type = 'text/html';
     ctx.body = 'data is inserted in student table';
-  } catch (err) {
-    ctx.response.status = 500;
-    ctx.response.type = 'text/html';
-    ctx.body = 'internal server error';
+  } catch (e) {
+    if (e.isJoi === true) {
+      ctx.response.status = 422;
+      ctx.response.type = 'text/html';
+      ctx.body = 'unprocessable entity';
+    } else {
+      ctx.response.status = 500;
+      ctx.response.type = 'text/html';
+      ctx.body = 'internal server error';
+    }
   }
 }

@@ -5,6 +5,7 @@
 import { Context } from 'vm';
 
 import * as serviceclass from '../services/class';
+import * as validateclass from '../helper/classvalidation';
 
 interface ISchedule{
     classid:number;
@@ -32,7 +33,7 @@ export async function getClass(ctx: Context) {
     ctx.response.status = 200;
     ctx.response.type = 'application/json';
     ctx.body = rows.rows;
-  } catch (err) {
+  } catch {
     ctx.response.status = 500;
     ctx.response.type = 'text/html';
     ctx.body = 'internal server error';
@@ -42,41 +43,43 @@ export async function getClass(ctx: Context) {
 export async function getStudentByClassId(ctx: Context) {
   try {
     const classId:number = parseInt(ctx.params.classId);
-    if (classId === undefined || typeof classId !== 'number') {
-      ctx.response.status = 400;
-      ctx.response.type = 'text/html';
-      ctx.body = 'Bad Request';
-      return;
-    }
+    await validateclass.getStudentByClassIdSchema.validateAsync(classId);
     let [rows]: Array<{rows: IStudentDetails}> = [];
     rows = await serviceclass.getStudentByClassIdService(classId);
     ctx.response.status = 200;
     ctx.response.type = 'application/json';
     ctx.body = rows.rows;
-  } catch (err) {
-    ctx.response.status = 500;
-    ctx.response.type = 'text/html';
-    ctx.body = 'internal server error';
+  } catch (e) {
+    if (e.isJoi === true) {
+      ctx.response.status = 422;
+      ctx.response.type = 'text/html';
+      ctx.body = 'unprocessable entity';
+    } else {
+      ctx.response.status = 500;
+      ctx.response.type = 'text/html';
+      ctx.body = 'internal server error';
+    }
   }
 }
 
 export async function addStudentInClass(ctx: Context) {
   try {
     const req:IClass = ctx.request.body;
-    if (req.class_id === undefined || req.studid === undefined || typeof req.class_id !== 'number' || typeof req.studid !== 'number') {
-      ctx.response.status = 400;
-      ctx.response.type = 'text/html';
-      ctx.body = 'Bad Request';
-      return;
-    }
+    await validateclass.addStudentInClassSchema.validateAsync(req);
     await serviceclass.addStudentInClassService(req.class_id, req.studid);
 
     ctx.response.status = 200;
     ctx.response.type = 'text/html';
     ctx.body = 'data is inserted in Class_student table';
-  } catch (err) {
-    ctx.response.status = 500;
-    ctx.response.type = 'text/html';
-    ctx.body = 'internal server error';
+  } catch (e) {
+    if (e.isJoi === true) {
+      ctx.response.status = 422;
+      ctx.response.type = 'text/html';
+      ctx.body = 'unprocessable entity';
+    } else {
+      ctx.response.status = 500;
+      ctx.response.type = 'text/html';
+      ctx.body = 'internal server error';
+    }
   }
 }

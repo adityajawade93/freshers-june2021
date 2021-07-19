@@ -4,14 +4,8 @@
 /* eslint-disable import/extensions */
 import { Context } from 'vm';
 
-import Joi from 'joi';
 import * as serviceresult from '../services/result';
-
-const schema = Joi.object().keys({
-  studentid: Joi.number().required(),
-  subjectid: Joi.number().required(),
-  marks: Joi.number().required(),
-});
+import * as validation from '../helper/resultvalidation';
 
 interface IResult{
     result_id:number;
@@ -30,28 +24,22 @@ interface IResultUpdate{
 export async function addResult(ctx: Context) {
   try {
     const req:IResult = ctx.request.body;
-    if (req.result_id === undefined || req.studentid === undefined || req.clas_id === undefined || req.subjectid === undefined || req.marks === undefined) {
-      ctx.response.status = 400;
-      ctx.response.type = 'text/html';
-      ctx.body = 'Bad Request';
-      return;
-    }
-
-    if (typeof req.result_id !== 'number' || typeof req.studentid !== 'number' || typeof req.clas_id !== 'number' || typeof req.subjectid !== 'number' || typeof req.marks !== 'number') {
-      ctx.response.status = 400;
-      ctx.response.type = 'text/html';
-      ctx.body = 'Bad Request';
-      return;
-    }
+    await validation.addResultSchema.validateAsync(req);
     await serviceresult.addResultService(req.result_id, req.studentid, req.clas_id, req.subjectid, req.marks);
 
     ctx.response.status = 200;
     ctx.response.type = 'text/html';
     ctx.body = 'data is inserted in result table';
-  } catch {
-    ctx.response.status = 500;
-    ctx.response.type = 'text/html';
-    ctx.body = 'internal server error';
+  } catch (e) {
+    if (e.isJoi === true) {
+      ctx.response.status = 422;
+      ctx.response.type = 'text/html';
+      ctx.body = 'unprocessable entity';
+    } else {
+      ctx.response.status = 500;
+      ctx.response.type = 'text/html';
+      ctx.body = 'internal server error';
+    }
   }
 }
 
@@ -59,7 +47,7 @@ export async function updateResult(ctx: Context) {
   try {
     const req:IResultUpdate = ctx.request.body;
     let [rows]: Array<{rows: any}> = [];
-    await schema.validateAsync(req);
+    await validation.updateResultSchema.validateAsync(req);
 
     let flag = 0;
     rows = await serviceresult.checkSubject(req.studentid);
@@ -85,9 +73,9 @@ export async function updateResult(ctx: Context) {
     ctx.body = 'marks are updated in result table';
   } catch (e) {
     if (e.isJoi === true) {
-      ctx.response.status = 400;
+      ctx.response.status = 422;
       ctx.response.type = 'text/html';
-      ctx.body = 'Bad Request';
+      ctx.body = 'unprocessable entity';
     } else {
       ctx.response.status = 500;
       ctx.response.type = 'text/html';

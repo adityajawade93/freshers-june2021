@@ -5,6 +5,7 @@
 import { Context } from 'vm';
 
 import * as servicegeneral from '../services/general';
+import * as validategeneral from '../helper/generalvalidation';
 
 interface ITopper{
     student_id:number;
@@ -17,22 +18,24 @@ export async function gettopperByclassIdAndSubjectId(ctx: Context) {
     let { classId, subjectId }:{classId:number, subjectId:number} = ctx.params;
     classId = Number(classId);
     subjectId = Number(subjectId);
-    if (classId === undefined || typeof classId !== 'number' || subjectId === undefined || typeof subjectId !== 'number') {
-      ctx.response.status = 400;
-      ctx.response.type = 'text/html';
-      ctx.body = 'Bad Request';
-      return;
-    }
+    const data = [classId, subjectId];
+    await validategeneral.gettopperByclassIdAndSubjectIdSchema.validateAsync(data);
     let [rows]: Array<{rows: ITopper}> = [];
     rows = await servicegeneral.gettopperByclassIdAndSubjectIdService(classId, subjectId);
 
     ctx.response.status = 200;
     ctx.response.type = 'application/json';
     ctx.body = rows.rows;
-  } catch (err) {
-    ctx.response.status = 500;
-    ctx.response.type = 'text/html';
-    ctx.body = 'internal server error';
+  } catch (e) {
+    if (e.isJoi === true) {
+      ctx.response.status = 422;
+      ctx.response.type = 'text/html';
+      ctx.body = 'unprocessable entity';
+    } else {
+      ctx.response.status = 500;
+      ctx.response.type = 'text/html';
+      ctx.body = 'internal server error';
+    }
   }
 }
 
@@ -53,9 +56,15 @@ export async function gettopstudent(ctx: Context) {
     ctx.response.status = 200;
     ctx.response.type = 'application/json';
     ctx.body = rows.rows;
-  } catch (err) {
-    ctx.response.status = 500;
-    ctx.response.type = 'text/html';
-    ctx.body = 'internal server error';
+  } catch (e) {
+    if (e.isJoi === true) {
+      ctx.response.status = 422;
+      ctx.response.type = 'text/html';
+      ctx.body = 'unprocessable entity';
+    } else {
+      ctx.response.status = 500;
+      ctx.response.type = 'text/html';
+      ctx.body = 'internal server error';
+    }
   }
 }

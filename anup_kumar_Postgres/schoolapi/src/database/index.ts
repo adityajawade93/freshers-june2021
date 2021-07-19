@@ -1,3 +1,4 @@
+// import Pool from "pg"
 const { Pool } = require("pg");
 const pool = new Pool({
   port: 5432,
@@ -12,7 +13,7 @@ const pool = new Pool({
 
 export async function query(querystring: string) {
   try {
-    var result = await pool.query(querystring);
+    const result = await pool.query(querystring);
     return result;
   } catch (er) {
     throw new Error(er);

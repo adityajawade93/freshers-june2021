@@ -1,5 +1,9 @@
 import { Context } from "vm";
-import { all_classes as allclasses, add_class as addclass , student_of_class as studentofclass } from "../services/class";
+import {
+  all_classes as allclasses,
+  add_class as addclass,
+  student_of_class as studentofclass,
+} from "../services/class";
 
 export async function all_classes(ctx: Context) {
   try {
@@ -12,20 +16,20 @@ export async function all_classes(ctx: Context) {
     ctx.status = 404;
     ctx.body = { error: e.message };
   }
+  return;
 }
 
 export async function student_of_class(ctx: Context) {
-  const id = ctx.params.id.trim();
+  const classid = ctx.params.id.trim();
   // console.log(id);
-  if (id) {
+  if (classid) {
     try {
-      const [response, responseError] = await studentofclass(id);
+      const [response, responseError] = await studentofclass(classid);
       ctx.body = response.rows;
       return;
     } catch (e) {
       ctx.response.status = 404;
       ctx.body = e.message;
-      // console.log(e);
       return;
     }
   } else {
@@ -35,12 +39,10 @@ export async function student_of_class(ctx: Context) {
 }
 
 export async function add_class(ctx: Context) {
-  const name = ctx.request.body.name;
-  // console.log(name);
-
-  if (name && typeof name == "string") {
+  const classname = ctx.request.body.name;
+  if (classname && typeof classname == "string") {
     try {
-      const response = await addclass(name);
+      const response = await addclass(classname);
       ctx.response.status = 201;
       ctx.body = "data added succefully";
     } catch (e) {

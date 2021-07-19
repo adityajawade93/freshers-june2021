@@ -1,5 +1,5 @@
 import { query } from "../database/index";
-import { handle_error} from "../helper/index";
+import { handle_error } from "../helper/index";
 
 export async function all_marks() {
   try {
@@ -36,14 +36,16 @@ export async function add_marks(
 
 export const topper = async (num: number) => {
   try {
-    const [response,responseError] = await handle_error (query(
-      `select studentid, sum(marks) as total 
+    const [response, responseError] = await handle_error(
+      query(
+        `select studentid, sum(marks) as total 
             from school.marks  group by marks.studentid order by total desc limit ${num}`
-    ));
-    throw new Error(responseError)
+      )
+    );
+    throw new Error(responseError);
     return response;
   } catch (e) {
-    throw new Error(e.message)
+    throw new Error(e.message);
     console.log(e);
   }
 };

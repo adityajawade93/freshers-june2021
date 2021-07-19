@@ -2,7 +2,7 @@ import Koa from "koa";
 import bodyParser from "koa-bodyparser";
 import { Context } from "vm";
 
-import { router } from "../routes/routes";
+import { router } from "../routes/index";
 
 const port = 3001;
 const host = "localhost";
@@ -19,6 +19,7 @@ export const startApp = function () {
   });
   app.listen(port, host);
   console.log(`Server listening on http://${host}:${port}`);
+  return;
 };
 
 // startApp()

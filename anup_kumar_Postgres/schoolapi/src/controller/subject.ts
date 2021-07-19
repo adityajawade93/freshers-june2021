@@ -1,17 +1,21 @@
-import {validate_page } from "../helper/index";
+import { validate_page } from "../helper/index";
 import { Context } from "vm";
-import { all_subejcts as allsubject, student_of_subject as studentofsubject,add_subject as addsubject } from "../services/subject";
+import {
+  all_subejcts as allsubject,
+  student_of_subject as studentofsubject,
+  add_subject as addsubject,
+} from "../services/subject";
 
 export async function all_subjects(ctx: Context) {
-  var page = parseInt(ctx.request.query.page);
-  var size = parseInt(ctx.request.query.size);
+  const page = parseInt(ctx.request.query.page);
+  const size = parseInt(ctx.request.query.size);
   console.log(page);
   console.log(size);
 
-  var isValid = validate_page(page, size);
+  const isValid = validate_page(page, size);
   if (isValid.result === "valid") {
-    let limit = size;
-    let offset = page * size;
+    const limit = size;
+    const offset = page * size;
     try {
       const response = await allsubject(limit, offset);
       ctx.body = response.rows;
@@ -24,10 +28,10 @@ export async function all_subjects(ctx: Context) {
 }
 
 export async function student_of_subject(ctx: Context) {
-  var id = ctx.params.id;
-  if (id) {
+  const subjectid = ctx.params.id;
+  if (subjectid) {
     try {
-      const response = await studentofsubject(id);
+      const response = await studentofsubject(subjectid);
       ctx.response.status = 200;
       ctx.body = response.rows;
       return;
@@ -43,8 +47,6 @@ export async function add_subject(ctx: Context) {
   const name = ctx.request.body.name;
   const classid = ctx.request.body.classid;
   const subjectid = ctx.request.body.subjectid;
-
-  // console.log(name,classid,subjectid);
   if (
     name &&
     classid &&

@@ -14,13 +14,13 @@ export async function all_subejcts(limit: number, offset: number) {
   }
 }
 
-export async function student_of_subject(id: string) {
+export async function student_of_subject(subjectid: string) {
   try {
     const [response, responseError] = await handle_error(
       query(
         `select * 
             from school.student as st, school.subject as sb
-            where st.classid = sb.classid and sb.subjectid = '${id}'`
+            where st.classid = sb.classid and sb.subjectid = '${subjectid}'`
       )
     );
     if (responseError) throw new Error(responseError);

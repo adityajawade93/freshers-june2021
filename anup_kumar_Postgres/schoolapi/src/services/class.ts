@@ -14,10 +14,10 @@ export async function all_classes() {
   }
 }
 
-export async function student_of_class(id: string) {
+export async function student_of_class(classid: string) {
   try {
     const [response, responseError] = await handle_error(
-      query(`select * from school.student where classid = '${id}'`)
+      query(`select * from school.student where classid = '${classid}'`)
     );
 
     if (responseError) throw new Error(responseError);
@@ -28,12 +28,12 @@ export async function student_of_class(id: string) {
   }
 }
 
-export async function add_class(name: string) {
+export async function add_class(classname: string) {
   try {
     const [, responseError] = await handle_error(
       query(
         `INSERT INTO school.class(name) 
-            VALUES (${name})`
+            VALUES (${classname})`
       )
     );
     if (responseError) throw new Error(responseError);

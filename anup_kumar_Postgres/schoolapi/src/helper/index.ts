@@ -12,6 +12,8 @@ export const validate_page = function (
   }
   return { result: "invalid" };
 };
-export async function handle_error(promise: Promise<any>){
-    return promise.then((data) => [data, undefined]).catch((error) => Promise.resolve([undefined, error]));
-  };
+export async function handle_error(promise: Promise<any>) {
+  return promise
+    .then((data) => [data, undefined])
+    .catch((error) => Promise.resolve([undefined, error]));
+}

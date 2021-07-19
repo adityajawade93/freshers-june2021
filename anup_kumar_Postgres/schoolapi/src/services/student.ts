@@ -15,11 +15,11 @@ export const all_students = async (limit: number, offset: number) => {
   }
 };
 
-export async function add_students(name: string, classid: string) {
+export async function add_students(studentname: string, classid: string) {
   try {
     const [response, responseError] = await handle_error(
       query(
-        `INSERT INTO school.student(name, classid) VALUES ('${name}','${classid}')`
+        `INSERT INTO school.student(name, classid) VALUES ('${studentname}','${classid}')`
       )
     );
 

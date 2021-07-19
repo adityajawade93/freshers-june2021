@@ -1,6 +1,9 @@
-
-import { all_teachers as allteachers , student_of_teachers as studentofteacher, add_teachers as addteacher} from "../services/teachers";
 import { Context } from "vm";
+import {
+  all_teachers as allteachers,
+  student_of_teachers as studentofteacher,
+  add_teachers as addteacher,
+} from "../services/teachers";
 
 export async function all_teachers(ctx: Context) {
   try {
@@ -16,10 +19,10 @@ export async function all_teachers(ctx: Context) {
 }
 
 export async function student_of_teacher(ctx: Context) {
-  const id = ctx.params.id;
-  if (id) {
+  const teacherid = ctx.params.id;
+  if (teacherid) {
     try {
-      const response = await studentofteacher(id);
+      const response = await studentofteacher(teacherid);
       ctx.response.status = 200;
       ctx.body = response.rows;
       return;
@@ -36,10 +39,10 @@ export async function student_of_teacher(ctx: Context) {
 }
 
 export async function add_teacher(ctx: Context) {
-  const name = ctx.request.body.name;
-  if (name && typeof name === "string") {
+  const teachername = ctx.request.body.name;
+  if (teachername && typeof teachername === "string") {
     try {
-      const response = await addteacher(name);
+      const response = await addteacher(teachername);
       ctx.response.status = 200;
       ctx.body = { Message: "Data added succesfully" };
       return;

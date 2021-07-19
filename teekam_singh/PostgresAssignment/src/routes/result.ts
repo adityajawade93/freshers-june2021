@@ -1,7 +1,7 @@
 import Router from '@koa/router';
-const router = new Router();
-
 import * as result from '../controller/result';
+
+const router = new Router();
 
 router.post("/result", result.createResult);
 router.put("/result", result.updateResult);

@@ -7,9 +7,13 @@ const validation = require('../helpers/validation_schema.ts');
 
 async function addSubject(ctx: any) {
   const obj = ctx.request.body;
+  const reqBody = await validation.subjectSchema.validate(obj);
+  if (reqBody.error) {
+    ctx.response.status = 422;
+    ctx.body = reqBody.error.details[0].message;
+    return;
+  }
   try {
-    const reqBody = await validation.subjectSchema.validate(obj);
-    console.log(reqBody);
     const id = uuid('SUB');
     const newSubject = await database.addSubject(id, obj.name);
     ctx.response.status = 200;
@@ -18,14 +22,10 @@ async function addSubject(ctx: any) {
       data: newSubject,
     };
   } catch (err) {
-    if (err.isJoi === true) {
-      ctx.response.status = 422;
-      console.log('validation error');
-    } else {
-      ctx.body = {
-        msg: `something wrong while adding subject + ${err}`,
-      };
-    }
+    ctx.response.status = 400;
+    ctx.body = {
+      msg: `something wrong while adding subject + ${err}`,
+    };
   }
 }
 

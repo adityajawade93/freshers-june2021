@@ -6,9 +6,13 @@ const validation = require('../helpers/validation_schema.ts');
 
 async function addMarks(ctx: any) {
   const obj = ctx.request.body;
+  const reqBody = await validation.resultSchema.validate(obj);
+  if (reqBody.error) {
+    ctx.response.status = 422;
+    ctx.body = reqBody.error.details[0].message;
+    return;
+  }
   try {
-    const reqBody = await validation.resultSchema.validate(obj);
-    console.log(reqBody);
     const addedMarks = await database.addMarks(obj.studentID, obj.subjectID, obj.marks);
     ctx.response.status = 200;
     ctx.body = {
@@ -16,13 +20,8 @@ async function addMarks(ctx: any) {
       data: addedMarks,
     };
   } catch (err) {
-    if (err.isJoi === true) {
-      ctx.response.status = 422;
-      console.log('validation error');
-    } else {
-      ctx.response.status = 400;
-      ctx.body = `something went wrong in adding marks + ${err}`;
-    }
+    ctx.response.status = 400;
+    ctx.body = `something went wrong in adding marks + ${err}`;
   }
 }
 

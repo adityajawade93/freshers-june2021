@@ -6,9 +6,13 @@ const validation = require('../helpers/validation_schema.ts');
 
 async function addClass(ctx: any) {
   const obj = ctx.request.body;
+  const reqBody = await validation.classSchema.validate(obj);
+  if (reqBody.error) {
+    ctx.response.status = 422;
+    ctx.body = reqBody.error.details[0].message;
+    return;
+  }
   try {
-    const reqBody = await validation.classSchema.validate(obj);
-    console.log(reqBody);
     const newclass = await database.addClass(obj.classID, obj.room, obj.subjectID);
     ctx.response.status = 200;
     ctx.response.type = 'application/json';
@@ -17,14 +21,10 @@ async function addClass(ctx: any) {
       data: newclass,
     };
   } catch (err) {
-    if (err.isJoi === true) {
-      ctx.response.status = 422;
-    } else {
-      console.log(err);
-      ctx.body = {
-        msg: `something wrong  + ${err}`,
-      };
-    }
+    console.log(err);
+    ctx.body = {
+      msg: `something wrong  + ${err}`,
+    };
   }
 }
 

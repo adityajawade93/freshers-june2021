@@ -8,9 +8,13 @@ const validation = require('../helpers/validation_schema.ts');
 
 async function addTeacher(ctx: { request: { body: any; }; response: { status: number; type: string; }; body: { msg: string; dataAdded?: any; }; }) {
   const obj = ctx.request.body;
+  const reqBody = await validation.teacherSchema.validate(obj);
+  if (reqBody.error) {
+    ctx.response.status = 422;
+    ctx.body = reqBody.error.details[0].message;
+    return;
+  }
   try {
-    const reqBody = await validation.teacherSchema.validate(obj);
-    console.log(reqBody);
     const id = uuid('T');
     const newTeacher = await database.addTeacher(id, obj.name, obj.sex, obj.phone, obj.subjectID);
     ctx.response.status = 200;
@@ -20,16 +24,11 @@ async function addTeacher(ctx: { request: { body: any; }; response: { status: nu
       dataAdded: newTeacher,
     };
   } catch (err) {
-    if (err.isJoi === true) {
-      ctx.response.status = 422;
-      console.log('validation error');
-    } else {
-      ctx.response.status = 400;
-      ctx.response.type = 'application/json';
-      ctx.body = {
-        msg: `something went wrong in adding teacher ${err}`,
-      };
-    }
+    ctx.response.status = 400;
+    ctx.response.type = 'application/json';
+    ctx.body = {
+      msg: `something went wrong in adding teacher ${err}`,
+    };
   }
 }
 

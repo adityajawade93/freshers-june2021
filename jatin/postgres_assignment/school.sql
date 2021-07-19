@@ -2,7 +2,7 @@
 create schema school;
 set search_path to school;
 
-create tyoe as sex enum('male','female','others');
+create type as sex enum('male','female','others');
 create table student(
 	studentID varchar(20) not null primary key,
 	name varchar(40) not null,
@@ -60,7 +60,7 @@ create table result(
 	studentID varchar(20),
 	subjectID varchar(20),
 
-	marks tinyint not null,
+	marks smallint not null,
 
 	foreign key (studentID) references student(studentID),
 	foreign key (subjectID) references subject(subjectID)

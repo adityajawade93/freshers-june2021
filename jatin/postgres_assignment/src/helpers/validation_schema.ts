@@ -2,14 +2,14 @@ const Joi = require('joi');
 
 const studentSchema : object = Joi.object({
   name: Joi.string().required(),
-  gender: Joi.string().max(1).required(),
-  phone: Joi.number().required(),
-  classID: Joi.number().required(),
+  gender: Joi.string().valid('male', 'female', 'others').required(),
+  phone: Joi.string().required(),
+  classID: Joi.string().required(),
 });
 
 const classSchema = Joi.object({
-  classID: Joi.number().required(),
-  room: Joi.number().required(),
+  classID: Joi.string().required(),
+  room: Joi.string().required(),
   subjectID: Joi.string().required(),
 });
 
@@ -19,8 +19,8 @@ const subjectSchema = Joi.object({
 
 const teacherSchema = Joi.object({
   name: Joi.string().required(),
-  sex: Joi.string().max(1).required(),
-  phone: Joi.number().required(),
+  sex: Joi.string().valid('male', 'female', 'others').required(),
+  phone: Joi.string().required(),
   subjectID: Joi.string().required(),
 });
 

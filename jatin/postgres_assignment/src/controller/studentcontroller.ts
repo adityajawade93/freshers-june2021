@@ -7,9 +7,9 @@ const validation = require('../helpers/validation_schema.ts');
 
 async function addStudent(ctx: any) {
   const obj = ctx.request.body;
+  const reqBody = await validation.studentSchema.validate(obj);
+  console.log(reqBody);
   try {
-    const reqBody = await validation.studentSchema.validate(obj);
-    console.log(reqBody);
     const id: string = uuid('S');
     const newStudent = await database.addStudent(id, obj.name, obj.gender, obj.phone, obj.classID);
     ctx.response.status = 200;

@@ -41,7 +41,7 @@ require('dotenv').config();
 const { port } = process.env;
 const { host } = process.env;
 
-app.listen(3000, () => {
+app.listen(port, () => {
   // eslint-disable-next-line no-console
   console.log(`server is listening at ${host}:${port}`);
 });

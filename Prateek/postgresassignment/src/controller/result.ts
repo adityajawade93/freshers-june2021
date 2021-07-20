@@ -1,7 +1,7 @@
 import { Context } from "vm";
 
 import * as serviceresult from "../services/result";
-
+const validation = require('../helpers/validation_schema.ts');
 interface marks_data {
   resultsid: number;
   roll_num: number;
@@ -12,35 +12,17 @@ interface marks_data {
 }
 
 export async function addMarks(ctx: Context) {
-  try {
+  
     let req: marks_data = ctx.request.body;
-    if (
-      req.resultsid === undefined ||
-      req.roll_num === undefined ||
-      req.subcode === undefined ||
-      req.staffid === undefined ||
-      req.standard === undefined ||
-      req.marks === undefined
-    ) {
-      ctx.response.status = 400;
+    const reqBody = await validation.resultSchema.validate(req);
+    if(reqBody.error)
+    {
+      ctx.response.status = 422;
       ctx.response.type = "text/html";
-      ctx.body = "Bad Request";
-      return;
-    }
-
-    if (
-      typeof req.resultsid !== "number" ||
-      typeof req.roll_num !== "number" ||
-      typeof req.subcode !== "number" ||
-      typeof req.staffid !== "number" ||
-      typeof req.standard !== "number" ||
-      typeof req.marks !== "number"
-    ) {
-      ctx.response.status = 400;
-      ctx.response.type = "text/html";
-      ctx.body = "Bad Request";
-      return;
-    }
+      ctx.body="Please enter valid details";
+      return ;
+    } 
+    try{
     await serviceresult.add_marks(
       req.resultsid,
       req.roll_num,
@@ -53,39 +35,27 @@ export async function addMarks(ctx: Context) {
     ctx.response.status = 200;
     ctx.response.type = "text/html";
     ctx.body = "data inserted into Marks table";
-  } catch {
+  } catch (err){
     ctx.response.status = 500;
     ctx.response.type = "text/html";
     ctx.body = "Server error";
     return;
-  }
+ };
 }
 
 export async function updateResult(ctx: Context) {
-  try {
+  
     let req: marks_data = ctx.request.body;
     let [rows]: Array<{ rows: any }> = [];
-    if (
-      req.roll_num === undefined ||
-      req.subcode === undefined ||
-      req.marks === undefined
-    ) {
-      ctx.response.status = 400;
+    const reqBody = await validation.updateresultSchema.validate(req);
+    if(reqBody.error)
+    {
+      ctx.response.status = 422;
       ctx.response.type = "text/html";
-      ctx.body = "Bad Request";
-      return;
-    }
-
-    if (
-      typeof req.roll_num !== "number" ||
-      typeof req.subcode !== "number" ||
-      typeof req.marks !== "number"
-    ) {
-      ctx.response.status = 400;
-      ctx.response.type = "text/html";
-      ctx.body = "Bad Request";
-      return;
-    }
+      ctx.body="Please enter valid details";
+      return ;
+    } 
+    try {
     let flag = 0;
     rows = await serviceresult.check_subject(req.roll_num);
     let length = await serviceresult.subject_length(req.roll_num);

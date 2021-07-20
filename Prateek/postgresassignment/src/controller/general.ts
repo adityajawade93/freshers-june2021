@@ -1,6 +1,7 @@
 import { Context } from "vm";
 
 import * as servicegeneral from "../services/general";
+const validation = require('../helpers/validation_schema.ts');
 
 interface topper {
   roll_num: number;
@@ -9,20 +10,19 @@ interface topper {
 }
 
 export async function gettopperByclassIdAndSubjectId(ctx: Context) {
-  try {
+  
     var c_id = parseInt(ctx.params.c_id);
     var s_id = parseInt(ctx.params.s_id);
-    if (
-      c_id === undefined ||
-      typeof c_id !== "number" ||
-      s_id === undefined ||
-      typeof s_id !== "number"
-    ) {
-      ctx.response.status = 400;
+    const reqBody = await validation.generalSchema.validate(c_id,s_id);
+    if(reqBody.error)
+    {
+      ctx.response.status = 422;
       ctx.response.type = "text/html";
-      ctx.body = "Bad Request";
-      return;
-    }
+      ctx.body="Please enter valid details";
+      return ;
+
+    }; 
+    try {
     let [rows]: Array<{ rows: topper }> = [];
     rows = await servicegeneral.get_topper_by_classid_and_subjectid(c_id, s_id);
 

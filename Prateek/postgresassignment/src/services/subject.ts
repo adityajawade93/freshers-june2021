@@ -11,7 +11,7 @@ export async function get_subject() {
 
 export async function get_student_by_subjectid(subcode: number) {
   try {
-    await sqlclient.query("SET search_path TO school");
+   
     return await sqlclient.query(`SELECT st.roll_num,st.fname,st.lname,st.standard
             FROM Students AS st,Subjects AS sub WHERE sub.subcode=${subcode} AND sub.subcode=st.subcode`);
   } catch (e) {
@@ -25,7 +25,7 @@ export async function add_subject(
   staffid: number
 ) {
   try {
-    await sqlclient.query("SET search_path TO school");
+    
     const data = [subcode, subject, staffid];
     return await sqlclient.query("INSERT INTO Subjects values($1,$2,$3)", data);
   } catch (e) {
@@ -35,7 +35,7 @@ export async function add_subject(
 
 export async function get_subjectmarks_by_studentid(id: number) {
   try {
-    await sqlclient.query("SET search_path TO school");
+    
     return await sqlclient.query(
       `SELECT m.subcode,sub.subject,m.marks FROM Marks AS m,Subjects AS sub WHERE m.roll_num=${id} AND sub.subcode=m.subcode`
     );

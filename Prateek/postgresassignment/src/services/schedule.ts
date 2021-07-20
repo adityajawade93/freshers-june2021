@@ -10,7 +10,7 @@ export async function add_class_schedule(
   T_fname: string
 ) {
   try {
-    await sqlclient.query("SET search_path TO school");
+    
     const data = [
       uniclassid,
       Standard,

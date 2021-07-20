@@ -1,10 +1,12 @@
 const { Client } = require("pg");
+const config = require('../config/config.ts');
+
 const client = new Client({
-  user: "postgres",
-  password: "pass@123",
-  host: "localhost",
-  database: "postgres",
-  port: "5432",
+  user: config.dbUser,
+  password: config.dbPassword,
+  host: config.dbHost,
+  database: process.env.db_name,
+  port: config.dbPort,
 });
 client.connect().then(() => {
   console.log("database connected successfully");

@@ -2,7 +2,7 @@ import { client as sqlclient } from "../database/db";
 
 export async function get_student() {
   try {
-    await sqlclient.query("SET search_path TO school");
+    
     return await sqlclient.query("SELECT * FROM Students");
   } catch (e) {
     throw Error(e);
@@ -11,7 +11,7 @@ export async function get_student() {
 
 export async function get_student_length() {
   try {
-    await sqlclient.query("SET search_path TO school");
+   
     return await sqlclient.query("SELECT Count(*) FROM Students");
   } catch (e) {
     throw Error(e);

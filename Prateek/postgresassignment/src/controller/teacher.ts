@@ -1,6 +1,7 @@
 import { Context } from "vm";
 
 import * as serviceteacher from "../services/teacher";
+const validation = require('../helpers/validation_schema.ts');
 
 interface teacher {
   staffid: number;
@@ -33,14 +34,21 @@ export async function getTeacher(ctx: Context) {
 }
 
 export async function getStudentByStaffId(ctx: Context) {
-  try {
-    var id: number = parseInt(ctx.url.substring(9));
-    if (id === undefined || typeof id !== "number") {
-      ctx.response.status = 400;
+ 
+    let id: number = parseInt(ctx.url.substring(9));
+    //console.log(typeof id);
+    //console.log(id);
+    const reqBody = await validation.getstudentbyidSchema.validate(id);
+    //console.log(reqBody);
+   
+    if(reqBody.error)
+    {
+      ctx.response.status = 422;
       ctx.response.type = "text/html";
-      ctx.body = "Bad Request";
-      return;
-    }
+      ctx.body="Please enter valid details";
+      return ;
+    } 
+    try {
     let [rows]: Array<{ rows: student_det }> = [];
     rows = await serviceteacher.get_student_by_staffid(id);
 
@@ -56,38 +64,18 @@ export async function getStudentByStaffId(ctx: Context) {
 }
 
 export async function addTeacher(ctx: Context) {
-  try {
+  
     let req: teacher = ctx.request.body;
-    if (
-      req.staffid === undefined ||
-      req.fname === undefined ||
-      req.lname === undefined ||
-      req.subcode === undefined
-    ) {
-      ctx.response.status = 400;
+    const reqBody = await validation.teacherSchema.validate(req);
+   
+    if(reqBody.error)
+    {
+      ctx.response.status = 422;
       ctx.response.type = "text/html";
-      ctx.body = "Bad Request";
-      return;
-    }
-
-    if (req.fname.trim() === "" || req.lname.trim() === "") {
-      ctx.response.status = 400;
-      ctx.response.type = "text/html";
-      ctx.body = "Bad Request";
-      return;
-    }
-
-    if (
-      typeof req.staffid !== "number" ||
-      typeof req.fname !== "string" ||
-      typeof req.lname !== "string" ||
-      typeof req.subcode !== "number"
-    ) {
-      ctx.response.status = 400;
-      ctx.response.type = "text/html";
-      ctx.body = "Bad Request";
-      return;
-    }
+      ctx.body="Please enter valid details";
+      return ;
+    } 
+   try{
     await serviceteacher.add_teacher(
       req.staffid,
       req.fname,
@@ -98,10 +86,10 @@ export async function addTeacher(ctx: Context) {
     ctx.response.status = 200;
     ctx.response.type = "text/html";
     ctx.body = "data inserted into teacher table";
-  } catch (err) {
+  }catch (err){
     ctx.response.status = 500;
     ctx.response.type = "text/html";
     ctx.body = "Server error";
     return;
-  }
+ };
 }

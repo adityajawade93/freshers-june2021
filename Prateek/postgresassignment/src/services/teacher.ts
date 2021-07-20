@@ -2,7 +2,7 @@ import { client as sqlclient } from "../database/db";
 
 export async function get_teacher() {
   try {
-    await sqlclient.query("SET search_path TO school");
+
     return await sqlclient.query("SELECT * FROM Teachers");
   } catch (e) {
     throw Error(e);
@@ -11,7 +11,6 @@ export async function get_teacher() {
 
 export async function get_student_by_staffid(staffid: number) {
   try {
-    await sqlclient.query("SET search_path TO school");
     return await sqlclient.query(`SELECT st.roll_num ,st.fname,st.lname,st.standard 
                   FROM Students AS st INNER JOIN Teachers AS t ON t.subcode=st.subcode AND t.staffid=${staffid}`);
   } catch (e) {
@@ -26,7 +25,7 @@ export async function add_teacher(
   subcode: number
 ) {
   try {
-    await sqlclient.query("SET search_path TO school");
+    
     const data = [staffid, fname, lname, subcode];
     return await sqlclient.query(
       "INSERT INTO Teachers values($1,$2,$3,$4)",

@@ -1,6 +1,7 @@
 import { Context } from "vm";
 
 import * as studentService from "../services/student";
+const validation = require('../helpers/validation_schema.ts');
 
 interface student {
   roll_num: number;
@@ -55,57 +56,35 @@ export async function getStudent(ctx: Context) {
 }
 
 export async function addStudent(ctx: Context) {
-  try {
+  
     let req: student = ctx.request.body;
-
-    if (
-      req.roll_num === undefined ||
-      req.fname === undefined ||
-      req.lname === undefined ||
-      req.standard === undefined ||
-      req.subcode === undefined
-    ) {
-      ctx.response.status = 400;
+    const reqBody = await validation.studentSchema.validate(req);
+    //console.log(reqBody);
+    if(reqBody.error)
+    {
+      ctx.response.status = 422;
+      //console.log('validation error');
       ctx.response.type = "text/html";
-      ctx.body = "Bad Request";
-      return;
-    }
+      ctx.body="Please enter valid details";
+      return ;
 
-    if (req.fname.trim() === "" || req.lname.trim() === "") {
-      ctx.response.status = 400;
-      ctx.response.type = "text/html";
-      ctx.body = "Bad Request";
-      return;
-    }
-
-    if (
-      typeof req.roll_num !== "number" ||
-      typeof req.fname !== "string" ||
-      typeof req.lname !== "string" ||
-      typeof req.standard !== "number" ||
-      typeof req.subcode !== "number"
-    ) {
-      ctx.response.status = 400;
-      ctx.response.type = "text/html";
-      ctx.body = "Bad Request";
-      return;
-    }
-
+    } 
+    try{
     await studentService.add_student(
       req.roll_num,
       req.fname,
       req.lname,
       req.standard,
       req.subcode
-    );
-
+    )
     ctx.response.status = 200;
     ctx.response.type = "text/html";
     ctx.body = "data inserted into student table";
-  } catch (err) {
+  } catch (err){
     ctx.response.status = 500;
     ctx.response.type = "text/html";
     ctx.body = "Server error";
     return;
-  }
+ };
 }
+

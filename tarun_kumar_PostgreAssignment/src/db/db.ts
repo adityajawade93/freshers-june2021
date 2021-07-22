@@ -1,19 +1,21 @@
 import { Pool } from 'pg';
+import { config } from '../config/config';
 
 export let pool: Pool;
 
-export const dbStart = async function () {
-    const user = 'postgres';
-    const password = 'tarun12';
-    const host = 'localhost';
-    const port = 5432;
+export const dbStart = async function (): Promise<void> {
+
+    const user = config.dbUser;
+    const password = config.dbPassword;
+    const host = config.dbHost;
+    const port = config.dbPort;
     const database = 'postgres';
     const max = 10;
     pool = new Pool({ user, password, host, port, database, max });
 };
 
 
-export const dbQuery = async function (query: string, data: any[] = []) {
+export const dbQuery = async function (query: string, data: any[] = []): Promise<any> {
     try {
         return pool.query(query, data);
     } catch (e) {

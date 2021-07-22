@@ -8,8 +8,9 @@ interface classSchemaI {
 }
 
 export async function addClass(ctx: Context): Promise<void> {
+    const requestData: classSchemaI = ctx.request.body;
     try {
-        const requestData: classSchemaI = ctx.request.body;
+
         await classSchema.validateAsync(requestData);
 
         const id: string = uuidv4();
@@ -22,12 +23,13 @@ export async function addClass(ctx: Context): Promise<void> {
             message: `class with ${id} and name ${name} is added`,
         };
     } catch (e) {
-        ctx.status = 404;
+        ctx.status = 500;
         ctx.body = { error: e.message };
     }
 }
 
 export async function getClasses(ctx: Context): Promise<void> {
+
     try {
         const allClasses = await classService.getClasses();
 
@@ -36,7 +38,7 @@ export async function getClasses(ctx: Context): Promise<void> {
             data: allClasses
         };
     } catch (e) {
-        ctx.status = 404;
+        ctx.status = 500;
         if (e.status) ctx.status = e.status;
 
         ctx.body = { error: e.message };
@@ -45,8 +47,9 @@ export async function getClasses(ctx: Context): Promise<void> {
 
 
 export async function getClassId(ctx: Context): Promise<void> {
+    const id: string = ctx.params.id;
     try {
-        const id: string = ctx.params.id;
+
         const classdata = await classService.getClassId(id);
 
         ctx.status = 200;
@@ -54,7 +57,7 @@ export async function getClassId(ctx: Context): Promise<void> {
             data: classdata
         };
     } catch (e) {
-        ctx.status = 404;
+        ctx.status = 500;
         if (e.status) ctx.status = e.status;
 
         ctx.body = { error: e.message };

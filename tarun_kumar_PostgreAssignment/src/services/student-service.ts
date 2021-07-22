@@ -1,10 +1,11 @@
 import { dbQuery } from "../db/db";
 
 
-export async function addStudent(studentid: string, name: string, sex: string | null, age: number | null, classid: string) {
+
+export async function addStudent(studentid: string, name: string, sex: string | null, dob: Date | null, classid: string): Promise<boolean | Error> {
     try {
-        const query = 'insert into student (studentid, name, sex, age, classid) values ($1, $2, $3, $4,$5)';
-        const res = await dbQuery(query, [studentid, name, sex, age, classid]);
+        const query = 'insert into student (studentid, name, sex, dob, classid) values ($1, $2, $3, $4,$5)';
+        const res = await dbQuery(query, [studentid, name, sex, dob, classid]);
 
         if (res && res.command === 'INSERT')
             return true;
@@ -16,7 +17,7 @@ export async function addStudent(studentid: string, name: string, sex: string | 
     }
 }
 
-export async function countStudents() {
+export async function countStudents(): Promise<number | Error> {
     try {
         const query = 'select count(*) as total from student';
         const res = await (dbQuery(query));
@@ -27,18 +28,18 @@ export async function countStudents() {
     }
 }
 
-export async function getStudents(page: number, size: number) {
+export async function getStudents(page: number, size: number): Promise<Array<string>> {
     try {
         // offset = null & limit = null ==> fetches all data
         if (page === 0 && size === 0) {
-            const query = `select * from student`;
+            const query = `select * from student order by name`;
             const res = await (dbQuery(query));
 
             return res.rows;
 
         } else {
             const query = `SELECT *
-            FROM student
+            FROM student order by name
              LIMIT  ${size} OFFSET  ${page * size};`;
             //console.log(query);
             const res = await (dbQuery(query));
@@ -47,14 +48,13 @@ export async function getStudents(page: number, size: number) {
 
         }
 
-
     } catch (e) {
 
         throw new Error(e);
     }
 }
 
-export async function getStudentMarks(id: string) {
+export async function getStudentMarks(id: string): Promise<Array<string>> {
     try {
         const query = `
         select subname as subject, mark.marks
@@ -72,10 +72,10 @@ export async function getStudentMarks(id: string) {
 }
 
 
-export async function getStudentClassId(classid: string) {
+export async function getStudentByClassId(classid: string): Promise<Array<string>> {
     try {
 
-        const query2 = `select * from student where classid =$1`;
+        const query2 = `select * from student where classid =$1 order by student.name`;
         const res = await (dbQuery(query2, [classid]));
 
         return res.rows;
@@ -84,14 +84,14 @@ export async function getStudentClassId(classid: string) {
     }
 }
 
-export async function getStudentSubjectId(subid: string) {
+export async function getStudentBySubjectId(subid: string): Promise<Array<string>> {
     try {
 
         const query2 = ` select student.studentid,student.name
-        from student
+        from student 
         inner join schedule on student.classid = schedule.classid
                 inner join subject on schedule.subjectid=subject.subid 
-                where subject.subid = $1;`;
+                where subject.subid = $1 order by student.name;`;
         const res = await (dbQuery(query2, [subid]));
 
         return res.rows;
@@ -99,14 +99,14 @@ export async function getStudentSubjectId(subid: string) {
         throw new Error(e.message);
     }
 }
-export async function getStudentTeacherId(teacherid: string) {
+export async function getStudentByTeacherId(teacherid: string): Promise<Array<string>> {
     try {
 
         const query2 = ` select student.studentid, student.name
         from student
                inner join schedule on student.classid = schedule.classid
                inner join teacher on schedule.teacherid=teacher.teacherid 
-                where teacher.teacherid= $1;`;
+                where teacher.teacherid= $1 order by student.name;`;
         const res = await (dbQuery(query2, [teacherid]));
 
         return res.rows;
@@ -115,13 +115,13 @@ export async function getStudentTeacherId(teacherid: string) {
     }
 }
 
-export async function getTopTenMarks(subid: string) {//given subid get top ten students by marks on that subject
+export async function getTopTenMarks(subid: string): Promise<Array<string>> {//given subid get top ten students by marks on that subject
     try {
 
         const query2 = ` SELECT student.studentid, marks,student.name FROM mark 
         inner join student on student.studentid = mark.studentid where 
         subid=$1
-        ORDER BY marks DESC limit 10;`;
+        ORDER BY marks DESC limit 10 ;`;
         const res = await (dbQuery(query2, [subid]));
 
         return res.rows;
@@ -130,14 +130,14 @@ export async function getTopTenMarks(subid: string) {//given subid get top ten s
     }
 }
 
-export async function getTopScorerEachSub() {//given subid get top ten students by marks on that subject
+export async function getTopScorerEachSub(): Promise<Array<string>> {//given subid get top ten students by marks on that subject
     try {
 
         const query1 = ` 
         select student.name,subject.subname,mark.marks from mark
         inner join student on student.studentid = mark.studentid 
         inner join subject on subject.subid = mark.subid
-        where marks in (select max(marks) from mark group by subid) ;`;
+        where marks in (select max(marks) from mark group by subid) order by student.name ;`;
         const res = await (dbQuery(query1));
 
         return res.rows;

@@ -9,8 +9,9 @@ interface subjectSchemaI {
 }
 
 export async function addSubject(ctx: Context): Promise<void> {
+    const requestData: subjectSchemaI = ctx.request.body;
     try {
-        const requestData: subjectSchemaI = ctx.request.body;
+
         await subjectSchema.validateAsync(requestData);
         const id: string = uuidv4();
         const name: string = requestData.name.toLowerCase();
@@ -21,7 +22,7 @@ export async function addSubject(ctx: Context): Promise<void> {
             message: `subject with ${id} is added`,
         };
     } catch (e) {
-        ctx.status = 404;
+        ctx.status = 500;
         ctx.body = { error: e.message };
     }
 }
@@ -35,7 +36,7 @@ export async function getSubjects(ctx: Context): Promise<void> {
             data: allSubjects,
         };
     } catch (e) {
-        ctx.status = 404;
+        ctx.status = 500;
         ctx.body = { error: e.message };
     }
 }

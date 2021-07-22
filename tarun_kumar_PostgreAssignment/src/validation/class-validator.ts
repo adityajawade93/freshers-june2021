@@ -4,7 +4,7 @@ import Joi from 'joi';
 
 const classSchema = Joi.object().keys({
 
-    name: Joi.string().required(),
+    name: Joi.number().required().positive(),
 
 });
 

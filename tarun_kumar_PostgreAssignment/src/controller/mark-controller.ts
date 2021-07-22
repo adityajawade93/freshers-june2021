@@ -11,8 +11,9 @@ interface markSchemaI {
 
 
 export async function addMarks(ctx: Context): Promise<void> {
+    const requestData: markSchemaI = ctx.request.body;
     try {
-        const requestData: markSchemaI = ctx.request.body;
+
         await markSchema.validateAsync(requestData);
         await markService.addMark(requestData);
         ctx.status = 201;
@@ -26,8 +27,9 @@ export async function addMarks(ctx: Context): Promise<void> {
 }
 
 export async function updateMarks(ctx: Context): Promise<void> {
+    const requestData = ctx.request.body;
     try {
-        const requestData = ctx.request.body;
+
         await markService.updateMark(requestData);
         ctx.body = {
             message: `marks for student with ${requestData.studentid} is updated`,

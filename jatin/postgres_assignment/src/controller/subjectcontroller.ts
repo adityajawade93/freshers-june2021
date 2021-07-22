@@ -7,6 +7,7 @@ const validation = require('../helpers/validation_schema.ts');
 
 async function addSubject(ctx: any) {
   const obj = ctx.request.body;
+  const id = uuid('SUB');
   const reqBody = await validation.subjectSchema.validate(obj);
   if (reqBody.error) {
     ctx.response.status = 422;
@@ -14,7 +15,6 @@ async function addSubject(ctx: any) {
     return;
   }
   try {
-    const id = uuid('SUB');
     const newSubject = await database.addSubject(id, obj.name);
     ctx.response.status = 200;
     ctx.body = {

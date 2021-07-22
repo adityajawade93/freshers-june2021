@@ -8,6 +8,7 @@ const validation = require('../helpers/validation_schema.ts');
 
 async function addTeacher(ctx: { request: { body: any; }; response: { status: number; type: string; }; body: { msg: string; dataAdded?: any; }; }) {
   const obj = ctx.request.body;
+  const id = uuid('T');
   const reqBody = await validation.teacherSchema.validate(obj);
   if (reqBody.error) {
     ctx.response.status = 422;
@@ -15,7 +16,6 @@ async function addTeacher(ctx: { request: { body: any; }; response: { status: nu
     return;
   }
   try {
-    const id = uuid('T');
     const newTeacher = await database.addTeacher(id, obj.name, obj.sex, obj.phone, obj.subjectID);
     ctx.response.status = 200;
     ctx.response.type = 'application/json';

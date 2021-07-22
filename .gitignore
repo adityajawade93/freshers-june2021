@@ -1,2 +1,4 @@
-druval_cr
-druval_cr/postgresAssignment/node_modules
+node_modules
+dist
+.vscode
+.DS_Store

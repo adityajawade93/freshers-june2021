@@ -27,9 +27,13 @@ async function addMarks(ctx: any) {
 
 async function updateMarks(ctx: any) {
   const obj = ctx.request.body;
+  const reqBody = validation.resultSchema.validate(obj);
+  if (reqBody.error) {
+    ctx.response.status = 422;
+    ctx.body = reqBody.error.details[0].message;
+    return;
+  }
   try {
-    const reqbody = validation.resultSchema.validate(obj);
-    console.log(reqbody);
     const updatedMarks = await database.updateMarks(obj.studentID, obj.subjectID, obj.marks);
     ctx.response.status = 200;
     ctx.body = {
@@ -37,13 +41,8 @@ async function updateMarks(ctx: any) {
       data: updatedMarks,
     };
   } catch (err) {
-    if (err.isJoi) {
-      ctx.response.status = 422;
-      console.log('validation error');
-    } else {
-      ctx.response.status = 400;
-      ctx.body = `something went wrong in update marks + ${err}`;
-    }
+    ctx.response.status = 400;
+    ctx.body = `something went wrong in update marks + ${err}`;
   }
 }
 

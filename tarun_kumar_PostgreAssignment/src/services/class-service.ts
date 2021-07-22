@@ -17,9 +17,9 @@ export async function addClass(cid: string, cname: string): Promise<boolean> {
 
 }
 
-export async function getClassId(id: string): Promise<any[]> {
+export async function getClassId(id: string): Promise<Array<string>> {
     try {
-        const query = 'select * from classes order by cname where cid = $1;';
+        const query = 'select * from classes  where cid = $1;';
         const result = await dbQuery(query, [id]);
         //console.log(result);
         return result.rows[0];
@@ -28,7 +28,7 @@ export async function getClassId(id: string): Promise<any[]> {
     }
 }
 
-export async function getClasses(): Promise<any[]> {
+export async function getClasses(): Promise<Array<string>> {
     try {
         const query = 'select * from classes order by cname;';
         const result = await dbQuery(query);

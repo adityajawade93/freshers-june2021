@@ -28,7 +28,7 @@ export async function countTeachers(): Promise<number> {
 export async function getTeachers(): Promise<Array<string>> {
     try {
         // offset = null & limit = null ==> fetches all data
-        const query = `select * from teacher`;
+        const query = `select * from teacher order by name`;
         const result = await (dbQuery(query));
 
         return result.rows;

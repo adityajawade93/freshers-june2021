@@ -2,7 +2,7 @@ import uuid from "uniqid";
 import { Context } from "vm";
 import * as teacherService from "../services/teacher";
 
-import teacherSchema from "../config/db/validateSchema/teacherSchema";
+import teacherSchema from "../db/validateSchema/teacherSchema";
 import AppError from "../utils/appError";
 
 interface ITeacher {

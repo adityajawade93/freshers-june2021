@@ -1,4 +1,4 @@
-import db from "../config/db";
+import db from "../db";
 
 import AppError from "../utils/appError";
 

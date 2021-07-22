@@ -1,7 +1,7 @@
 import { Context } from "vm";
 import * as marksService from "../services/mark";
 
-import markSchema from "../config/db/validateSchema/markSchema";
+import markSchema from "../db/validateSchema/markSchema";
 import AppError from "../utils/appError";
 
 interface IMark {

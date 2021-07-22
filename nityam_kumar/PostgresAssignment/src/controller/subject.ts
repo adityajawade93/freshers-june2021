@@ -6,7 +6,7 @@ import * as teacherService from "../services/teacher";
 
 import AppError from "../utils/appError";
 
-import subjectSchema from "../config/db/validateSchema/subjectSchema";
+import subjectSchema from "../db/validateSchema/subjectSchema";
 
 interface ISubject {
   subject_id?: string;

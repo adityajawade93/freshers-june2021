@@ -1,3 +1,9 @@
+import dotenv from "dotenv";
+
+import path from "path";
+
+dotenv.config({ path: path.join(__dirname, "../.env") });
+
 import Koa from "koa";
 
 import bodyParser from "koa-bodyparser";
@@ -19,9 +25,5 @@ app.use(globalErrHandler).use(bodyParser()).use(json()).use(router());
 app.use(async (ctx: Context, next) => {
   throw new AppError("Page NOT found", 404);
 });
-
-// app.on("error", (err, ctx: Context) => {
-//   console.log(err);
-// });
 
 export default app;

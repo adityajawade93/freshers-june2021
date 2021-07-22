@@ -2,7 +2,7 @@ import uuid from "uniqid";
 import { Context } from "vm";
 import * as studentService from "../services/student";
 
-import studentSchema from "../config/db/validateSchema/studentSchema";
+import studentSchema from "../db/validateSchema/studentSchema";
 import AppError from "../utils/appError";
 import Joi from "joi";
 

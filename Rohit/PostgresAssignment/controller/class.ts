@@ -1,5 +1,12 @@
 import { Context } from "vm";
 
+const Joi = require('joi');
+
+const classSchema = Joi.object().keys({
+  classId: Joi.number().required(),
+  stId: Joi.number().required()
+});
+
 const classController = require('../services/class');
 
 interface IClassInfo {
@@ -27,17 +34,9 @@ exports.getClassInfo = async (ctx: Context) => {
   exports.addStudentInClass = async (ctx: Context) => {
     try {
       let req: IClassInfo = ctx.request.body;
-      if (
-        req.classId === undefined ||
-        req.stId === undefined ||
-        typeof req.classId !== "number" ||
-        typeof req.stId !== "number"
-      ) {
-        ctx.response.status = 400;
-        ctx.response.type = "text/html";
-        ctx.body = "Bad Request";
-        return;
-      }
+     
+      await classSchema.validateAsync(req);
+
       await classController.add_student_to_class(req.classId, req.stId);
   
       ctx.response.status = 201;

@@ -1,4 +1,18 @@
 import { Context } from "vm";
+const Joi = require('joi');
+
+const resultSchema = Joi.object().keys({
+  studentId: Joi.number().required(),
+  class_Id: Joi.number().required(),
+  subject_Id: Joi.number().required(),
+  marks: Joi.number().required()
+});
+
+const updateSchema = Joi.object().keys({
+  studentId: Joi.number().required(),
+  subject_Id: Joi.number().required(),
+  marks: Joi.number().required()
+})
 
 
 const resultController = require("../services/result");
@@ -29,29 +43,7 @@ exports.getResultData = async (ctx: Context) => {
 exports.add_reasultData_in_table = async (ctx: Context) => {
   try {
     let req: IResultInfo = ctx.request.body;
-    if (
-      req.studentid === undefined ||
-      req.class_Id === undefined ||
-      req.subject_Id === undefined ||
-      req.marks === undefined
-    ) {
-      ctx.response.status = 400;
-      ctx.response.type = "text/html";
-      ctx.body = "Bad Request";
-      return;
-    }
-
-    if (
-      typeof req.studentid !== "number" ||
-      typeof req.class_Id !== "number" ||
-      typeof req.subject_Id !== "number" ||
-      typeof req.marks !== "number"
-    ) {
-      ctx.response.status = 400;
-      ctx.response.type = "text/html";
-      ctx.body = "Bad Request";
-      return;
-    }
+    await resultSchema.validateAsync(req);
     await resultController.add_result(
       req.studentid,
       req.class_Id,
@@ -74,27 +66,8 @@ exports.updateResult_by_studentId_and_subjectId = async (ctx: Context) => {
   try {
     let req: IResultInfo = ctx.request.body;
     let [rows]: Array<{ rows: any }> = [];
-    if (
-      req.studentid === undefined ||
-      req.subject_Id === undefined ||
-      req.marks === undefined
-    ) {
-      ctx.response.status = 400;
-      ctx.response.type = "text/html";
-      ctx.body = "Bad Request";
-      return;
-    }
-
-    if (
-      typeof req.studentid !== "number" ||
-      typeof req.subject_Id !== "number" ||
-      typeof req.marks !== "number"
-    ) {
-      ctx.response.status = 400;
-      ctx.response.type = "text/html";
-      ctx.body = "Bad Request";
-      return;
-    }
+    
+    await updateSchema.validateAsync(req);
     let flag = 0;
     rows = await resultController.check_subject(req.studentid);
     let length = await resultController.subject_length(req.studentid);

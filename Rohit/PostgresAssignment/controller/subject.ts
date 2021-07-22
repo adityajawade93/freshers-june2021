@@ -1,5 +1,12 @@
 import { Context } from "vm";
 
+const Joi = require('joi');
+
+const subjectSchema = Joi.object().keys({
+  subject_Id: Joi.number().required(),
+  subject_name: Joi.string().trim().required()
+})
+
 const subjectController = require('../services/subject');
 
 interface ISubjectInfo {
@@ -26,18 +33,8 @@ interface ISubjectInfo {
   exports.add_subject_in_table = async (ctx: Context) => {
     try {
       let req: ISubjectInfo = ctx.request.body;
-      if (
-        req.subjectId === undefined ||
-        req.subject_name === undefined ||
-        typeof req.subjectId !== "number" ||
-        typeof req.subject_name !== "string" ||
-        req.subject_name.trim() === ""
-      ) {
-        ctx.response.status = 400;
-        ctx.response.type = "text/html";
-        ctx.body = "Bad Request";
-        return;
-      }
+      await subjectSchema.validateAsync(req);
+
       await subjectController.add_subject(req.subjectId, req.subject_name);
   
       ctx.response.status = 201;

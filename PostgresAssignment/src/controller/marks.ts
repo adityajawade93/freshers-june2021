@@ -6,6 +6,7 @@ import {
 	highestMarksInSubject as highest_marks_in_subjects,
 	topper as _topper,
 } from "../services/marks";
+import { marksSchema } from "../helper/validation";
 
 interface marksI {
 	studentId: string;
@@ -13,9 +14,9 @@ interface marksI {
 	marks: number;
 }
 
-export async function getMarksOfStudent(ctx: Context) {
+export async function getMarksOfStudent(ctx: Context): Promise<void> {
+	const studentId: string = ctx.request.params.studentId;
 	try {
-		const studentId: string = ctx.request.params.studentId;
 		const marksObtained = await get_marks_of_student(studentId);
 		ctx.response.status = 200;
 		ctx.body = {
@@ -23,17 +24,14 @@ export async function getMarksOfStudent(ctx: Context) {
 			marks: marksObtained,
 		};
 	} catch (e) {
-		ctx.response.status = 400;
-		ctx.body = `something went wrong in fetching mark  + ${e}`;
+		ctx.status = 500;
+		ctx.body = { error: e.message };
 	}
 }
 
-import { marksSchema } from "../helper/validation";
-
 export async function updateMarks(ctx: Context) {
+	const obj = ctx.request.body;
 	try {
-		const obj = ctx.request.body;
-		console.log(obj);
 		const response = marksSchema.validate(obj);
 		if (response.error) {
 			ctx.response.status = 422;
@@ -45,20 +43,20 @@ export async function updateMarks(ctx: Context) {
 			obj.subjectId,
 			obj.marks
 		);
-		ctx.response.status = 200;
+		ctx.response.status = 201;
 		ctx.body = {
 			msg: "data updated",
 			data: updatedMarks,
 		};
 	} catch (e) {
-		ctx.response.status = 400;
-		ctx.body = `something went wrong in updating marks + ${e}`;
+		ctx.status = 500;
+		ctx.body = { error: e.message };
 	}
 }
 
-export async function addMarks(ctx: any) {
+export async function addMarks(ctx: any): Promise<void> {
+	const obj = ctx.request.body;
 	try {
-		const obj = ctx.request.body;
 		const response = await marksSchema.validate(obj);
 		if (response.error) {
 			ctx.response.status = 422;
@@ -66,41 +64,39 @@ export async function addMarks(ctx: any) {
 			return;
 		}
 		const addedMarks = await add_marks(obj.studentID, obj.subjectID, obj.marks);
-		ctx.response.status = 200;
+		ctx.response.status = 201;
 		ctx.body = {
 			msg: "marks added",
 			data: addedMarks,
 		};
-	} catch (err) {
-		ctx.response.status = 400;
-		ctx.body = `something went wrong in adding marks + ${err}`;
+	} catch (e) {
+		ctx.status = 500;
+		ctx.body = { error: e.message };
 	}
 }
 
-export async function highestMarksInSubject(ctx: Context) {
+export async function highestMarksInSubject(ctx: Context): Promise<void> {
+	const subjectId: string = ctx.request.params.subjectId;
 	try {
-		const subjectId = ctx.request.params.subjectId;
 		const marks = await highest_marks_in_subjects(subjectId);
 		ctx.response.status = 200;
 		ctx.body = {
 			data: marks,
 		};
 	} catch (e) {
-		ctx.response.status = 400;
-		ctx.body = `${e}`;
+		ctx.status = 500;
+		ctx.body = { error: e.message };
 	}
 }
 
-export async function topper(ctx: any) {
+export async function topper(ctx: Context): Promise<void> {
+	const topperCount: number = ctx.request.params.topperCount;
 	try {
-		const topperCount: number = ctx.request.params.topperCount;
 		const toppers = await _topper(topperCount);
 		ctx.response.status = 200;
 		ctx.body = toppers;
 	} catch (e) {
-		ctx.response.status = 400;
-		ctx.body = {
-			error: `something went wrong ${e}`,
-		};
+		ctx.status = 500;
+		ctx.body = { error: e.message };
 	}
 }

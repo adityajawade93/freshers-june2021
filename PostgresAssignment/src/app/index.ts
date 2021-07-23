@@ -1,12 +1,11 @@
-const config = require("../config/config.ts");
 import Koa from "koa";
 import bodyParser from "koa-bodyparser";
 import { Context } from "vm";
-
+import { dbPort, dbHost } from "../config/config";
 import { router } from "../routes/routes";
 
-const port = config.dbPort;
-const host = config.dbHost;
+const port = dbPort;
+const host = dbHost;
 
 export const startApp = function() {
 	const app = new Koa();

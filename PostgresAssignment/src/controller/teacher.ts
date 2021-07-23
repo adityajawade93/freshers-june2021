@@ -5,40 +5,38 @@ import {
 	addTeacher as add_teacher,
 } from "../services/teachers";
 
-export async function getTeachers(ctx: Context) {
+import { teacherSchema } from "../helper/validation";
+
+export async function getTeachers(ctx: Context): Promise<void> {
 	try {
 		const response = await allteacher();
 		ctx.response.status = 200;
 		ctx.body = {
 			msg: "List of all the teachers",
-			data: response.rows,
+			data: response,
 		};
 		return;
 	} catch (e) {
-		ctx.response.status = 400;
-		ctx.body = { msg: `something wrong in getting teachers list + ${e}` };
+		ctx.status = 500;
+		ctx.body = { error: e.message };
 	}
 }
 
 export async function studentOfteacher(ctx: Context) {
+	const teacherId: string = ctx.request.params.teacherId;
 	try {
-		const teacherId: string = ctx.request.params.teacherId;
 		const requiredStudent = await student_of_teacher(teacherId);
-
 		ctx.response.status = 200;
 		ctx.body = requiredStudent;
 	} catch (e) {
-		ctx.response.status = 400;
-		ctx.body = {
-			error: `something went wrong in getting student from teacher id + ${e}`,
-		};
+		ctx.status = 500;
+		ctx.body = { error: e.message };
 	}
 }
 
-import { teacherSchema } from "../helper/validation";
-export async function addTeacher(ctx: Context) {
+export async function addTeacher(ctx: Context): Promise<void> {
+	const obj = ctx.request.body;
 	try {
-		const obj = ctx.request.body;
 		const response = await teacherSchema.validate(obj);
 		if (response.error) {
 			ctx.response.status = 422;
@@ -52,9 +50,7 @@ export async function addTeacher(ctx: Context) {
 			dataAdded: newTeacher,
 		};
 	} catch (e) {
-		ctx.response.status = 404;
-		ctx.body = {
-			msg: `something went wrong in adding teacher ${e}`,
-		};
+		ctx.status = 500;
+		ctx.body = { error: e.message };
 	}
 }

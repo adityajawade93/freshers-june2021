@@ -1,15 +1,17 @@
 import { query } from "../database/index";
 
-export async function getSubject() {
+export async function getSubject(): Promise<Array<string>> {
 	try {
-		const response = await query(`select * from school.subject`);
+		const response = await query(`select * from school.subject order by name`);
 		return response.rows;
 	} catch (e) {
 		throw Error(e);
 	}
 }
 
-export async function studentOfSubject(subjectId: string) {
+export async function studentOfSubject(
+	subjectId: string
+): Promise<Array<string>> {
 	try {
 		const respose = await query(
 			`select * 
@@ -26,7 +28,7 @@ export async function addSubject(
 	name: string,
 	classid: string,
 	teacherid: string
-) {
+): Promise<Array<string>> {
 	try {
 		const response = await query(`INSERT INTO school.subject(name, classid, teacherid) VALUES
         ('${name}','${classid}','${teacherid}') RETURNING subjectid`);

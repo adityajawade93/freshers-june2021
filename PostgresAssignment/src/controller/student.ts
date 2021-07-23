@@ -19,12 +19,11 @@ interface student {
 	phone: string;
 }
 
-export async function getStudent(ctx: Context) {
+export async function getStudent(ctx: Context): Promise<void> {
+	const page = parseInt(ctx.request.query.page);
+	const size = parseInt(ctx.request.query.size);
 	try {
-		const page = parseInt(ctx.request.query.page);
-		const size = parseInt(ctx.request.query.size);
 		const validParams: boolean = validatePage(page, size);
-
 		const totalStudent: number = await getStudentCount();
 		// console.log(totalStudent)
 
@@ -41,17 +40,20 @@ export async function getStudent(ctx: Context) {
 		ctx.status = 200;
 		ctx.body = {
 			total_students: totalStudent,
-			data: allstudent.rows,
+			data: allstudent,
 		};
 	} catch (e) {
-		ctx.status = 404;
-		ctx.body = `Some Error occured while fetching the student data: ${e.message}`;
+		ctx.status = 500;
+		if (e.status) ctx.status = e.status;
+
+		ctx.body = { error: e.message };
 	}
 }
 
-export async function addStudent(ctx: Context) {
+export async function addStudent(ctx: Context): Promise<void> {
+	const obj: student = ctx.request.body;
+
 	try {
-		const obj: student = ctx.request.body;
 		console.log(obj);
 		const response = await studentSchema.validate(obj);
 		console.log(response);
@@ -67,15 +69,15 @@ export async function addStudent(ctx: Context) {
 			obj.phone,
 			obj.classId
 		);
-		ctx.response.status = 200;
+		ctx.response.status = 201;
 		ctx.body = {
 			msg: "New student is added",
 			data_added: addedStudent,
 		};
 	} catch (e) {
-		ctx.response.status = 400;
-		ctx.body = {
-			msg: `something went wrong in adding students ${e}`,
-		};
+		ctx.status = 500;
+		if (e.status) ctx.status = e.status;
+
+		ctx.body = { error: e.message };
 	}
 }

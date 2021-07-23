@@ -12,39 +12,35 @@ interface subjectI {
 	teacherId: string;
 }
 
-export async function getSubject(ctx: Context) {
+export async function getSubject(ctx: Context): Promise<void> {
 	try {
-		console.log("get subject");
 		const allSubject = await get_subject();
 		ctx.body = {
-			message: "Data fethced successfully",
+			message: "Data fetched successfully",
+			count: allSubject.length,
 			data: allSubject,
 		};
 	} catch (e) {
-		ctx.response.status = 400;
-		ctx.body = {
-			msg: `something went worng in getting all subjects + ${e}`,
-		};
+		ctx.status = 500;
+		ctx.body = { error: e.message };
 	}
 }
 
-export async function getStudentOfSubject(ctx: Context) {
+export async function getStudentOfSubject(ctx: Context): Promise<void> {
+	const subjectId: string = ctx.request.params.subjectId;
 	try {
-		const subjectId = ctx.request.params.subjectId;
 		const requestedStudent = await student_of_subject(subjectId);
 		ctx.response.status = 200;
 		ctx.body = requestedStudent;
 	} catch (e) {
-		ctx.response.status = 400;
-		ctx.body = {
-			error: `something went wrong in getting student from subject id +  ${e}`,
-		};
+		ctx.status = 500;
+		ctx.body = { error: e.message };
 	}
 }
 
-export async function addSubject(ctx: Context) {
+export async function addSubject(ctx: Context): Promise<void> {
+	const obj: subjectI = ctx.request.body;
 	try {
-		const obj: subjectI = ctx.request.body;
 		const response = await subjectSchema.validate(obj);
 		if (response.error) {
 			ctx.response.status = 422;
@@ -56,15 +52,13 @@ export async function addSubject(ctx: Context) {
 			obj.classId,
 			obj.teacherId
 		);
-		ctx.response.status = 200;
+		ctx.response.status = 201;
 		ctx.body = {
-			msg: "New Sunect added",
+			msg: "New Student added",
 			dataAdded: addedSubject,
 		};
 	} catch (e) {
-		ctx.response.status = 400;
-		ctx.body = {
-			msg: `something went wrong in adding teacher ${e}`,
-		};
+		ctx.status = 500;
+		ctx.body = { error: e.message };
 	}
 }

@@ -1,9 +1,11 @@
 import { query } from "../database/index";
 
-export async function getMarksOfStudent(studentId: string) {
+export async function getMarksOfStudent(
+	studentId: string
+): Promise<Array<string>> {
 	try {
 		const response = await query(
-			`SELECT * FROM school.marks where studentid='${studentId}'`
+			`SELECT * FROM school.marks where studentid='${studentId} order by studentid'`
 		);
 		return response.rows;
 	} catch (e) {
@@ -15,7 +17,7 @@ export async function updateMarks(
 	studentId: string,
 	subjectId: string,
 	marks: number
-) {
+): Promise<Array<string>> {
 	try {
 		const response = await query(`UPDATE school.marks
     SET marks = '${marks}'
@@ -32,7 +34,7 @@ export async function addMarks(
 	studentid: string,
 	subjectid: string,
 	marks: number
-) {
+): Promise<void> {
 	try {
 		query(
 			`INSERT INTO school.marks(studentid, subjectid, marks) VALUES 
@@ -43,7 +45,9 @@ export async function addMarks(
 	}
 }
 
-export async function highestMarksInSubject(subjectId: string) {
+export async function highestMarksInSubject(
+	subjectId: string
+): Promise<Array<string>> {
 	try {
 		const response = await query(`select * from school.marks 
         where subjectid = '${subjectId}'
@@ -55,7 +59,7 @@ export async function highestMarksInSubject(subjectId: string) {
 	}
 }
 
-export async function topper(topperCount: number) {
+export async function topper(topperCount: number): Promise<Array<string>> {
 	try {
 		const response = await query(
 			`select studentid, sum(marks) as total 

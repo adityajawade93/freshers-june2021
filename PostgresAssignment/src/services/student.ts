@@ -1,21 +1,25 @@
 import { query } from "../database/index";
 
-export const allStudents = async (limit: number, offset: number) => {
+export async function allStudents(
+	limit: number,
+	offset: number
+): Promise<Array<string>> {
 	try {
-		return await query(
-			`SELECT * FROM school.student LIMIT ${limit} OFFSET ${offset}`
+		const response = await query(
+			`SELECT * FROM school.student LIMIT ${limit} OFFSET ${offset} order by name`
 		);
+		return response.rows;
 	} catch (e) {
 		throw Error(e);
 	}
-};
+}
 
-export const addStudent = async (
+export async function addStudent(
 	name: string,
 	sex: string,
 	phone: string,
 	classId: string
-) => {
+): Promise<Array<string>> {
 	try {
 		const response = await query(
 			`INSERT INTO school.student(name, sex,phone,classId) VALUES ('${name}','${sex}','${phone}','${classId}') RETURNING studentId `
@@ -24,13 +28,13 @@ export const addStudent = async (
 	} catch (e) {
 		throw Error(e);
 	}
-};
+}
 
-export const getStudentCount = async () => {
+export async function getStudentCount(): Promise<number> {
 	try {
 		const response = await query("select count (*)  from school.student");
 		return parseInt(response.rows[0].count);
 	} catch (e) {
 		throw Error(e);
 	}
-};
+}

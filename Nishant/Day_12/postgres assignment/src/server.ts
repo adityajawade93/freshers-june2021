@@ -1,5 +1,3 @@
-/* eslint-disable import/no-unresolved */
-/* eslint-disable import/extensions */
 const app = require('./app/index');
 
 const port :number = 3000;

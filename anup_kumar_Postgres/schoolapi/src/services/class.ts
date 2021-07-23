@@ -1,44 +1,31 @@
-import { query } from "../database/index";
-import { handle_error } from "../helper/index";
+import { query } from '../database/index';
 
-export async function all_classes() {
+export async function getClasses() {
   try {
-    const [response, responseError] = await handle_error(
-      query(`SELECTs * FROM school.class`)
-    );
-    if (responseError) throw new Error(responseError);
-    return response;
+    const response = await query(`SELECT * FROM school.class`);
+    return response.rows;
   } catch (e) {
-    throw new Error(e.message);
-    console.log(e.message);
+    throw Error(e);
   }
 }
 
-export async function student_of_class(classid: string) {
+export async function studentOfClass(classId: string) {
   try {
-    const [response, responseError] = await handle_error(
-      query(`select * from school.student where classid = '${classid}'`)
+    const response = await query(
+      `select * from school.student where classid = '${classId}'`
     );
-
-    if (responseError) throw new Error(responseError);
     return response;
   } catch (e) {
-    throw new Error(e.message);
-    console.log(e);
+    throw Error(e);
   }
 }
 
-export async function add_class(classname: string) {
+export async function addClass(name: string, room: number) {
   try {
-    const [, responseError] = await handle_error(
-      query(
-        `INSERT INTO school.class(name) 
-            VALUES (${classname})`
-      )
-    );
-    if (responseError) throw new Error(responseError);
+    const response = await query(`INSERT INTO school.class(name,room) 
+            VALUES (${name},'${room}') RETURNING classid`);
+    return response.rows;
   } catch (e) {
-    throw new Error(e.message);
-    console.log(e);
+    throw Error(e);
   }
 }

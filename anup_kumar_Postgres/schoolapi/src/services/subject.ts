@@ -1,50 +1,37 @@
-import { query } from "../database/index";
-import { handle_error } from "../helper/index";
+import { query } from '../database/index';
 
-export async function all_subejcts(limit: number, offset: number) {
+export async function getSubject() {
   try {
-    const [response, responseError] = await handle_error(
-      query(`select * from school.subject LIMIT ${limit} OFFSET ${offset}`)
-    );
-    if (responseError) throw new Error(responseError);
-    return response;
+    const response = await query(`select * from school.subject`);
+    return response.rows;
   } catch (e) {
-    throw new Error(e.message);
-    console.log(e);
+    throw Error(e);
   }
 }
 
-export async function student_of_subject(subjectid: string) {
+export async function studentOfSubject(subjectId: string) {
   try {
-    const [response, responseError] = await handle_error(
-      query(
-        `select * 
+    const respose = await query(
+      `select * 
             from school.student as st, school.subject as sb
-            where st.classid = sb.classid and sb.subjectid = '${subjectid}'`
-      )
+            where st.classid = sb.classid and sb.subjectid = '${subjectId}'`
     );
-    if (responseError) throw new Error(responseError);
-    return response;
+    return respose.rows;
   } catch (e) {
-    throw new Error(e.message);
-    console.log(e);
+    throw Error(e);
   }
 }
 
-export async function add_subject(
+export async function addSubject(
   name: string,
   classid: string,
   teacherid: string
 ) {
   try {
-    const [, responseError] = await handle_error(
-      query(`INSERT INTO school.subject(name, classid, teacherid) VALUES
-        ('${name}','${classid}','${teacherid}')`)
-    );
-    if (responseError) throw new Error(responseError);
-    return;
+    const response = await query(`INSERT INTO school.subject(name, classid, teacherid) VALUES
+        ('${name}','${classid}','${teacherid}') RETURNING subjectid`);
+    return response.rows;
   } catch (e) {
-    throw new Error(e.message);
-    console.log(e);
+    throw Error(e);
   }
 }

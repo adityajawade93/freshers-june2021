@@ -1,52 +1,81 @@
-import { validate_page } from "../helper/index";
-import { Context } from "vm";
+import { validatePage } from '../helper/index';
+import { Context } from 'vm';
 import {
-  all_students as allstudents,
-  add_students as addstudents,
-} from "../services/student";
+  getStudentCount,
+  allStudents,
+  addStudent as add_student
+} from '../services/student';
 
-export const all_students = async (ctx: Context) => {
-  const page = parseInt(ctx.request.query.page);
-  const size = parseInt(ctx.request.query.size);
-  const isValid = validate_page(page, size);
+interface paginationInterface {
+  limit: number;
+  offset: number;
+}
 
-  if (isValid.result === "valid") {
-    const limit = size;
-    const offset = page * size;
-    try {
-      const [response, responseError] = await allstudents(page, offset);
-      ctx.response.status = 200;
-      ctx.body = response.rows;
-      return;
-    } catch (e) {
-      ctx.status = 404;
-      ctx.body = { error: e.message };
-      console.log(e);
+import { studentSchema } from '../helper/validation';
+interface student {
+  name: string;
+  classId: string;
+  sex: string;
+  phone: string;
+}
+
+export async function getStudent(ctx: Context) {
+  try {
+    const page = parseInt(ctx.request.query.page);
+    const size = parseInt(ctx.request.query.size);
+    const validParams: boolean = validatePage(page, size);
+
+    const totalStudent: number = await getStudentCount();
+    // console.log(totalStudent)
+
+    const boundary: paginationInterface = { offset: 0, limit: totalStudent };
+    // if the page and offset is not valid
+
+    if (validParams) {
+      boundary.offset = size;
+      boundary.limit = page * size;
     }
-  } else {
-    ctx.response.status = 400;
-    ctx.body = "Invalid request";
-    return;
+
+    const allstudent = await allStudents(boundary.offset, boundary.limit);
+
+    ctx.status = 200;
+    ctx.body = {
+      total_students: totalStudent,
+      data: allstudent.rows
+    };
+  } catch (e) {
+    ctx.status = 404;
+    ctx.body = `Some Error occured while fetching the student data: ${e.message}`;
   }
-};
+}
 
-export async function add_students(ctx: Context) {
-  const name = ctx.request.body.name;
-  const classid = ctx.request.body.classid;
-
-  if (name && classid) {
-    try {
-      const [response, responseError] = await addstudents(name, classid);
-      ctx.body = { Message: "Data added succesfully" };
-      ctx.response.status = 201;
-    } catch (e) {
-      ctx.status = 404;
-      ctx.body = { error: e.message };
-      console.log(e);
+export async function addStudent(ctx: Context) {
+  try {
+    const obj: student = ctx.request.body;
+    console.log(obj);
+    const response = await studentSchema.validate(obj);
+    console.log(response);
+    if (response.error) {
+      ctx.response.status = 422;
+      ctx.body = response.error.details[0].message;
+      return;
     }
-  } else {
-    ctx.response.status = 404;
-    ctx.body = { Message: "Enter valid parameters" };
-    return;
+
+    const addedStudent = await add_student(
+      obj.name,
+      obj.sex,
+      obj.phone,
+      obj.classId
+    );
+    ctx.response.status = 200;
+    ctx.body = {
+      msg: 'New student is added',
+      data_added: addedStudent
+    };
+  } catch (e) {
+    ctx.response.status = 400;
+    ctx.body = {
+      msg: `something went wrong in adding students ${e}`
+    };
   }
 }

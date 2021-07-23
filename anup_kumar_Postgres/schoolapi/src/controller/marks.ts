@@ -1,60 +1,106 @@
-import { Context } from "vm";
+import { Context } from 'vm';
 import {
-  all_marks as allmarks,
-  add_marks as addmarks,
-  topper as topper1,
-  all_marks,
-} from "../services/marks";
+  getMarksOfStudent as get_marks_of_student,
+  updateMarks as update_marks,
+  addMarks as add_marks,
+  highestMarksInSubject as highest_marks_in_subjects,
+  topper as _topper
+} from '../services/marks';
 
-export async function get_marks(ctx: Context) {
+interface marksI {
+  studentId: string;
+  subjectId: string;
+  marks: number;
+}
+
+export async function getMarksOfStudent(ctx: Context) {
   try {
-    const response = await all_marks();
-    ctx.body = response.rows;
+    const studentId: string = ctx.request.params.studentId;
+    const marksObtained = await get_marks_of_student(studentId);
     ctx.response.status = 200;
-    return;
+    ctx.body = {
+      msg: `all subject marks for studentID ${studentId}`,
+      marks: marksObtained
+    };
   } catch (e) {
-    ctx.status = 404;
-    ctx.body = { error: e.message };
+    ctx.response.status = 400;
+    ctx.body = `something went wrong in fetching mark  + ${e}`;
   }
 }
 
-export async function add_marks(ctx: Context) {
-  const studentid = ctx.request.body.studentid;
-  const subjectid = ctx.request.body.subjectid;
-  const marks = ctx.request.body.marks;
+import { marksSchema } from '../helper/validation';
 
-  if (studentid && subjectid && typeof marks == "number") {
-    try {
-      const response = await addmarks(studentid, subjectid, marks);
-      ctx.body = { Message: "data added succesfully" };
-      ctx.response.status = 201;
-    } catch (e) {
-      ctx.response.status = 404;
-      ctx.body = { error: e.message };
-      console.log(e);
+export async function updateMarks(ctx: Context) {
+  try {
+    const obj = ctx.request.body;
+    console.log(obj);
+    const response = marksSchema.validate(obj);
+    if (response.error) {
+      ctx.response.status = 422;
+      ctx.body = response.error.details[0].message;
+      return;
     }
-  } else {
-    ctx.response.status = 404;
-    ctx.body = { message: "Invalid data entered" };
+    const updatedMarks = await update_marks(
+      obj.studentId,
+      obj.subjectId,
+      obj.marks
+    );
+    ctx.response.status = 200;
+    ctx.body = {
+      msg: 'data updated',
+      data: updatedMarks
+    };
+  } catch (e) {
+    ctx.response.status = 400;
+    ctx.body = `something went wrong in updating marks + ${e}`;
   }
 }
 
-export async function topper(ctx: Context) {
-  var num = parseInt(ctx.params.num);
-
-  if (typeof num === "number") {
-    try {
-      const response = await topper1(num);
-      ctx.body = response.rows;
-      ctx.response.status = 200;
-    } catch (e) {
-      ctx.response.status = 404;
-      ctx.body = { error: e.message };
-      console.log(e);
+export async function addMarks(ctx: any) {
+  try {
+    const obj = ctx.request.body;
+    const response = await marksSchema.validate(obj);
+    if (response.error) {
+      ctx.response.status = 422;
+      ctx.body = response.error.details[0].message;
+      return;
     }
-  } else {
-    ctx.response.status = 404;
-    ctx.body = { message: "enter valid number" };
+    const addedMarks = await add_marks(obj.studentID, obj.subjectID, obj.marks);
+    ctx.response.status = 200;
+    ctx.body = {
+      msg: 'marks added',
+      data: addedMarks
+    };
+  } catch (err) {
+    ctx.response.status = 400;
+    ctx.body = `something went wrong in adding marks + ${err}`;
   }
-  return;
+}
+
+export async function highestMarksInSubject(ctx: Context) {
+  try {
+    const subjectId = ctx.request.params.subjectId;
+    const marks = await highest_marks_in_subjects(subjectId);
+    ctx.response.status = 200;
+    ctx.body = {
+      data: marks
+    };
+  } catch (e) {
+    ctx.response.status = 400;
+    ctx.body = `${e}`;
+  }
+}
+
+export async function topper(ctx: any) {
+  try {
+    const topperCount: number = ctx.request.params.topperCount;
+    const toppers = await _topper(topperCount);
+    ctx.response.status = 200;
+    ctx.body = toppers;
+  } catch (e) {
+    ctx.response.status = 400;
+    ctx.body = {
+      error: `something went wrong ${e}`
+    };
+  }
 }

@@ -1,32 +1,36 @@
-import { query } from "../database/index";
-import { handle_error } from "../helper/index";
+import { query } from '../database/index';
 
-export const all_students = async (limit: number, offset: number) => {
+export const allStudents = async (limit: number, offset: number) => {
   try {
-    const [response, responseError] = await handle_error(
-      query(`SELECT * FROM school.student LIMIT ${limit} OFFSET ${offset}`)
+    return await query(
+      `SELECT * FROM school.student LIMIT ${limit} OFFSET ${offset}`
     );
-
-    if (responseError) throw new Error(responseError);
-    return response;
   } catch (e) {
-    throw new Error(e.message);
-    console.log(e);
+    throw Error(e);
   }
 };
 
-export async function add_students(studentname: string, classid: string) {
+export const addStudent = async (
+  name: string,
+  sex: string,
+  phone: string,
+  classId: string
+) => {
   try {
-    const [response, responseError] = await handle_error(
-      query(
-        `INSERT INTO school.student(name, classid) VALUES ('${studentname}','${classid}')`
-      )
+    const response = await query(
+      `INSERT INTO school.student(name, sex,phone,classId) VALUES ('${name}','${sex}','${phone}','${classId}') RETURNING studentId `
     );
-
-    if (responseError) throw new Error(responseError);
-    return response;
+    return response.rows[0];
   } catch (e) {
-    throw new Error(e.message);
-    console.log(e);
+    throw Error(e);
   }
-}
+};
+
+export const getStudentCount = async () => {
+  try {
+    const response = await query('select count (*)  from school.student');
+    return parseInt(response.rows[0].count);
+  } catch (e) {
+    throw Error(e);
+  }
+};

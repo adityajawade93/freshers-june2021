@@ -1,58 +1,68 @@
 import { Context } from "vm";
 import {
-  all_classes as allclasses,
-  add_class as addclass,
-  student_of_class as studentofclass,
+	getClasses as get_classes,
+	studentOfClass as student_of_classes,
+	addClass as add_class,
 } from "../services/class";
+import { classSchema } from "../helper/validation";
 
-export async function all_classes(ctx: Context) {
-  try {
-    const response = await allclasses();
-    ctx.body = response.rows;
-    ctx.response.status = 200;
-    return;
-  } catch (e) {
-    console.log(e.message);
-    ctx.status = 404;
-    ctx.body = { error: e.message };
-  }
-  return;
+interface classI {
+	name: string;
+	room: number;
 }
 
-export async function student_of_class(ctx: Context) {
-  const classid = ctx.params.id.trim();
-  // console.log(id);
-  if (classid) {
-    try {
-      const [response, responseError] = await studentofclass(classid);
-      ctx.body = response.rows;
-      return;
-    } catch (e) {
-      ctx.response.status = 404;
-      ctx.body = e.message;
-      return;
-    }
-  } else {
-    ctx.response.status = 404;
-    return;
-  }
+export async function getClass(ctx: Context) {
+	try {
+		const allClasses = await get_classes();
+		ctx.response.status = 200;
+		ctx.body = {
+			msg: "list of all classes",
+			data: allClasses,
+		};
+	} catch (e) {
+		ctx.response.status = 400;
+		ctx.body = {
+			msg: `something went wrong in getting classes + ${e}`,
+		};
+	}
 }
 
-export async function add_class(ctx: Context) {
-  const classname = ctx.request.body.name;
-  if (classname && typeof classname == "string") {
-    try {
-      const response = await addclass(classname);
-      ctx.response.status = 201;
-      ctx.body = "data added succefully";
-    } catch (e) {
-      ctx.response.status = 404;
-      ctx.body = e.message;
-      console.log(e);
-    }
-  } else {
-    ctx.body = "Please enter proper class name";
-    ctx.response.status = 406;
-    return;
-  }
+export async function studentsOfClass(ctx: Context) {
+	try {
+		const classId = ctx.params.classId;
+		const requiredStudent = await student_of_classes(classId);
+		ctx.response.status = 200;
+		ctx.body = {
+			msg: "required student detail",
+			data: requiredStudent,
+		};
+	} catch (e) {
+		ctx.response.status = 400;
+		ctx.body = {
+			error: `something went wrong in getting student from class ID + ${e}`,
+		};
+	}
+}
+
+export async function addClass(ctx: Context) {
+	try {
+		const obj: classI = ctx.request.body;
+		const response = await classSchema.validate(obj);
+		if (response.error) {
+			ctx.response.status = 422;
+			ctx.body = response.error.details[0].message;
+			return;
+		}
+		const classAdded = await add_class(obj.name, obj.room);
+		ctx.response.status = 200;
+		ctx.body = {
+			msg: "A new class added",
+			data: classAdded,
+		};
+	} catch (e) {
+		console.log(e);
+		ctx.body = {
+			msg: `something  went wrong while adding class  + ${e}`,
+		};
+	}
 }

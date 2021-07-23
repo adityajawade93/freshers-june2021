@@ -1,51 +1,68 @@
-import { query } from "../database/index";
-import { handle_error } from "../helper/index";
+import { query } from '../database/index';
 
-export async function all_marks() {
+export async function getMarksOfStudent(studentId: string) {
   try {
-    const [response, responseError] = await handle_error(
-      query(`SELECT * FROM school.marks`)
+    const response = await query(
+      `SELECT * FROM school.marks where studentid='${studentId}'`
     );
-    if (responseError) throw new Error(responseError);
-    return response;
+    return response.rows;
   } catch (e) {
-    throw new Error(e.message);
-    console.log(e);
+    throw Error(e);
   }
 }
 
-export async function add_marks(
+export async function updateMarks(
+  studentId: string,
+  subjectId: string,
+  marks: number
+) {
+  try {
+    const response = await query(`UPDATE school.marks
+    SET marks = '${marks}'
+    WHERE studentId = '${studentId}'
+    and subjectId= '${subjectId}'
+    RETURNING *`);
+    return response.rows;
+  } catch (e) {
+    throw Error(e);
+  }
+}
+
+export async function addMarks(
   studentid: string,
   subjectid: string,
   marks: number
 ) {
   try {
-    const [, responseError] = await handle_error(
-      query(
-        `INSERT INTO school.marks(studentid, subjectid, marks) VALUES 
+    query(
+      `INSERT INTO school.marks(studentid, subjectid, marks) VALUES 
             ('${studentid}','${subjectid}','${marks}')`
-      )
     );
-    if (responseError) throw new Error(responseError);
-    return;
   } catch (e) {
-    throw new Error(e.message);
-    console.log(e);
+    throw Error(e);
   }
 }
 
-export const topper = async (num: number) => {
+export async function highestMarksInSubject(subjectId: string) {
   try {
-    const [response, responseError] = await handle_error(
-      query(
-        `select studentid, sum(marks) as total 
-            from school.marks  group by marks.studentid order by total desc limit ${num}`
-      )
-    );
-    throw new Error(responseError);
-    return response;
+    const response = await query(`select * from school.marks 
+        where subjectid = '${subjectId}'
+        order by marks desc
+        limit 1`);
+    return response.rows;
   } catch (e) {
-    throw new Error(e.message);
-    console.log(e);
+    throw Error(e);
   }
-};
+}
+
+export async function topper(topperCount: number) {
+  try {
+    const response = await query(
+      `select studentid, sum(marks) as total 
+            from school.marks  group by marks.studentid order by total desc limit ${topperCount}`
+    );
+    return response.rows;
+  } catch (e) {
+    throw Error(e);
+  }
+}

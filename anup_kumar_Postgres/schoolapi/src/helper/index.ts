@@ -1,19 +1,11 @@
-export const validate_page = function (
-  page: number,
-  size: number
-): { result: string } {
+export const validatePage = function(page: number, size: number) {
   if (
-    typeof page === "number" &&
-    typeof size === "number" &&
+    typeof page === 'number' &&
+    typeof size === 'number' &&
     page >= 0 &&
     size >= 0
   ) {
-    return { result: "valid" };
+    return true;
   }
-  return { result: "invalid" };
+  return false;
 };
-export async function handle_error(promise: Promise<any>) {
-  return promise
-    .then((data) => [data, undefined])
-    .catch((error) => Promise.resolve([undefined, error]));
-}

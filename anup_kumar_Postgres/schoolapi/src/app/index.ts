@@ -1,13 +1,13 @@
-import Koa from "koa";
-import bodyParser from "koa-bodyparser";
-import { Context } from "vm";
+import Koa from 'koa';
+import bodyParser from 'koa-bodyparser';
+import { Context } from 'vm';
 
-import { router } from "../routes/index";
+import { router } from '../routes/routes';
 
 const port = 3001;
-const host = "localhost";
+const host = 'localhost';
 
-export const startApp = function () {
+export const startApp = function() {
   const app = new Koa();
 
   app.use(bodyParser());
@@ -15,11 +15,11 @@ export const startApp = function () {
   app.use(router.allowedMethods());
   app.use(async (ctx: Context) => {
     ctx.response.status = 404;
-    ctx.body = "Kindly Enter some valid URL";
+    ctx.body = 'Kindly Enter some valid URL';
   });
+
   app.listen(port, host);
   console.log(`Server listening on http://${host}:${port}`);
-  return;
 };
 
 // startApp()

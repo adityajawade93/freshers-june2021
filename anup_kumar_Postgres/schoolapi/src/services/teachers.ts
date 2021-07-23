@@ -1,46 +1,34 @@
-import { query } from "../database/index";
-import { handle_error } from "../helper/index";
+import { query } from '../database/index';
 
-export async function all_teachers() {
+export async function allteacher() {
   try {
-    const [response, responseError] = await handle_error(
-      query("select * from school.teacher")
-    );
-
-    if (responseError) throw new Error(responseError);
-    return response;
+    return await query('select * from school.teacher');
   } catch (e) {
-    throw new Error(e.message);
-    console.log(e);
+    throw Error(e);
   }
 }
 
-export async function student_of_teachers(teacherid: string) {
+export async function studentOfteacher(teacherId: string) {
   try {
-    const [response, responseError] = await handle_error(
-      query(
-        `select * 
+    const response = await query(
+      `select * 
           from school.student as st, school.subject as sb
-          where st.classid = sb.classid and sb.teacherid =  '${teacherid}'`
-      )
+          where st.classid = sb.classid and sb.teacherid =  '${teacherId}'`
     );
-    if (responseError) throw new Error(responseError);
-    return response;
+    return response.rows;
   } catch (e) {
-    throw new Error(e.message);
-    console.log(e);
+    throw Error(e);
   }
 }
 
-export async function add_teachers(teachername: string) {
+export async function addTeacher(name: string, sex: string, phone: string) {
   try {
-    const [, responseError] = await handle_error(
-      query(`INSERT INTO school.teacher(name) VALUES ('${teachername}')`)
+    const response = await query(
+      `INSERT INTO school.teacher(name,sex,phone) VALUES ('${name}','${sex}','${phone}') RETURNING teacherid`
     );
-    if (responseError) throw new Error(responseError);
-    return;
+
+    return response.rows[0];
   } catch (e) {
-    throw new Error(e.message);
-    console.log(e);
+    throw Error(e);
   }
 }

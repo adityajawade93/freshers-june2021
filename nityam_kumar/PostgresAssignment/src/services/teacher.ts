@@ -28,9 +28,10 @@ export const addTeacherDB = async (t1: ITeacher) => {
 
 export const checkExists = async (teacher_id: string) => {
   try {
-    const res = await db.query("select * from teacher where teacher_id =$1", [
-      teacher_id,
-    ]);
+    const res = await db.query(
+      "select * from teacher where teacher_id =$1",
+      [teacher_id]
+    );
     if (res.rows.length === 0) {
       throw new AppError(
         "Teacher with this id not available!! Enter valid teacher id",
@@ -85,10 +86,10 @@ export const countTeachers = async () => {
 
 export const getTeachersDB = async (start_index: number, req_size: number) => {
   try {
-    const data = await db.query("SELECT * from teacher offset $1 limit $2", [
-      start_index,
-      req_size,
-    ]);
+    const data = await db.query(
+      "SELECT * from teacher order by fname offset $1 limit $2 ",
+      [start_index, req_size]
+    );
     return data.rows;
   } catch (err) {
     throw new AppError(err.message, 502);

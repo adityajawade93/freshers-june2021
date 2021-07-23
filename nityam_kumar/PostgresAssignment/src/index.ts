@@ -1,14 +1,11 @@
 import app from "./app/app";
-import { connectDb } from "./db/index";
 import { config } from "./config/config";
 const port = config.port;
-
-connectDb()
-  .then(() => console.log("database connection successful"))
-  .catch((err) => {
-    console.log("DB connection failed!!", err.stack, err.message);
-    console.error(err);
-  });
+import { pool } from "./db/index";
+pool.on("error", (err, client) => {
+  console.error("Unexpected error on idle client", err);
+  process.exit(-1);
+});
 
 app.listen(port, () => {
   console.log("server is active on port", port);

@@ -92,10 +92,10 @@ export const countStudents = async () => {
 
 export const getStudentsDB = async (start_index: number, req_size: number) => {
   try {
-    const data = await db.query("SELECT * from student offset $1 limit $2", [
-      start_index,
-      req_size,
-    ]);
+    const data = await db.query(
+      "SELECT * from student order by fname  offset $1 limit $2 ",
+      [start_index, req_size]
+    );
     return data.rows;
   } catch (err) {
     throw new AppError(err.message, 502);

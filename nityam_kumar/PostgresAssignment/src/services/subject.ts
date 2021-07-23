@@ -11,7 +11,7 @@ interface ISubject {
 
 export const getSubjectDB = async () => {
   try {
-    const data = await db.query("select * from subject");
+    const data = await db.query("select * from subject order by sub_name");
     return data.rows;
   } catch (err) {
     throw new AppError(err.message, 502);

@@ -13,9 +13,8 @@ interface IMark {
 }
 
 export const createMarks = async (ctx: Context) => {
+  const m1: IMark = ctx.request.body;
   try {
-    const m1: IMark = ctx.request.body;
-
     await markSchema.validateAsync(m1);
 
     await marksService.checkStudentExist(m1);
@@ -36,10 +35,10 @@ export const createMarks = async (ctx: Context) => {
 };
 
 export const modifyMarks = async (ctx: Context) => {
+  const student_id = ctx.params.studentId;
+  const subject_id = ctx.params.subjectId;
+  const { marks } = ctx.request.body;
   try {
-    const student_id = ctx.params.studentId;
-    const subject_id = ctx.params.subjectId;
-
     if (
       !subject_id ||
       !student_id ||
@@ -50,8 +49,6 @@ export const modifyMarks = async (ctx: Context) => {
     }
 
     await marksService.checkExist(student_id, subject_id);
-
-    const { marks } = ctx.request.body;
 
     await marksService.ModifyMarksDB(marks, student_id, subject_id);
     ctx.status = 200;
@@ -65,8 +62,8 @@ export const modifyMarks = async (ctx: Context) => {
 };
 
 export const fetchMarks = async (ctx: Context) => {
+  const student_id = ctx.params.studentId;
   try {
-    const student_id = ctx.params.studentId;
     if (!student_id || typeof student_id !== "string") {
       throw new AppError("BAD INPUT DATA", 400);
     }
@@ -98,8 +95,8 @@ export const fetchHighestMarksPerSubject = async (ctx: Context) => {
 export const fetchHighestMarksPerSubjectWithSubjectID = async (
   ctx: Context
 ) => {
+  const subject_id = ctx.params.subjectId;
   try {
-    const subject_id = ctx.params.subjectId;
     if (subject_id && typeof subject_id !== "string") {
       throw new AppError("BAD INPUT DATA", 400);
     }
@@ -117,8 +114,8 @@ export const fetchHighestMarksPerSubjectWithSubjectID = async (
 };
 
 export const fetchTopBYNumber = async (ctx: Context) => {
+  let number = ctx.params.number;
   try {
-    let number = ctx.params.number;
     if (!number || isNaN(number)) {
       throw new AppError("BAD INPUT DATA", 400);
     }
@@ -148,8 +145,8 @@ export const fetchTopperPerClass = async (ctx: Context) => {
 };
 
 export const fetchTopperPerClassWithClassNumber = async (ctx: Context) => {
+  let classNumber = ctx.params.classNumber;
   try {
-    let classNumber = ctx.params.classNumber;
     if (classNumber && isNaN(classNumber)) {
       throw new AppError("BAD INPUT DATA", 400);
     }

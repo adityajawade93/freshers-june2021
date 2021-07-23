@@ -41,7 +41,7 @@ export const getClassScheduleDB = async (classNumber: number) => {
 
 export const fetchStudentsWithClassDB = async (class_number: number) => {
   try {
-    const data = await db.query("select * from student where cl_no=$1", [
+    const data = await db.query("select * from student where cl_no=$1 order by fname ", [
       class_number,
     ]);
     if (data.rows.length === 0) {

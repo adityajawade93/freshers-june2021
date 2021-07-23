@@ -31,8 +31,8 @@ export const getSchedule = async (ctx: Context) => {
 };
 
 export const getClassSchedule = async (ctx: Context) => {
+  let classNumber = ctx.params.classNumber;
   try {
-    let classNumber = ctx.params.classNumber;
     if (classNumber && isNaN(classNumber)) {
       throw new AppError("BAD DATA", 400);
     }
@@ -49,8 +49,8 @@ export const getClassSchedule = async (ctx: Context) => {
 };
 
 export const fetchStudentsWithClass = async (ctx: Context) => {
+  const class_number = ctx.params.classNumber;
   try {
-    const class_number = ctx.params.classNumber;
     if (!class_number || typeof class_number !== "number") {
       throw new AppError("BAD DATA", 400);
     }

@@ -3,7 +3,6 @@ import { Context } from "vm";
 import * as subjectService from "../services/subject";
 import * as teacherService from "../services/teacher";
 
-
 import AppError from "../utils/appError";
 
 import subjectSchema from "../db/validateSchema/subjectSchema";
@@ -16,9 +15,8 @@ interface ISubject {
 }
 
 export const createSubject = async (ctx: Context) => {
+  const s1: ISubject = ctx.request.body;
   try {
-    const s1: ISubject = ctx.request.body;
-
     await subjectSchema.validateAsync(s1);
 
     await teacherService.checkExists(s1.teacher_id);
@@ -56,8 +54,8 @@ export const getSubject = async (ctx: Context) => {
 };
 
 export const fetchStudentsWithSub = async (ctx: Context) => {
+  const subject_id = ctx.params.subjectId;
   try {
-    const subject_id = ctx.params.subjectId;
     if (!subject_id || typeof subject_id !== "string") {
       throw new AppError("INVALID Data", 400);
     }

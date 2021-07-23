@@ -1,11 +1,10 @@
 import { Pool } from "pg";
 import { config } from "../config/config";
 
-let pool: Pool;
+export let pool: Pool;
 
-export let connectDb = async function () {
+(async function () {
   try {
-    console.log(config.dbPassword);
     pool = new Pool({
       user: config.dbUser,
       password: config.dbPassword,
@@ -16,13 +15,14 @@ export let connectDb = async function () {
 
     const client = await pool.connect();
     if (client) {
-      // console.log(client);
+      console.log("database connection successful");
     }
   } catch (err) {
-    console.log(err.message, err.stack);
-    throw err;
+    console.log("DB connection failed!!", err.stack, err.message);
   }
-};
+})();
+
+
 
 export default {
   query: (text: string, params?: any[]) => pool.query(text, params),

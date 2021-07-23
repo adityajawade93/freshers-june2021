@@ -14,9 +14,8 @@ interface ITeacher {
 }
 
 export const createTeacher = async (ctx: Context) => {
+  const t1: ITeacher = ctx.request.body;
   try {
-    const t1: ITeacher = ctx.request.body;
-
     await teacherSchema.validateAsync(t1);
 
     t1.teacher_id = uuid();
@@ -33,15 +32,14 @@ export const createTeacher = async (ctx: Context) => {
 };
 
 export const modifyTeacher = async (ctx: Context) => {
+  const teacher_id = ctx.params.teacherId;
+  const { fname, lname, age } = ctx.request.body;
   try {
-    const teacher_id = ctx.params.teacherId;
     if (!teacher_id || typeof teacher_id !== "string") {
       throw new AppError("BAD DATA", 400);
     }
 
     await teacherService.checkExists(teacher_id);
-
-    const { fname, lname, age } = ctx.request.body;
 
     await teacherService.modifyTeacherDB(fname, lname, age, teacher_id);
 
@@ -55,10 +53,9 @@ export const modifyTeacher = async (ctx: Context) => {
 };
 
 export const getTeachers = async (ctx: Context) => {
+  let page = ctx.query.page;
+  let size = ctx.query.size;
   try {
-    let page = ctx.query.page;
-    let size = ctx.query.size;
-
     if (!page || !size || isNaN(page) || isNaN(size)) {
       throw new AppError("BAD DATA", 400);
     }
@@ -97,10 +94,9 @@ export const getTeachers = async (ctx: Context) => {
 };
 
 export const getTeachersTeaching = async (ctx: Context) => {
+  let page = ctx.query.page;
+  let size = ctx.query.size;
   try {
-    let page = ctx.query.page;
-    let size = ctx.query.size;
-
     if (!page || !size || isNaN(page) || isNaN(size)) {
       throw new AppError("BAD DATA", 400);
     }
@@ -146,8 +142,8 @@ export const getTeachersTeaching = async (ctx: Context) => {
 };
 
 export const fetchStudentsWithTeacher = async (ctx: Context) => {
+  const teacher_id = ctx.params.teacherId;
   try {
-    const teacher_id = ctx.params.teacherId;
     if (!teacher_id || typeof teacher_id !== "string") {
       throw new AppError("BAD DATA", 400);
     }

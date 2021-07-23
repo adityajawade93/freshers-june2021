@@ -20,8 +20,8 @@ interface IStudent {
 }
 
 export const createStudent = async (ctx: Context) => {
+  const s1: IStudent = ctx.request.body;
   try {
-    const s1: IStudent = ctx.request.body;
     await studentSchema.validateAsync(s1);
     s1.student_id = uuid();
     const msg = await studentService.addStudentDB(s1);
@@ -36,14 +36,12 @@ export const createStudent = async (ctx: Context) => {
 };
 
 export const modifyStudent = async (ctx: Context) => {
+  const student_id = ctx.params.studentID;
+  const { fname, lname, age, class_number } = ctx.request.body;
   try {
-    const student_id = ctx.params.studentID;
-
     await studentIDSchema.validateAsync({ student_id: student_id });
 
     await studentService.checkExists(student_id);
-
-    const { fname, lname, age, class_number } = ctx.request.body;
 
     await studentService.modifyStudentDB(
       fname,
@@ -64,10 +62,10 @@ export const modifyStudent = async (ctx: Context) => {
 };
 
 export const getStudents = async (ctx: Context) => {
-  try {
-    let page = ctx.query.page;
-    let size = ctx.query.size;
+  let page = ctx.query.page;
+  let size = ctx.query.size;
 
+  try {
     if (!page || !size || isNaN(page) || isNaN(size)) {
       throw new AppError("BAD INPUT!!", 400);
     }
@@ -106,8 +104,8 @@ export const getStudents = async (ctx: Context) => {
 };
 
 export const getStudentSchedule = async (ctx: Context) => {
+  const student_id = ctx.params.studentID;
   try {
-    const student_id = ctx.params.studentID;
     await studentIDSchema.validateAsync({ student_id: student_id });
     const result = await studentService.getStudentScheduleDB(student_id);
     ctx.status = 200;

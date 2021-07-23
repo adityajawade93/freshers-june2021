@@ -1,6 +1,0 @@
-node_modules
-/uptoDay3/node_modules
-/callBackNPromises/node_modules
-*.zip
-*.log
-.env

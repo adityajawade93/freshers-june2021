@@ -1,3 +1,4 @@
+import { QueryResult } from "pg";
 import { query } from "../db/database";
 
 interface ResultRequest {
@@ -7,24 +8,24 @@ interface ResultRequest {
     marks: number;
 }
 
-export async function createResult(requestBody: ResultRequest) {
+export async function createResult(requestBody: ResultRequest): Promise<void> {
     await query("insert into results values ($1,$2,$3,$4)", [requestBody.studentId, requestBody.classId, requestBody.subjectId, requestBody.marks]);
 }
 
-export async function updateResult(requestBody: ResultRequest) {
+export async function updateResult(requestBody: ResultRequest): Promise<void> {
     await query("update results set marks = $1 where student_id = $2 and subject_id = $3", [requestBody.marks, requestBody.studentId, requestBody.subjectId]);
 }
 
-export async function marksByStudentId(studentId: string) {
-    return await query("select subject_id,marks from results where student_id = $1", [studentId]);
+export async function marksByStudentId(studentId: string): Promise<QueryResult> {
+    return await query("select subject_id,marks from results where student_id = $1 order by subject_id", [studentId]);
 }
 
-export async function highestMarks(classId: string, subjectId: string) {
+export async function highestMarks(classId: string, subjectId: string): Promise<QueryResult> {
     const sql: string = "select results.student_id,student_name,marks from students,results where students.student_id = results.student_id and class_id = $1 and subject_id = $2 and marks = (select max(marks) from results where class_id = $1 and subject_id = $2)";
     return await query(sql, [classId, subjectId]);
 }
 
-export async function topNstudents(limit: number) {
+export async function topNstudents(limit: number): Promise<QueryResult> {
     const sql: string = `select student_id,student_name,class_id,marks from (
             select student_id,student_name,class_id, marks,  dense_rank() OVER (
                 PARTITION BY class_id

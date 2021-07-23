@@ -1,5 +1,6 @@
 import { Context } from 'vm';
 import * as services from '../services/schedule';
+import * as Joi from '../helper/scheduleJoi';
 
 interface ScheduleRequest{
     classId: string;
@@ -7,20 +8,15 @@ interface ScheduleRequest{
     teacherId: string;
 }
 
-export const createSchedule = async (ctx: Context) => {
+export const createSchedule = async (ctx: Context): Promise<void> => {
+    const requestBody: ScheduleRequest = ctx.request.body;
+    const result = Joi.scheduleSchema.validate(requestBody);
+    if (result.error) {
+        ctx.status = 422;
+        ctx.body = result.error.details[0].message;
+        return;
+    }
     try {
-        const requestBody: ScheduleRequest = ctx.request.body;
-
-        if ( !requestBody.classId || requestBody.subjectId || !requestBody.teacherId) {
-            ctx.status = 400;
-            ctx.body = "Please enter all the details";
-            return;
-        }
-        if (typeof (requestBody.classId) !== 'string' || typeof (requestBody.subjectId) !== 'string' || typeof (requestBody.teacherId) !== 'string') {
-            ctx.status = 400;
-            ctx.body = "Please enter all the details in correct format";
-            return;
-        }
         await services.createSchedule(requestBody);
         ctx.status = 200;
         ctx.body = "schedule created.";

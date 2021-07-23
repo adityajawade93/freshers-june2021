@@ -1,20 +1,19 @@
-const { Pool } = require('pg');
+const { Pool } = require("pg");
+const config = require("../config/config.ts");
+
 const pool = new Pool({
-  port: 5432,
-  user: 'postgres',
-  password: '1234',
-  host: 'localhost',
-  database: 'schooldb',
-  max: 20,
-  connectionTimeoutMillsis: 0,
-  idleTimeoutMillsis: 0
+	port: config.dbPort,
+	user: config.dbUser,
+	password: config.dbPassword,
+	host: config.dbHost,
+	database: process.env.db_name,
 });
 
 export async function query(querystring: string) {
-  try {
-    let result = await pool.query(querystring);
-    return result;
-  } catch (e) {
-    throw new Error(e);
-  }
+	try {
+		let result = await pool.query(querystring);
+		return result;
+	} catch (e) {
+		throw new Error(e);
+	}
 }

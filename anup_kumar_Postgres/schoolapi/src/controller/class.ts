@@ -60,7 +60,7 @@ export async function addClass(ctx: Context) {
 			data: classAdded,
 		};
 	} catch (e) {
-		console.log(e);
+		ctx.response.status = 404;
 		ctx.body = {
 			msg: `something  went wrong while adding class  + ${e}`,
 		};

@@ -40,7 +40,13 @@ exports.getClass_scheduleData = async (ctx: Context) => {
 exports.add_class_schedule_in_table = async (ctx: Context) => {
   try {
     let req: IClassScheduleInfo = ctx.request.body;
-    await scheduleSchema.validateAsync(req);
+    const reqData = await scheduleSchema.validateAsync(req);
+
+    if (reqData.error) {
+      ctx.response.status = 422;
+      ctx.body = reqData.error.details[0].message;
+      return;
+    }
 
     await scheduleController.add_class_schedule(
       req.cls_Id,
@@ -55,9 +61,10 @@ exports.add_class_schedule_in_table = async (ctx: Context) => {
     ctx.response.type = "text/html";
     ctx.body = "data is inserted in Class_schedule table";
   } catch (err) {
-    ctx.response.status = 500;
-    ctx.response.type = "text/html";
-    ctx.body = "internal server error";
-    return;
+    ctx.response.status = 400;
+    ctx.response.type = "application/json";
+    ctx.body = {
+      msg: `something went wrong in adding classSchedule ${err}`,
+    };
   }
 };

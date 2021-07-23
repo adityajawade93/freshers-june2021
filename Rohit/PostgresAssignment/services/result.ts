@@ -50,6 +50,6 @@ exports.update_result = async (
   await resultClient.query("set search_path to myschool");
   const data = [studentid, subject_Id, marks];
   return await resultClient.query(
-    `update result set marks=${marks} where studentid=${studentid} and subjectid=${subject_Id}`
+    `update result set marks=${marks} where studentid=${studentid} and subject_Id=${subject_Id}`
   );
 };

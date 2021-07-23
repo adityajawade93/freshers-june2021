@@ -118,6 +118,7 @@ exports.studentData_teacherId = async (ctx: Context) => {
 exports.studentData_subjectId = async (ctx: Context) => {
   try {
     var subjectId: number = parseInt(ctx.params.subjectId);
+
     if (subjectId === undefined || typeof subjectId !== "number") {
       ctx.response.status = 400;
       ctx.response.type = "text/html";
@@ -140,7 +141,12 @@ exports.studentData_subjectId = async (ctx: Context) => {
 exports.add_student_in_table = async (ctx: Context) => {
   try {
     let req: IStudentDetails = ctx.request.body;
-    await studentSchema.validateAsync(req);
+    const reqData = await studentSchema.validateAsync(req);
+    if (reqData.error) {
+      ctx.response.status = 422;
+      ctx.body = reqData.error.details[0].message;
+      return;
+    }
 
     await studentController.add_student(
       req.studentId,
@@ -153,9 +159,10 @@ exports.add_student_in_table = async (ctx: Context) => {
     ctx.response.type = "text/html";
     ctx.body = "data is inserted in students table";
   } catch (err) {
-    ctx.response.status = 500;
-    ctx.response.type = "text/html";
-    ctx.body = "internal server error";
-    return;
+    ctx.response.status = 400;
+    ctx.response.type = "application/json";
+    ctx.body = {
+      msg: `something went wrong in adding student ${err}`,
+    };
   }
 };

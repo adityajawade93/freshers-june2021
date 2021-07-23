@@ -1,19 +1,18 @@
 import { Context } from "vm";
-const Joi = require('joi');
+const Joi = require("joi");
 
 const resultSchema = Joi.object().keys({
-  studentId: Joi.number().required(),
+  studentid: Joi.number().required(),
   class_Id: Joi.number().required(),
   subject_Id: Joi.number().required(),
-  marks: Joi.number().required()
+  marks: Joi.number().required(),
 });
 
 const updateSchema = Joi.object().keys({
-  studentId: Joi.number().required(),
+  studentid: Joi.number().required(),
   subject_Id: Joi.number().required(),
-  marks: Joi.number().required()
-})
-
+  marks: Joi.number().required(),
+});
 
 const resultController = require("../services/result");
 
@@ -33,17 +32,24 @@ exports.getResultData = async (ctx: Context) => {
     ctx.response.type = "application/json";
     ctx.body = rows.rows;
   } catch (err) {
-    ctx.response.status = 500;
-    ctx.response.type = "text/html";
-    ctx.body = "internal server error";
-    return;
+    ctx.response.status = 400;
+    ctx.response.type = "application/json";
+    ctx.body = {
+      msg: `something went wrong in adding result ${err}`,
+    };
   }
 };
 
 exports.add_reasultData_in_table = async (ctx: Context) => {
   try {
     let req: IResultInfo = ctx.request.body;
-    await resultSchema.validateAsync(req);
+    const reqData = await resultSchema.validateAsync(req);
+    if (reqData.error) {
+      ctx.response.status = 422;
+      ctx.body = reqData.error.details[0].message;
+      return;
+    }
+
     await resultController.add_result(
       req.studentid,
       req.class_Id,
@@ -54,11 +60,12 @@ exports.add_reasultData_in_table = async (ctx: Context) => {
     ctx.response.status = 201;
     ctx.response.type = "text/html";
     ctx.body = "data is inserted in result table";
-  } catch {
-    ctx.response.status = 500;
-    ctx.response.type = "text/html";
-    ctx.body = "internal server error";
-    return;
+  } catch (err) {
+    ctx.response.status = 400;
+    ctx.response.type = "application/json";
+    ctx.body = {
+      msg: `something went wrong in adding student ${err}`,
+    };
   }
 };
 
@@ -66,8 +73,14 @@ exports.updateResult_by_studentId_and_subjectId = async (ctx: Context) => {
   try {
     let req: IResultInfo = ctx.request.body;
     let [rows]: Array<{ rows: any }> = [];
-    
-    await updateSchema.validateAsync(req);
+
+    const reqData = await updateSchema.validateAsync(req);
+    if (reqData.error) {
+      ctx.response.status = 422;
+      ctx.body = reqData.error.details[0].message;
+      return;
+    }
+
     let flag = 0;
     rows = await resultController.check_subject(req.studentid);
     let length = await resultController.subject_length(req.studentid);
@@ -77,7 +90,6 @@ exports.updateResult_by_studentId_and_subjectId = async (ctx: Context) => {
         break;
       }
     }
-
     if (flag === 0) {
       ctx.response.status = 400;
       ctx.response.type = "text/html";
@@ -94,10 +106,11 @@ exports.updateResult_by_studentId_and_subjectId = async (ctx: Context) => {
     ctx.response.status = 200;
     ctx.response.type = "text/html";
     ctx.body = "marks are updated in result table";
-  } catch {
-    ctx.response.status = 500;
-    ctx.response.type = "text/html";
-    ctx.body = "internal server error";
-    return;
+  } catch (err) {
+    ctx.response.status = 400;
+    ctx.response.type = "application/json";
+    ctx.body = {
+      msg: `something went wrong in adding student ${err}`,
+    };
   }
 };

@@ -22,7 +22,7 @@ exports.get_student_by_classid = async (classId: number) => {
   try {
     await studentClient.query("set search_path to myschool");
     return await studentClient.query(
-      `select S.studentId,S.name,S.dob,S.gender from students as S,classes where classId=${classId} and studentId=stId`
+      `select S.studentId,S.name,S.dob,S.gender from myschool.students as S,classes where classId=${classId} and studentId=stId`
     );
   } catch (err) {
     throw err;

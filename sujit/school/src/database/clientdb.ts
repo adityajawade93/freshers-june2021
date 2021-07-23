@@ -12,6 +12,10 @@ export const pool = new Pool({
     idleTimeoutMillsis: 0
 })
 
+pool.on('error', function (error: any, client: any) {
+
+    console.log("postgressql error event")
+})
 
 // FIXME: pass the data from config file
 export async function setPath() {

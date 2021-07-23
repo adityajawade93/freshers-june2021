@@ -22,7 +22,7 @@ export async function getTeachers(ctx: Context): Promise<void> {
 	}
 }
 
-export async function studentOfteacher(ctx: Context) {
+export async function studentOfteacher(ctx: Context): Promise<void> {
 	const teacherId: string = ctx.request.params.teacherId;
 	try {
 		const requiredStudent = await student_of_teacher(teacherId);

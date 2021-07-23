@@ -43,7 +43,7 @@ export async function studentsOfClass(ctx: Context): Promise<void> {
 	}
 }
 
-export async function addClass(ctx: Context) {
+export async function addClass(ctx: Context): Promise<void> {
 	const obj: classI = ctx.request.body;
 	try {
 		const response = await classSchema.validate(obj);

@@ -1,6 +1,6 @@
-export const outputdata = async (totalcount:number, data:any) => {
+export const outputData = (totalcount:number, data:any) => {
     return {
         totalcount:totalcount,
         data:data
     }
-} 
+}

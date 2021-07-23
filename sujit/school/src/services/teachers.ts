@@ -4,7 +4,7 @@ import { query } from "../database/clientdb"
 
 export const getTeachers = async () => {
     try {
-        let res = await query('select * from teachers')
+        let res = await query('select * from teachers order by tfname')
         return res
     } catch (e) {
         throw new Error(e)

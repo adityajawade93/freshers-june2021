@@ -6,7 +6,7 @@ import { query } from "../database/clientdb"
 export const getSechduleByClass = async (classid: any) => {
 
     try {
-        let res = await query(`select * from sechdule where classid ='${classid}'`)
+        let res = await query(`select * from sechdule where classid ='${classid}' order by teacher_id`)
         return res
     } catch (e) {
         throw new Error(e)

@@ -29,8 +29,8 @@ gethighestmarks,
 createmarks, 
 topteninclass */
 
-const app = new Koa()
-const router = new Router()
+
+export const router = new Router()
 
 //students
 //get students 
@@ -87,12 +87,3 @@ router.put('/school/updateMarks/marks', marks.updateMarks)
 router.get('/school/standards',standards.getstandard)
 //add standards
 router.post('/school/addstandards/standards',standards.addStandard)
-
-app.use(bodyParser())
-app.use(router.routes())
-app.use(router.allowedMethods())
-app.use(async (ctx: any) => {
-    ctx.response.status = 404
-    ctx.body = 'error not found'
-})
-app.listen(3001);

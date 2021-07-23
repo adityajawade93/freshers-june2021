@@ -7,7 +7,8 @@ export const getStudentMarksById = async (studentid: string) => {
     try {
         let res = await query(`select R.*,S.fname
                                 from results as R ,students as S 
-                                where R.rstudent_id ='${studentid}'and S.studentid ='${studentid}'`)
+                                where R.rstudent_id ='${studentid}'and S.studentid ='${studentid}'
+                                order by s.fname`)
         return res
     } catch (e) {
         throw new Error(e)

@@ -1,4 +1,4 @@
-import { setpath } from "../database/clientdb"
+import { setPath } from "../database/clientdb"
 import * as studentservice from "../services/students"
 import * as hstudents from "../helper/hstudents"
 import * as hpagination from "../helper/hpagination"
@@ -24,14 +24,13 @@ export const getStudents = async (ctx: any) => {
     let reqparams: Ipagination = ctx.request.query
     try {
         await hpagination.pagination_schema.validateAsync(reqparams)
-        await setpath()
         let res = await studentservice.getStudents(reqparams)
         ctx.response.status = 200
-        ctx.body = await dataoutput.outputdata(res.rows.length, res.rows)
+        ctx.body = dataoutput.outputData(res.rows.length, res.rows)
 
     } catch (e) {
-        ctx.response.status = 406
-        ctx.body = await messageoutput.costomerror(406, e.message)
+        ctx.response.status = 500
+        ctx.body = messageoutput.costomError(500, e.message)
 
     }
 
@@ -41,24 +40,22 @@ export const getStudentByStudentId = async (ctx: any) => {
     let studentid: any = ctx.params.studentid
     if (studentid === "null" || studentid === "undefined") {
         ctx.response.status = 400
-        ctx.body = await messageoutput.costomerror(400, 'please give a proper id')
+        ctx.body = messageoutput.costomError(400, 'please give a proper id')
 
     } else {
         try {
-
-            await setpath()
             let res = await studentservice.getStudentsByStudentId(studentid)
             if (res.rows.length == 0) {
                 ctx.response.status = 404
-                ctx.body = await messageoutput.costommessage(404, 'student is not found')
+                ctx.body = messageoutput.costomMessage(404, 'student is not found')
                 return
             }
             ctx.response.status = 200
-            ctx.body = await dataoutput.outputdata(res.rows.length, res.rows)
+            ctx.body = dataoutput.outputData(res.rows.length, res.rows)
 
         } catch (e) {
-            ctx.response.status = 406
-            ctx.body = await messageoutput.costomerror(406, e.message)
+            ctx.response.status = 500
+            ctx.body = messageoutput.costomError(500, e.message)
         }
 
     }
@@ -71,22 +68,21 @@ export const getStudentsByTeacherId = async (ctx: any) => {
 
     if (teacherid === "null" || teacherid === "undefined") {
         ctx.response.status = 400
-        ctx.body = await messageoutput.costomerror(400, 'please give a proper id')
+        ctx.body = messageoutput.costomError(400, 'please give a proper id')
     } else {
         try {
-            await setpath()
             let res = await studentservice.getStudentsByTeacherId(teacherid)
             if (res.rows.length == 0) {
                 ctx.response.status = 404
-                ctx.body = await messageoutput.costommessage(404, 'student is not found')
+                ctx.body = messageoutput.costomMessage(404, 'student is not found')
                 return
             }
             ctx.response.status = 200
-            ctx.body = await dataoutput.outputdata(res.rows.length, res.rows)
+            ctx.body = dataoutput.outputData(res.rows.length, res.rows)
 
         } catch (e) {
-            ctx.status = 407
-            ctx.body = await messageoutput.costomerror(406, e.message)
+            ctx.status = 500
+            ctx.body = messageoutput.costomError(500, e.message)
         }
 
     }
@@ -101,21 +97,20 @@ export const getStudentsBySubName = async (ctx: any) => {
 
     if (subjectname === "null" || subjectname === "undefined") {
         ctx.response.status = 400
-        ctx.body = await messageoutput.costomerror(400, 'please give a proper id')
+        ctx.body = messageoutput.costomError(400, 'please give a proper id')
     } else {
         try {
-            await setpath()
             let res = await studentservice.getStudentsBySubName(subjectname)
             if (res.rows.length == 0) {
                 ctx.response.status = 404
-                ctx.body = await messageoutput.costommessage(404, 'student not found in that subject')
+                ctx.body = messageoutput.costomMessage(404, 'student not found in that subject')
                 return
             }
             ctx.response.status = 200
-            ctx.body = await dataoutput.outputdata(res.rows.length, res.rows)
+            ctx.body = dataoutput.outputData(res.rows.length, res.rows)
 
         } catch (e) {
-            ctx.body = await messageoutput.costomerror(406, e.message)
+            ctx.body = messageoutput.costomError(500, e.message)
         }
     }
 }
@@ -124,12 +119,11 @@ export const addStudents = async (ctx: any) => {
     let req: Istudent = ctx.request.body
     try {
         await hstudents.students_sechma.validateAsync(req)
-        await setpath()
         let res = await studentservice.addStudents(req)
         ctx.response.status = 200
-        ctx.body = await messageoutput.costommessage(200,"student successfully added")
+        ctx.body = messageoutput.costomMessage(200, "student successfully added")
     } catch (e) {
-        ctx.body = await messageoutput.costomerror(406,e.message)
+        ctx.body = messageoutput.costomError(500, e.message)
     }
 
 

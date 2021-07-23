@@ -1,4 +1,4 @@
-export const costomerror = async (status:number|undefined,errormsg:string) =>{
+export const costomError = (status:number|undefined,errormsg:string) =>{
     if(status==undefined){
         return {error:errormsg}
     }else{
@@ -7,7 +7,7 @@ export const costomerror = async (status:number|undefined,errormsg:string) =>{
     }
 }
 
-export const costommessage = async (status:number|undefined,msg:string) =>{
+export const costomMessage = (status:number|undefined,msg:string) =>{
     if(status==undefined){
         return {message:msg}
     }else{

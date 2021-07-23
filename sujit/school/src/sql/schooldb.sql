@@ -6,6 +6,8 @@ create table students(
 	lname text null,
 	bdate date not null
 );
+
+--> FIXME : add varchar
 create table teachers(
 	teacherid uuid default uuid_generate_v4() primary key,
 	tfname text not null,
@@ -233,4 +235,12 @@ where rstudent_class_id ='b11416f8-1c5c-4366-ac89-4d8ce821eae3'
 update sechdule
 set classid = 'f7999045-09f8-455d-a655-a529a29b36dd'
 where classid ='b11416f8-1c5c-4366-ac89-4d8ce821eae3'
+
+alter table students
+alter column fname type varchar(20),
+alter column lname type varchar(20)
+
+alter table teachers
+alter column tfname type varchar(20),
+alter column tlname type varchar(20)
 

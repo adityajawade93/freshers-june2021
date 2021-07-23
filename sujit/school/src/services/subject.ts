@@ -4,7 +4,7 @@ import { query } from "../database/clientdb"
 
 export const getSubjects =  async () => {
     try {
-        let res = await query('select * from subjects')
+        let res = await query('select * from subjects order by subjectid desc')
         return res
     } catch (e) {
         throw new Error(e)

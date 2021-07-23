@@ -4,7 +4,7 @@ import { query } from "../database/clientdb"
 
 export const getStandard = async () =>{
     try {
-        let res = await query("select * from standards")
+        let res = await query("select * from standards order by class_level asc")
         return res
     } catch (e) {
         throw new Error(e)

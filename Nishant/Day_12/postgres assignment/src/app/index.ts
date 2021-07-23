@@ -1,5 +1,3 @@
-/* eslint-disable import/no-unresolved */
-/* eslint-disable import/extensions */
 import { Context } from 'vm';
 
 import Koa from 'koa';

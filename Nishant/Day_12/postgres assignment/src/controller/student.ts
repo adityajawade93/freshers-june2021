@@ -1,7 +1,4 @@
-/* eslint-disable max-len */
 /* eslint-disable camelcase */
-/* eslint-disable import/no-unresolved */
-/* eslint-disable import/extensions */
 import { Context } from 'vm';
 import * as studentService from '../services/student';
 import addStudentSchema from '../helper/studentvalidation';
@@ -58,7 +55,8 @@ export async function addStudent(ctx: Context) {
     const req:IStudent = ctx.request.body;
 
     await addStudentSchema.validateAsync(req);
-    await studentService.addStudentService(req.student_id, req.fname, req.mname, req.lname, req.dob, req.gender, req.address);
+    await studentService.addStudentService(req.student_id, req.fname, req.mname, req.lname, req.dob,
+      req.gender, req.address);
 
     ctx.response.status = 200;
     ctx.response.type = 'text/html';

@@ -1,10 +1,6 @@
-/* eslint-disable import/prefer-default-export */
-/* eslint-disable import/no-unresolved */
-/* eslint-disable import/extensions */
+import sqlclient from '../database/db';
 
-import { client as sqlclient } from '../database/db';
-
-export async function addClassScheduleService(classId:number, classNo:number, subjId:number,
+export default async function addClassScheduleService(classId:number, classNo:number, subjId:number,
   subjName:string, tId:number, tFname:string) {
   try {
     await sqlclient.query('SET search_path TO College');

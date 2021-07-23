@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 const { Client } = require('pg');
 
 const client = new Client({
@@ -13,4 +12,4 @@ client.connect()
     console.log('database connected successfully');
   });
 
-export { client };
+export default client;

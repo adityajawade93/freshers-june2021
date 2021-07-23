@@ -1,7 +1,4 @@
-/* eslint-disable max-len */
 /* eslint-disable camelcase */
-/* eslint-disable import/no-unresolved */
-/* eslint-disable import/extensions */
 import { Context } from 'vm';
 
 import * as serviceteacher from '../services/teacher';
@@ -65,7 +62,8 @@ export async function addTeacher(ctx: Context) {
   try {
     const req:ITeacher = ctx.request.body;
     await validateteacher.addTeacherSchema.validateAsync(req);
-    await serviceteacher.addTeacherService(req.teacher_id, req.fname, req.mname, req.lname, req.dob, req.gender, req.address);
+    await serviceteacher.addTeacherService(req.teacher_id, req.fname, req.mname, req.lname,
+      req.dob, req.gender, req.address);
 
     ctx.response.status = 200;
     ctx.response.type = 'text/html';

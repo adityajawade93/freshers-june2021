@@ -1,14 +1,12 @@
-/* eslint-disable import/no-unresolved */
-/* eslint-disable import/extensions */
 import combineRouters from 'koa-combine-routers';
 
-import { router as studentRouter } from './student';
-import { router as teacherRouter } from '../routes/teacher';
-import { router as subjectRouter } from '../routes/subject';
-import { router as classRouter } from '../routes/class';
-import { router as scheduleRouter } from '../routes/schedule';
-import { router as resultRouter } from '../routes/result';
-import { router as generalRouter } from '../routes/general';
+import studentRouter from './student';
+import teacherRouter from './teacher';
+import subjectRouter from './subject';
+import classRouter from './class';
+import scheduleRouter from './schedule';
+import resultRouter from './result';
+import generalRouter from './general';
 
 const router = combineRouters(
   studentRouter,

@@ -1,7 +1,4 @@
-/* eslint-disable import/no-unresolved */
-/* eslint-disable import/extensions */
-
-import { client as sqlclient } from '../database/db';
+import sqlclient from '../database/db';
 
 export async function addResultService(resultId:number, studentId:number, clasId:number,
   subjectId:number, marks:number) {

@@ -1,7 +1,5 @@
-/* eslint-disable max-len */
 /* eslint-disable camelcase */
-/* eslint-disable import/no-unresolved */
-/* eslint-disable import/extensions */
+
 import { Context } from 'vm';
 
 import * as serviceresult from '../services/result';
@@ -25,7 +23,8 @@ export async function addResult(ctx: Context) {
   try {
     const req:IResult = ctx.request.body;
     await validation.addResultSchema.validateAsync(req);
-    await serviceresult.addResultService(req.result_id, req.studentid, req.clas_id, req.subjectid, req.marks);
+    await serviceresult.addResultService(req.result_id, req.studentid, req.clas_id,
+      req.subjectid, req.marks);
 
     ctx.response.status = 200;
     ctx.response.type = 'text/html';

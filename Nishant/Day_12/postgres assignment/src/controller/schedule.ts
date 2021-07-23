@@ -1,11 +1,8 @@
-/* eslint-disable import/prefer-default-export */
-/* eslint-disable max-len */
 /* eslint-disable camelcase */
-/* eslint-disable import/no-unresolved */
-/* eslint-disable import/extensions */
+
 import { Context } from 'vm';
 
-import * as serviceschedule from '../services/schedule';
+import addClassScheduleService from '../services/schedule';
 import addClassScheduleSchema from '../helper/schedulevalidation';
 
 interface ISchedule{
@@ -17,11 +14,12 @@ interface ISchedule{
     t_fname:string;
 }
 
-export async function addClassSchedule(ctx: Context) {
+export default async function addClassSchedule(ctx: Context) {
   try {
     const req:ISchedule = ctx.request.body;
     await addClassScheduleSchema.validateAsync(req);
-    await serviceschedule.addClassScheduleService(req.classid, req.classno, req.subj_id, req.subj_name, req.t_id, req.t_fname);
+    await addClassScheduleService(req.classid, req.classno, req.subj_id,
+      req.subj_name, req.t_id, req.t_fname);
 
     ctx.response.status = 200;
     ctx.response.type = 'text/html';

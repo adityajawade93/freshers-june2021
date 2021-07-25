@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 import { Context } from 'vm';
 
+import { QueryResult } from 'pg';
 import * as servicesubject from '../services/subject';
 import * as validatesubject from '../helper/subjectvalidation';
 
@@ -9,21 +10,9 @@ interface ISubject{
     subject_name:string;
 }
 
-interface IStudentDetails{
-    student_id:number;
-    fname:string;
-}
-
-interface IMarks{
-    subject_id:number;
-    subject_name:string;
-    marks:number;
-}
-
 export async function getSubject(ctx: Context) {
   try {
-    let [rows]: Array<{rows: ISubject}> = [];
-    rows = await servicesubject.getSubjectService();
+    const rows : QueryResult = await servicesubject.getSubjectService();
 
     ctx.response.status = 200;
     ctx.response.type = 'application/json';
@@ -40,8 +29,7 @@ export async function getStudentBySubjectId(ctx: Context) {
     let { subjectId }:{subjectId:number} = ctx.params;
     subjectId = Number(subjectId);
     await validatesubject.getStudentBySubjectIdSchema.validateAsync(subjectId);
-    let [rows]: Array<{rows: IStudentDetails}> = [];
-    rows = await servicesubject.getStudentBySubjectIdService(subjectId);
+    const rows:QueryResult = await servicesubject.getStudentBySubjectIdService(subjectId);
     ctx.response.status = 200;
     ctx.response.type = 'application/json';
     ctx.body = rows.rows;
@@ -63,8 +51,7 @@ export async function getSubjectMarksByStudentId(ctx: Context) {
     let { studentId }:{studentId:number} = ctx.params;
     studentId = Number(studentId);
     await validatesubject.getSubjectMarksBySubjectIdSchema.validateAsync(studentId);
-    let [rows]: Array<{rows: IMarks}> = [];
-    rows = await servicesubject.getSubjectMarksByStudentIdService(studentId);
+    const rows:QueryResult = await servicesubject.getSubjectMarksByStudentIdService(studentId);
     ctx.response.status = 200;
     ctx.response.type = 'application/json';
     ctx.body = rows.rows;

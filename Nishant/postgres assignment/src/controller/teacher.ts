@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 import { Context } from 'vm';
 
+import { QueryResult } from 'pg';
 import * as serviceteacher from '../services/teacher';
 import * as validateteacher from '../helper/teachervalidation';
 
@@ -14,15 +15,9 @@ interface ITeacher{
     address:string;
 }
 
-interface IStudentDetails{
-  student_id:number;
-  fname:string;
-}
-
 export async function getTeacher(ctx: Context) {
   try {
-    let [rows]: Array<{rows: ITeacher}> = [];
-    rows = await serviceteacher.getTeacherService();
+    const rows:QueryResult = await serviceteacher.getTeacherService();
 
     ctx.response.status = 200;
     ctx.response.type = 'application/json';
@@ -39,8 +34,7 @@ export async function getStudentByTeacherId(ctx: Context) {
     let { teacherId }:{teacherId:number} = ctx.params;
     teacherId = Number(teacherId);
     await validateteacher.getStudentByTeacherIdSchema.validateAsync(teacherId);
-    let [rows]: Array<{rows: IStudentDetails}> = [];
-    rows = await serviceteacher.getStudentByTeacherIdService(teacherId);
+    const rows:QueryResult = await serviceteacher.getStudentByTeacherIdService(teacherId);
 
     ctx.response.status = 200;
     ctx.response.type = 'application/json';

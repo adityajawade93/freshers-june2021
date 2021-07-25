@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 import { Context } from 'vm';
+import { QueryResult } from 'pg';
 import * as studentService from '../services/student';
 import addStudentSchema from '../helper/studentvalidation';
 
@@ -16,8 +17,7 @@ interface IStudent{
 
 export async function getStudent(ctx: Context) {
   try {
-    let [rows]: Array<{rows: IStudent}> = [];
-    rows = await studentService.getStudentService();
+    const rows:QueryResult = await studentService.getStudentService();
     const length = await studentService.getStudentLengthService();
     const page = parseInt(ctx.request.query.page);
     const size = parseInt(ctx.request.query.size);

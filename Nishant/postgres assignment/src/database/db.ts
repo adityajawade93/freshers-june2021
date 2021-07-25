@@ -1,11 +1,12 @@
-const { Client } = require('pg');
+import { Client } from 'pg';
+import config from '../config/config';
 
 const client = new Client({
-  user: 'postgres',
-  password: 'welcome@123',
-  host: 'localhost',
+  user: config.dbUser,
   database: 'postgres',
-  port: '5432',
+  host: config.dbHost,
+  port: config.dbPort,
+  password: config.dbPassword,
 });
 client.connect()
   .then(() => {

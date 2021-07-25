@@ -18,4 +18,4 @@ app.use(async (ctx:Context) => {
   ctx.body = 'Not Found';
 });
 
-module.exports = app;
+export default app;

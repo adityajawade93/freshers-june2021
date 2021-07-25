@@ -2,14 +2,9 @@
 
 import { Context } from 'vm';
 
+import { QueryResult } from 'pg';
 import * as servicegeneral from '../services/general';
 import * as validategeneral from '../helper/generalvalidation';
-
-interface ITopper{
-    student_id:number;
-    fname:string;
-    marks:number;
-}
 
 export async function gettopperByclassIdAndSubjectId(ctx: Context) {
   try {
@@ -18,8 +13,9 @@ export async function gettopperByclassIdAndSubjectId(ctx: Context) {
     subjectId = Number(subjectId);
     const data = [classId, subjectId];
     await validategeneral.gettopperByclassIdAndSubjectIdSchema.validateAsync(data);
-    let [rows]: Array<{rows: ITopper}> = [];
-    rows = await servicegeneral.gettopperByclassIdAndSubjectIdService(classId, subjectId);
+
+    const rows:QueryResult = await servicegeneral.gettopperByclassIdAndSubjectIdService(classId,
+      subjectId);
 
     ctx.response.status = 200;
     ctx.response.type = 'application/json';
@@ -48,8 +44,7 @@ export async function gettopstudent(ctx: Context) {
       ctx.body = 'Bad Request';
       return;
     }
-    let [rows]: Array<{rows: ITopper}> = [];
-    rows = await servicegeneral.gettopstudentService(classId, count);
+    const rows:QueryResult = await servicegeneral.gettopstudentService(classId, count);
 
     ctx.response.status = 200;
     ctx.response.type = 'application/json';

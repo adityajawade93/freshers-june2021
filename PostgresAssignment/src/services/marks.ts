@@ -22,16 +22,12 @@ export async function updateMarks(
 	subjectId: string,
 	marks: number
 ): Promise<Array<string>> {
-	try {
-		const response = await query(`UPDATE school.marks
+	const response = await query(`UPDATE school.marks
     SET marks = '${marks}'
     WHERE studentId = '${studentId}'
     and subjectId= '${subjectId}'
     RETURNING *`);
-		return response.rows;
-	} catch (e) {
-		throw Error(e);
-	}
+	return response.rows;
 }
 
 export async function addMarks(
@@ -39,39 +35,27 @@ export async function addMarks(
 	subjectid: string,
 	marks: number
 ): Promise<void> {
-	try {
-		query(
-			`INSERT INTO school.marks(studentid, subjectid, marks) VALUES 
-            ('${studentid}','${subjectid}','${marks}')`
-		);
-	} catch (e) {
-		throw Error(e);
-	}
+	query(
+		`INSERT INTO school.marks(studentid, subjectid, marks) VALUES 
+		('${studentid}','${subjectid}','${marks}')`
+	);
 }
 
 export async function highestMarksInSubject(
 	subjectId: string
 ): Promise<Array<string>> {
-	try {
-		const response = await query(`select * from school.marks 
+	const response = await query(`select * from school.marks 
         where subjectid = '${subjectId}'
         order by marks desc
         limit 1`);
-		return response.rows;
-	} catch (e) {
-		throw Error(e);
-	}
+	return response.rows;
 }
 
 export async function topper(topperCount: number): Promise<Array<string>> {
-	try {
-		const response = await query(
-			`select st.studentid, st.name, sum(marks) as total from school.marks m
-			inner join school.student st on st.studentid = m.studentid
-			group by st.studentid order by total desc limit 1`
-		);
-		return response.rows;
-	} catch (e) {
-		throw Error(e);
-	}
+	const response = await query(
+		`select st.studentid, st.name, sum(marks) as total from school.marks m
+		inner join school.student st on st.studentid = m.studentid
+		group by st.studentid order by total desc limit 1`
+	);
+	return response.rows;
 }

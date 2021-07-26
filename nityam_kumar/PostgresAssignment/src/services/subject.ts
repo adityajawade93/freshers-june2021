@@ -9,7 +9,7 @@ interface ISubject {
   class_number: number;
 }
 
-export const getSubjectDB = async () => {
+export const getSubject = async () => {
   try {
     const data = await db.query("select * from subject order by sub_name");
     return data.rows;
@@ -18,10 +18,10 @@ export const getSubjectDB = async () => {
   }
 };
 
-export const fetchStudentsWithSubDB = async (subject_id: string) => {
+export const fetchStudentsWithSub = async (subject_id: string) => {
   try {
     const data = await db.query(
-      "select s1.fname,s1.lname,s1.cl_no,s1.age,sub.sub_id,sub.sub_name from subject as sub,student as s1 where sub.sub_id=$1 and sub.cl_no=s1.cl_no",
+      "select s1.fname,s1.lname,s1.cl_no,s1.age,sub.sub_id,sub.sub_name from subject as sub,student as s1 where sub.sub_id=$1 and sub.cl_no=s1.cl_no order by s1.fname",
       [subject_id.trim()]
     );
     if (data.rows.length === 0) {
@@ -33,7 +33,7 @@ export const fetchStudentsWithSubDB = async (subject_id: string) => {
   }
 };
 
-export const checkAlreadyExistDB = async (s1: ISubject) => {
+export const checkAlreadyExist = async (s1: ISubject) => {
   try {
     const text5 = "select * from subject where cl_no=$1 and sub_name=$2";
     const values5 = [s1.class_number, s1.subject_name.trim()];
@@ -46,7 +46,7 @@ export const checkAlreadyExistDB = async (s1: ISubject) => {
   }
 };
 
-export const addSubjectDB = async (s1: ISubject) => {
+export const addSubject = async (s1: ISubject) => {
   try {
     const text = "INSERT INTO subject VALUES($1,$2,$3,$4)";
     const values = [
@@ -61,7 +61,7 @@ export const addSubjectDB = async (s1: ISubject) => {
   }
 };
 
-export const addTeachesDB = async (s1: ISubject) => {
+export const addTeaches = async (s1: ISubject) => {
   try {
     const text2 = "INSERT INTO teaches VALUES($1,$2)";
     const values2 = [s1.teacher_id.trim(), s1.subject_id];
@@ -71,7 +71,7 @@ export const addTeachesDB = async (s1: ISubject) => {
   }
 };
 
-export const addClassDB = async (s1: ISubject) => {
+export const addClass = async (s1: ISubject) => {
   try {
     const text3 = "INSERT INTO classes VALUES($1,$2,$3)";
     const values3 = [s1.class_number, s1.subject_id, s1.teacher_id.trim()];

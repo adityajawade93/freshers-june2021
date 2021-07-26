@@ -1,8 +1,9 @@
 import uuid from "uniqid";
 import { Context } from "vm";
 import * as teacherService from "../services/teacher";
-
+import { teacherIDSchema } from "../db/validateSchema/helperSchema";
 import teacherSchema from "../db/validateSchema/teacherSchema";
+import paginationSchema from "../db/validateSchema/paginationSchema";
 import AppError from "../utils/appError";
 
 interface ITeacher {
@@ -15,18 +16,21 @@ interface ITeacher {
 
 export const createTeacher = async (ctx: Context) => {
   const t1: ITeacher = ctx.request.body;
+
   try {
     await teacherSchema.validateAsync(t1);
+  } catch (err) {
+    throw new AppError(err.message, 400);
+  }
 
+  try {
     t1.teacher_id = uuid();
-
-    await teacherService.addTeacherDB(t1);
+    await teacherService.addTeacher(t1);
     ctx.status = 200;
     ctx.body = {
       status: `successfully created teacher with ${t1.teacher_id}`,
     };
   } catch (err) {
-    if (!err.status) throw new AppError(err.message, 400);
     throw err;
   }
 };
@@ -34,14 +38,16 @@ export const createTeacher = async (ctx: Context) => {
 export const modifyTeacher = async (ctx: Context) => {
   const teacher_id = ctx.params.teacherId;
   const { fname, lname, age } = ctx.request.body;
+
   try {
-    if (!teacher_id || typeof teacher_id !== "string") {
-      throw new AppError("BAD DATA", 400);
-    }
+    await teacherIDSchema.validateAsync({ teacher_id });
+  } catch (err) {
+    throw new AppError("BAD INPUT DATA", 400);
+  }
 
+  try {
     await teacherService.checkExists(teacher_id);
-
-    await teacherService.modifyTeacherDB(fname, lname, age, teacher_id);
+    await teacherService.modifyTeacher(fname, lname, age, teacher_id);
 
     ctx.status = 200;
     ctx.body = {
@@ -55,11 +61,14 @@ export const modifyTeacher = async (ctx: Context) => {
 export const getTeachers = async (ctx: Context) => {
   let page = ctx.query.page;
   let size = ctx.query.size;
-  try {
-    if (!page || !size || isNaN(page) || isNaN(size)) {
-      throw new AppError("BAD DATA", 400);
-    }
 
+  try {
+    await paginationSchema.validateAsync({ page, size });
+  } catch (err) {
+    throw new AppError(err.message, 400);
+  }
+
+  try {
     page = Number(page);
     size = Number(size);
 
@@ -79,7 +88,7 @@ export const getTeachers = async (ctx: Context) => {
     const start_index = (page - 1) * size;
     const end_index = Math.min(page * size, teacher_table_size);
     const req_size = end_index - start_index;
-    const data = await teacherService.getTeachersDB(start_index, req_size);
+    const data = await teacherService.getTeachers(start_index, req_size);
 
     ctx.status = 200;
     ctx.body = {
@@ -88,7 +97,6 @@ export const getTeachers = async (ctx: Context) => {
       data: data,
     };
   } catch (err) {
-    if (!err.status) throw new AppError(err.message, 400);
     throw err;
   }
 };
@@ -96,11 +104,14 @@ export const getTeachers = async (ctx: Context) => {
 export const getTeachersTeaching = async (ctx: Context) => {
   let page = ctx.query.page;
   let size = ctx.query.size;
-  try {
-    if (!page || !size || isNaN(page) || isNaN(size)) {
-      throw new AppError("BAD DATA", 400);
-    }
 
+  try {
+    await paginationSchema.validateAsync({ page, size });
+  } catch (err) {
+    throw new AppError(err.message, 400);
+  }
+
+  try {
     page = Number(page);
     size = Number(size);
 
@@ -124,7 +135,7 @@ export const getTeachersTeaching = async (ctx: Context) => {
     const end_index = Math.min(page * size, teacher_table_size);
     const req_size = end_index - start_index;
 
-    const data = await teacherService.getTeachersTeachingDB(
+    const data = await teacherService.getTeachersTeaching(
       start_index,
       req_size
     );
@@ -136,7 +147,6 @@ export const getTeachersTeaching = async (ctx: Context) => {
       data: data,
     };
   } catch (err) {
-    if (!err.status) throw new AppError(err.message, 400);
     throw err;
   }
 };
@@ -144,10 +154,12 @@ export const getTeachersTeaching = async (ctx: Context) => {
 export const fetchStudentsWithTeacher = async (ctx: Context) => {
   const teacher_id = ctx.params.teacherId;
   try {
-    if (!teacher_id || typeof teacher_id !== "string") {
-      throw new AppError("BAD DATA", 400);
-    }
+    await teacherIDSchema.validateAsync({ teacher_id });
+  } catch (err) {
+    throw new AppError("BAD INPUT DATA", 400);
+  }
 
+  try {
     const data = await teacherService.fetchStudentWithTeacherID(teacher_id);
 
     ctx.status = 200;

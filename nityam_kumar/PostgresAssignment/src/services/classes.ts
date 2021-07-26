@@ -2,16 +2,16 @@ import db from "../db";
 
 import AppError from "../utils/appError";
 
-export const getClassesDB = async () => {
+export const getClasses = async () => {
   try {
-    const data = await db.query("select distinct cl_no as class from student");
+    const data = await db.query("select distinct cl_no as class from student order by fname");
     return data.rows;
   } catch (err) {
     throw new AppError(err.message, 502);
   }
 };
 
-export const getScheduleDB = async () => {
+export const getSchedule = async () => {
   try {
     const data =
       await db.query(`select c.cl_no as class_no,s1.sub_id,s1.sub_name as subject_name,t1.teacher_id,concat(t1.fname,' ',t1.lname) as teacher_name 
@@ -27,7 +27,7 @@ export const getScheduleDB = async () => {
   }
 };
 
-export const getClassScheduleDB = async (classNumber: number) => {
+export const getClassSchedule = async (classNumber: number) => {
   try {
     const data = await db.query(
       `select sub_name,sub_id from subject where cl_no =$1 order by sub_name`,
@@ -39,7 +39,7 @@ export const getClassScheduleDB = async (classNumber: number) => {
   }
 };
 
-export const fetchStudentsWithClassDB = async (class_number: number) => {
+export const fetchStudentsWithClass = async (class_number: number) => {
   try {
     const data = await db.query(
       "select * from student where cl_no=$1 order by fname ",

@@ -4,6 +4,14 @@ import * as marksService from "../services/mark";
 import markSchema from "../db/validateSchema/markSchema";
 import AppError from "../utils/appError";
 
+import {
+  classNoSchema,
+  marksInputSchema,
+  fetchTopBYNumberSchema,
+  subjectIDSchema,
+  studentIDSchema,
+} from "../db/validateSchema/helperSchema";
+
 interface IMark {
   student_id: string;
   subject_id: string;
@@ -18,8 +26,7 @@ export const createMarks = async (ctx: Context) => {
   try {
     await markSchema.validateAsync(m1);
   } catch (err) {
-    if (!err.status) throw new AppError(err.message, 400);
-    throw err;
+    throw new AppError(err.message, 400);
   }
 
   try {
@@ -29,18 +36,16 @@ export const createMarks = async (ctx: Context) => {
       marksService.checkAlreadyExist(m1),
     ]);
   } catch (err) {
-    if (!err.status) throw new AppError(err.message, 400);
     throw err;
   }
 
   try {
-    await marksService.addMarkDB(m1);
+    await marksService.addMark(m1);
     ctx.status = 200;
     ctx.body = {
       status: `successfully created marks with ${m1.student_id} & ${m1.subject_id}`,
     };
   } catch (err) {
-    if (!err.status) throw new AppError(err.message, 400);
     throw err;
   }
 };
@@ -49,37 +54,36 @@ export const modifyMarks = async (ctx: Context) => {
   const student_id = ctx.params.studentId;
   const subject_id = ctx.params.subjectId;
   const { marks } = ctx.request.body;
+
   try {
-    if (
-      !subject_id ||
-      !student_id ||
-      typeof student_id !== "string" ||
-      typeof subject_id !== "string"
-    ) {
-      throw new AppError("BAD INPUT DATA", 400);
-    }
+    await marksInputSchema.validateAsync({ student_id, subject_id, marks });
+  } catch (err) {
+    throw new AppError("BAD INPUT DATA", 400);
+  }
 
+  try {
     await marksService.checkExist(student_id, subject_id);
-
-    await marksService.ModifyMarksDB(marks, student_id, subject_id);
+    await marksService.ModifyMarks(marks, student_id, subject_id);
     ctx.status = 200;
     ctx.body = {
       status: `successfully updated marks with ${student_id} & ${subject_id} with ${marks}`,
     };
   } catch (err) {
-    if (!err.status) throw new AppError(err.message, 400);
     throw err;
   }
 };
 
 export const fetchMarks = async (ctx: Context) => {
   const student_id = ctx.params.studentId;
-  try {
-    if (!student_id || typeof student_id !== "string") {
-      throw new AppError("BAD INPUT DATA", 400);
-    }
-    const data = await marksService.fetchMarksDB(student_id);
 
+  try {
+    await studentIDSchema.validateAsync({ student_id });
+  } catch (err) {
+    throw new AppError("BAD INPUT DATA", 400);
+  }
+
+  try {
+    const data = await marksService.fetchMarks(student_id);
     ctx.status = 200;
     ctx.body = {
       status: `successfull`,
@@ -92,7 +96,7 @@ export const fetchMarks = async (ctx: Context) => {
 
 export const fetchHighestMarksPerSubject = async (ctx: Context) => {
   try {
-    const data = await marksService.fetchHighestMarksPerSubjectDB();
+    const data = await marksService.fetchHighestMarksPerSubject();
     ctx.status = 200;
     ctx.body = {
       status: `successfull`,
@@ -108,10 +112,13 @@ export const fetchHighestMarksPerSubjectWithSubjectID = async (
 ) => {
   const subject_id = ctx.params.subjectId;
   try {
-    if (subject_id && typeof subject_id !== "string") {
-      throw new AppError("BAD INPUT DATA", 400);
-    }
-    const data = await marksService.fetchHighestMarksPerSubjectWithSubjectIDDB(
+    await subjectIDSchema.validateAsync({ subject_id });
+  } catch (err) {
+    throw new AppError("BAD INPUT DATA", 400);
+  }
+
+  try {
+    const data = await marksService.fetchHighestMarksPerSubjectWithSubjectID(
       subject_id
     );
     ctx.status = 200;
@@ -127,11 +134,14 @@ export const fetchHighestMarksPerSubjectWithSubjectID = async (
 export const fetchTopBYNumber = async (ctx: Context) => {
   let number = ctx.params.number;
   try {
-    if (!number || isNaN(number)) {
-      throw new AppError("BAD INPUT DATA", 400);
-    }
+    await fetchTopBYNumberSchema.validateAsync({ number });
+  } catch (err) {
+    throw new AppError("BAD INPUT DATA", 400);
+  }
+
+  try {
     number = Number(number);
-    const data = await marksService.fetchTopBYNumberDB(number);
+    const data = await marksService.fetchTopBYNumber(number);
     ctx.status = 200;
     ctx.body = {
       status: `successfull`,
@@ -144,7 +154,7 @@ export const fetchTopBYNumber = async (ctx: Context) => {
 
 export const fetchTopperPerClass = async (ctx: Context) => {
   try {
-    const data = await marksService.fetchTopperPerClassDB();
+    const data = await marksService.fetchTopperPerClass();
     ctx.status = 200;
     ctx.body = {
       status: `successfull`,
@@ -157,12 +167,16 @@ export const fetchTopperPerClass = async (ctx: Context) => {
 
 export const fetchTopperPerClassWithClassNumber = async (ctx: Context) => {
   let classNumber = ctx.params.classNumber;
+
   try {
-    if (classNumber && isNaN(classNumber)) {
-      throw new AppError("BAD INPUT DATA", 400);
-    }
+    await classNoSchema.validateAsync({ classNumber });
+  } catch (err) {
+    throw new AppError("BAD INPUT DATA", 400);
+  }
+
+  try {
     classNumber = Number(classNumber);
-    const data = await marksService.fetchTopperPerClassWithClassNumberDB(
+    const data = await marksService.fetchTopperPerClassWithClassNumber(
       classNumber
     );
     ctx.status = 200;

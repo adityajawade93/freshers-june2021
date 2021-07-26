@@ -4,9 +4,11 @@ import * as classService from "../services/classes";
 
 import AppError from "../utils/appError";
 
+import { classNoSchema } from "../db/validateSchema/helperSchema";
+
 export const getClasses = async (ctx: Context) => {
   try {
-    const AllAvailableClasses = await classService.getClassesDB();
+    const AllAvailableClasses = await classService.getClasses();
     ctx.status = 200;
     ctx.body = {
       status: `successfull`,
@@ -19,7 +21,7 @@ export const getClasses = async (ctx: Context) => {
 
 export const getSchedule = async (ctx: Context) => {
   try {
-    const data = await classService.getScheduleDB();
+    const data = await classService.getSchedule();
     ctx.status = 200;
     ctx.body = {
       status: `successfull`,
@@ -32,12 +34,16 @@ export const getSchedule = async (ctx: Context) => {
 
 export const getClassSchedule = async (ctx: Context) => {
   let classNumber = ctx.params.classNumber;
+
   try {
-    if (classNumber && isNaN(classNumber)) {
-      throw new AppError("BAD DATA", 400);
-    }
+    await classNoSchema.validateAsync({ classNumber });
+  } catch (err) {
+    throw new AppError("BAD DATA", 400);
+  }
+
+  try {
     classNumber = Number(classNumber);
-    const data = await classService.getClassScheduleDB(classNumber);
+    const data = await classService.getClassSchedule(classNumber);
     ctx.status = 200;
     ctx.body = {
       status: `successfull`,
@@ -49,13 +55,14 @@ export const getClassSchedule = async (ctx: Context) => {
 };
 
 export const fetchStudentsWithClass = async (ctx: Context) => {
-  const class_number = ctx.params.classNumber;
+  const classNumber = ctx.params.classNumber;
   try {
-    if (!class_number || typeof class_number !== "number") {
-      throw new AppError("BAD DATA", 400);
-    }
-
-    const data = await classService.fetchStudentsWithClassDB(class_number);
+    await classNoSchema.validateAsync({ classNumber });
+  } catch (err) {
+    throw new AppError("BAD DATA", 400);
+  }
+  try {
+    const data = await classService.fetchStudentsWithClass(classNumber);
 
     ctx.status = 200;
     ctx.body = {

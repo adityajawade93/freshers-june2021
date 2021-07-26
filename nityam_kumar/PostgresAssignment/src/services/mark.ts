@@ -10,10 +10,10 @@ interface IMark {
   class_number: number;
 }
 
-export const fetchMarksDB = async (student_id: string) => {
+export const fetchMarks = async (student_id: string) => {
   try {
     const data = await db.query(
-      "select s.fname,s.lname,s.cl_no,m1.marks from marks as m1,student as s where m1.st_id=$1 and s.st_id= m1.st_id",
+      "select s.fname,s.lname,s.cl_no,m1.marks from marks as m1,student as s where m1.st_id=$1 and s.st_id= m1.st_id order by s.fname",
       [student_id.trim()]
     );
     if (data.rows.length === 0) {
@@ -25,7 +25,7 @@ export const fetchMarksDB = async (student_id: string) => {
   }
 };
 
-export const fetchHighestMarksPerSubjectDB = async () => {
+export const fetchHighestMarksPerSubject = async () => {
   try {
     const data = await db.query(
       "select concat(s1.fname,' ',s1.lname)as student_name,s1.age as student_age,s1.cl_no as class_no,maxa.sub_id,sub1.sub_name,maxa.marks as highest_marks,maxa.teacher_id,concat(t1.fname,' ',t1.lname) as teacher_name from student as s1 inner join (select m.st_id,m.sub_id,m.marks,m.cl_no,m.teacher_id from marks as m inner join ( select MAX(marks) as maximum,(sub_id) from marks  group by sub_id order by sub_id )maxmarks on maxmarks.maximum=m.marks)maxa on maxa.st_id=s1.st_id inner join subject as sub1 on maxa.sub_id=sub1.sub_id inner join teacher as t1 on t1.teacher_id=maxa.teacher_id order by highest_marks desc"
@@ -36,7 +36,7 @@ export const fetchHighestMarksPerSubjectDB = async () => {
   }
 };
 
-export const fetchHighestMarksPerSubjectWithSubjectIDDB = async (
+export const fetchHighestMarksPerSubjectWithSubjectID = async (
   subject_id: string
 ) => {
   try {
@@ -56,7 +56,7 @@ export const fetchHighestMarksPerSubjectWithSubjectIDDB = async (
   }
 };
 
-export const fetchTopBYNumberDB = async (number: number) => {
+export const fetchTopBYNumber = async (number: number) => {
   try {
     const data = await db.query(
       `select s1.st_id as student_id,Concat(s1.fname,' ',s1.lname)as student_name,s1.age as student_age,s1.cl_no as class_no,total.total_marks from student as s1 inner join (select st_id,sum(marks)as total_marks  from marks group by st_id limit 10)total on total.st_id=s1.st_id order by total.total_marks desc limit $1`,
@@ -68,7 +68,7 @@ export const fetchTopBYNumberDB = async (number: number) => {
   }
 };
 
-export const fetchTopperPerClassDB = async () => {
+export const fetchTopperPerClass = async () => {
   try {
     const data =
       await db.query(`select maxa3.class_no,maxa3.highest_marks,maxa3.student_id,concat(fname,' ',lname)as student_name,age as student_age
@@ -93,7 +93,7 @@ export const fetchTopperPerClassDB = async () => {
   }
 };
 
-export const fetchTopperPerClassWithClassNumberDB = async (
+export const fetchTopperPerClassWithClassNumber = async (
   classNumber: number
 ) => {
   try {
@@ -181,7 +181,7 @@ export const checkAlreadyExist = async (m1: IMark) => {
   }
 };
 
-export const addMarkDB = async (m1: IMark) => {
+export const addMark = async (m1: IMark) => {
   try {
     const text = "INSERT INTO marks VALUES($1,$2,$3,$4,$5)";
     const values = [
@@ -211,13 +211,13 @@ export const checkExist = async (student_id: string, subject_id: string) => {
   }
 };
 
-export const ModifyMarksDB = async (
+export const ModifyMarks = async (
   marks: number | null | undefined,
   student_id: string,
   subject_id: string
 ) => {
   try {
-    if (marks && typeof marks === "number") {
+    if (marks && typeof marks === "number" && marks > 0 && marks <= 100) {
       await db.query(
         "update marks set marks=$1 where st_id =$2 and sub_id=$3",
         [marks, student_id.trim(), subject_id.trim()]

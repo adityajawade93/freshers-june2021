@@ -11,7 +11,7 @@ interface IStudent {
   sex?: string;
 }
 
-export const addStudentDB = async (s1: IStudent) => {
+export const addStudent = async (s1: IStudent) => {
   try {
     const text = "INSERT INTO student VALUES($1,$2,$3,$4,$5,$6)";
     const values = [
@@ -28,7 +28,7 @@ export const addStudentDB = async (s1: IStudent) => {
   }
 };
 
-export const modifyStudentDB = async (
+export const modifyStudent = async (
   fname: string | null | undefined,
   lname: string | null | undefined,
   age: number | null | undefined,
@@ -36,28 +36,43 @@ export const modifyStudentDB = async (
   student_id: string
 ) => {
   try {
-    if (fname && typeof fname === "string") {
+    if (
+      fname &&
+      typeof fname === "string" &&
+      fname.length >= 3 &&
+      fname.length <= 25
+    ) {
       await db.query("update student set fname=$1 where st_id=$2", [
         fname.trim(),
         student_id,
       ]);
     }
 
-    if (lname && typeof lname === "string") {
+    if (
+      lname &&
+      typeof lname === "string" &&
+      lname.length >= 3 &&
+      lname.length <= 25
+    ) {
       await db.query("update student set lname=$1 where st_id=$2", [
         lname.trim(),
         student_id,
       ]);
     }
 
-    if (age && typeof age === "number") {
+    if (age && typeof age === "number" && age > 0 && age <= 110) {
       await db.query("update student set age=$1 where st_id=$2", [
         age,
         student_id,
       ]);
     }
 
-    if (class_number && typeof class_number === "number") {
+    if (
+      class_number &&
+      typeof class_number === "number" &&
+      class_number > 0 &&
+      class_number <= 12
+    ) {
       await db.query("update student set cl_no=$1 where st_id=$2", [
         class_number,
         student_id,
@@ -90,7 +105,7 @@ export const countStudents = async () => {
   }
 };
 
-export const getStudentsDB = async (start_index: number, req_size: number) => {
+export const getStudents = async (start_index: number, req_size: number) => {
   try {
     const data = await db.query(
       "SELECT * from student order by fname  offset $1 limit $2 ",
@@ -102,10 +117,10 @@ export const getStudentsDB = async (start_index: number, req_size: number) => {
   }
 };
 
-export const getStudentScheduleDB = async (studentId: string) => {
+export const getStudentSchedule = async (studentId: string) => {
   try {
     const data = await db.query(
-      `select sub_name,sub_id from subject where cl_no = (select cl_no from student where st_id=$1);`,
+      `select sub_name,sub_id from subject where cl_no = (select cl_no from student where st_id=$1) order by sub_name;`,
       [studentId]
     );
     return data.rows;

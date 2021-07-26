@@ -55,7 +55,7 @@
   },
   "name": "day-9",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "jest",
     "start": "ts-node-dev src/index.ts",

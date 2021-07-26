@@ -10,7 +10,7 @@ interface ITeacher {
   sex?: string;
 }
 
-export const addTeacherDB = async (t1: ITeacher) => {
+export const addTeacher = async (t1: ITeacher) => {
   try {
     const text = "INSERT INTO teacher VALUES($1,$2,$3,$4,$5)";
     const values = [
@@ -28,10 +28,9 @@ export const addTeacherDB = async (t1: ITeacher) => {
 
 export const checkExists = async (teacher_id: string) => {
   try {
-    const res = await db.query(
-      "select * from teacher where teacher_id =$1",
-      [teacher_id]
-    );
+    const res = await db.query("select * from teacher where teacher_id =$1", [
+      teacher_id,
+    ]);
     if (res.rows.length === 0) {
       throw new AppError(
         "Teacher with this id not available!! Enter valid teacher id",
@@ -43,28 +42,38 @@ export const checkExists = async (teacher_id: string) => {
   }
 };
 
-export const modifyTeacherDB = async (
+export const modifyTeacher = async (
   fname: string | null | undefined,
   lname: string | null | undefined,
   age: number | null | undefined,
   teacher_id: string | null | undefined
 ) => {
   try {
-    if (fname && typeof fname === "string") {
+    if (
+      fname &&
+      typeof fname === "string" &&
+      fname.length >= 3 &&
+      fname.length <= 25
+    ) {
       await db.query("update teacher set fname=$1 where teacher_id=$2", [
         fname.trim(),
         teacher_id,
       ]);
     }
 
-    if (lname && typeof lname === "string") {
+    if (
+      lname &&
+      typeof lname === "string" &&
+      lname.length >= 3 &&
+      lname.length <= 25
+    ) {
       await db.query("update teacher set lname=$1 where teacher_id=$2", [
         lname.trim(),
         teacher_id,
       ]);
     }
 
-    if (age && typeof age === "number") {
+    if (age && typeof age === "number" && age > 0 && age <= 110) {
       await db.query("update teacher set age=$1 where teacher_id=$2", [
         age,
         teacher_id,
@@ -84,7 +93,7 @@ export const countTeachers = async () => {
   }
 };
 
-export const getTeachersDB = async (start_index: number, req_size: number) => {
+export const getTeachers = async (start_index: number, req_size: number) => {
   try {
     const data = await db.query(
       "SELECT * from teacher order by fname offset $1 limit $2 ",
@@ -107,13 +116,13 @@ export const countTeachersTeaching = async () => {
   }
 };
 
-export const getTeachersTeachingDB = async (
+export const getTeachersTeaching = async (
   start_index: number,
   req_size: number
 ) => {
   try {
     const data = await db.query(
-      "select t1.teacher_id,t1.fname,t1.lname,t1.age,t2.sub_name,t2.cl_no FROM teacher as t1 inner join subject as t2 on t1.teacher_id=t2.teacher_id offset $1 limit $2",
+      "select t1.teacher_id,t1.fname,t1.lname,t1.age,t2.sub_name,t2.cl_no FROM teacher as t1 inner join subject as t2 on t1.teacher_id=t2.teacher_id order by t1.fname offset $1 limit $2",
       [start_index, req_size]
     );
     return data.rows;
@@ -125,7 +134,7 @@ export const getTeachersTeachingDB = async (
 export const fetchStudentWithTeacherID = async (teacher_id: string) => {
   try {
     const data = await db.query(
-      "select s1.st_id,s1.fname,s1.lname,s1.age,s1.cl_no from student as s1 where s1.cl_no in (select distinct cl_no from subject as sub where teacher_id=$1",
+      "select s1.st_id,s1.fname,s1.lname,s1.age,s1.cl_no from student as s1 where s1.cl_no in (select distinct cl_no from subject as sub where teacher_id=$1 order by s1.fname",
       [teacher_id]
     );
     if (data.rows.length === 0) {

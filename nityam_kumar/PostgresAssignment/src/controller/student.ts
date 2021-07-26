@@ -3,12 +3,10 @@ import { Context } from "vm";
 import * as studentService from "../services/student";
 
 import studentSchema from "../db/validateSchema/studentSchema";
-import AppError from "../utils/appError";
-import Joi from "joi";
+import paginationSchema from "../db/validateSchema/paginationSchema";
 
-const studentIDSchema = Joi.object({
-  student_id: Joi.string().trim().required(),
-});
+import AppError from "../utils/appError";
+import { studentIDSchema } from "../db/validateSchema/helperSchema";
 
 interface IStudent {
   class_number: number;
@@ -21,16 +19,21 @@ interface IStudent {
 
 export const createStudent = async (ctx: Context) => {
   const s1: IStudent = ctx.request.body;
+
   try {
     await studentSchema.validateAsync(s1);
+  } catch (err) {
+    throw new AppError(err.message, 400);
+  }
+
+  try {
     s1.student_id = uuid();
-    const msg = await studentService.addStudentDB(s1);
+    const msg = await studentService.addStudent(s1);
     ctx.status = 200;
     ctx.body = {
       status: `successfully created student with ${s1.student_id}`,
     };
   } catch (err) {
-    if (!err.status) throw new AppError(err.message, 400);
     throw err;
   }
 };
@@ -38,12 +41,17 @@ export const createStudent = async (ctx: Context) => {
 export const modifyStudent = async (ctx: Context) => {
   const student_id = ctx.params.studentID;
   const { fname, lname, age, class_number } = ctx.request.body;
+
   try {
     await studentIDSchema.validateAsync({ student_id: student_id });
+  } catch (err) {
+    throw new AppError(err.message, 400);
+  }
 
+  try {
     await studentService.checkExists(student_id);
 
-    await studentService.modifyStudentDB(
+    await studentService.modifyStudent(
       fname,
       lname,
       age,
@@ -56,7 +64,6 @@ export const modifyStudent = async (ctx: Context) => {
       status: `successfully updated student with ${student_id}`,
     };
   } catch (err) {
-    if (!err.status) throw new AppError(err.message, 400);
     throw err;
   }
 };
@@ -66,10 +73,12 @@ export const getStudents = async (ctx: Context) => {
   let size = ctx.query.size;
 
   try {
-    if (!page || !size || isNaN(page) || isNaN(size)) {
-      throw new AppError("BAD INPUT!!", 400);
-    }
+    await paginationSchema.validateAsync({ page, size });
+  } catch (err) {
+    throw new AppError(err.message, 400);
+  }
 
+  try {
     page = Number(page);
     size = Number(size);
 
@@ -90,7 +99,7 @@ export const getStudents = async (ctx: Context) => {
     const end_index = Math.min(page * size, student_table_size);
     const req_size = end_index - start_index;
 
-    const result = await studentService.getStudentsDB(start_index, req_size);
+    const result = await studentService.getStudents(start_index, req_size);
 
     ctx.status = 200;
     ctx.body = {
@@ -105,16 +114,21 @@ export const getStudents = async (ctx: Context) => {
 
 export const getStudentSchedule = async (ctx: Context) => {
   const student_id = ctx.params.studentID;
+
   try {
     await studentIDSchema.validateAsync({ student_id: student_id });
-    const result = await studentService.getStudentScheduleDB(student_id);
+  } catch (err) {
+    throw new AppError(err.message, 400);
+  }
+
+  try {
+    const result = await studentService.getStudentSchedule(student_id);
     ctx.status = 200;
     ctx.body = {
       status: `successfull`,
       data: result,
     };
   } catch (err) {
-    if (!err.status) throw new AppError(err.message, 400);
     throw err;
   }
 };

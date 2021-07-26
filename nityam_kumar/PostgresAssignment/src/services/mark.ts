@@ -165,11 +165,12 @@ export const checkSubjectExist = async (m1: IMark) => {
 export const checkAlreadyExist = async (m1: IMark) => {
   try {
     const text6 =
-      "select * from marks where cl_no =$1 and sub_id =$2 and teacher_id =$3";
+      "select * from marks where cl_no =$1 and sub_id =$2 and teacher_id =$3 and st_id=$4";
     const values6 = [
       m1.class_number,
       m1.subject_id.trim(),
       m1.teacher_id.trim(),
+      m1.student_id.trim(),
     ];
     const check_already_exist = await db.query(text6, values6);
     if (check_already_exist.rows.length > 0) {

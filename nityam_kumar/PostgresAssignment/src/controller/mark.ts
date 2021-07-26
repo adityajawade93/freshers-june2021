@@ -14,15 +14,26 @@ interface IMark {
 
 export const createMarks = async (ctx: Context) => {
   const m1: IMark = ctx.request.body;
+
   try {
     await markSchema.validateAsync(m1);
+  } catch (err) {
+    if (!err.status) throw new AppError(err.message, 400);
+    throw err;
+  }
 
+  try {
     await Promise.all([
       marksService.checkStudentExist(m1),
       marksService.checkSubjectExist(m1),
       marksService.checkAlreadyExist(m1),
     ]);
+  } catch (err) {
+    if (!err.status) throw new AppError(err.message, 400);
+    throw err;
+  }
 
+  try {
     await marksService.addMarkDB(m1);
     ctx.status = 200;
     ctx.body = {

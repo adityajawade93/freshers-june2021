@@ -1,6 +1,6 @@
 CREATE SCHEMA College;
 SET search_path TO College;
-create type as sex enum('male','female','others');
+create type sex as enum('male','female','others');
     CREATE TABLE Student(student_id int PRIMARY KEY NOT NULL,fname text NOT NULL,mname text NULL,lname text NULL,dob date NOT NULL,gender sex NOT NULL,address text NOT NULL);
 
 CREATE TABLE Teacher(teacher_id int PRIMARY KEY NOT NULL,fname text NOT NULL,mname text NULL,lname text NULL,dob date NOT NULL,gender sex NOT NULL,address text NOT NULL);
@@ -13,22 +13,22 @@ CREATE TABLE Teacher(teacher_id int PRIMARY KEY NOT NULL,fname text NOT NULL,mna
    
     CREATE TABLE Result(result_id int PRIMARY KEY NOT NULL,studentid int NOT NULL,clas_id int NOT NULL,subjectid int NOT NULL,marks int NOT NULL);  
    
-   INSERT INTO Student values('1','sachin','ramesh','tendulkar','1967-08-11','M','lucknow');
-      INSERT INTO Student values('2','akshita',NULL,'mahajan','1997-08-12','F','jammu');
-     INSERT INTO Student values('3','mahinder','singh','dhoni','1987-12-31','M','ranchi');
-     INSERT INTO Student values('4','kapil',NULL,'verma','1999-12-31','M','delhi');
-     INSERT INTO Student values('5','nishaant','veer','dixit','2000-08-11','M','delhi');
-      INSERT INTO Student values('6','masoom','raja','ansari','1997-11-11','M','kolkata');
-    INSERT INTO Student values('7','aryant',NULL,'shukla','1998-04-21','M','kanpur');
-      INSERT INTO Student values('8','shubhum','kumar','jha','1987-01-11','M','mumbai');
-      INSERT INTO Student values('9','jyoti',NULL,'kumari','1991-10-13','F','srinagar');
-      INSERT INTO Student values('10','aryan',NULL,'singh','1996-11-19','M','chandigarh');
+   INSERT INTO Student values('1','sachin','ramesh','tendulkar','1967-08-11','male','lucknow');
+      INSERT INTO Student values('2','akshita',NULL,'mahajan','1997-08-12','female','jammu');
+     INSERT INTO Student values('3','mahinder','singh','dhoni','1987-12-31','male','ranchi');
+     INSERT INTO Student values('4','kapil',NULL,'verma','1999-12-31','male','delhi');
+     INSERT INTO Student values('5','nishaant','veer','dixit','2000-08-11','male','delhi');
+      INSERT INTO Student values('6','masoom','raja','ansari','1997-11-11','male','kolkata');
+    INSERT INTO Student values('7','aryant',NULL,'shukla','1998-04-21','male','kanpur');
+      INSERT INTO Student values('8','shubhum','kumar','jha','1987-01-11','male','mumbai');
+      INSERT INTO Student values('9','jyoti',NULL,'kumari','1991-10-13','female','srinagar');
+      INSERT INTO Student values('10','aryan',NULL,'singh','1996-11-19','male','chandigarh');
      
-      INSERT INTO Teacher values('1','ramesh','kumar','mishra','1967-08-11','M','allahabad');
-      INSERT INTO Teacher values('2','narender',NULL,'singh','1972-11-11','M','lucknow');
-      INSERT INTO Teacher values('3','nirupama',NULL,NULL,'1988-08-11','F','kolkata');
-     INSERT INTO Teacher values('4','m','k','d','1981-08-11','M','chennai');
-      INSERT INTO Teacher values('5','chiranjeev',NULL,'kumar','1977-08-11','M','bhopal');
+      INSERT INTO Teacher values('1','ramesh','kumar','mishra','1967-08-11','male','allahabad');
+      INSERT INTO Teacher values('2','narender',NULL,'singh','1972-11-11','male','lucknow');
+      INSERT INTO Teacher values('3','nirupama',NULL,NULL,'1988-08-11','female','kolkata');
+     INSERT INTO Teacher values('4','m','k','d','1981-08-11','male','chennai');
+      INSERT INTO Teacher values('5','chiranjeev',NULL,'kumar','1977-08-11','male','bhopal');
      
       INSERT INTO subject values('1','data structure');
       INSERT INTO subject values('2','algorithm');

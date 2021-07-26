@@ -1,16 +1,12 @@
 import sqlclient from '../database/db';
 
 export async function gettopperByclassIdAndSubjectId(classId:number, subjectId:number) {
-  try {
-    return (await sqlclient.query(`SELECT student_id,fname,S.marks FROM (SELECT * FROM College.result WHERE clas_id=${classId} AND subjectid=${subjectId} ORDER BY marks DESC) AS S,College.Student WHERE S.studentid=student_id LIMIT 1 ORDER BY fname`));
-  } catch (e) {
-    throw Error(e);
-  }
+  const response = (await sqlclient.query(`SELECT student_id,fname,S.marks FROM (SELECT * FROM College.result WHERE clas_id=${classId} AND subjectid=${subjectId} ORDER BY marks DESC) AS S,College.Student WHERE S.studentid=student_id LIMIT 1 ORDER BY fname`));
+  return response;
 }
 
 export async function gettopstudent(classId:number, count:number) {
-  try {
-    return (await sqlclient.query(`SELECT s.student_id , s.fname , a.total_marks
+  const response = (await sqlclient.query(`SELECT s.student_id , s.fname , a.total_marks
           FROM College.student s
           INNER JOIN(
           SELECT SUM(r.marks) AS total_marks , s.student_id
@@ -24,7 +20,5 @@ export async function gettopstudent(classId:number, count:number) {
           ON s.student_id = a.student_id
           ORDER BY total_marks DESC
           LIMIT ${count} ORDER BY s.fname`));
-  } catch (e) {
-    throw Error(e);
-  }
+  return response;
 }

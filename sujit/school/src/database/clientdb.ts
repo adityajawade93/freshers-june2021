@@ -13,8 +13,7 @@ export const pool = new Pool({
 })
 
 pool.on('error', function (error: any, client: any) {
-
-    console.log("postgressql error event")
+    throw new Error(error) 
 })
 
 // FIXME: pass the data from config file

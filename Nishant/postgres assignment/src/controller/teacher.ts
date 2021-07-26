@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import { Context } from 'vm';
 
 import { QueryResult } from 'pg';
@@ -10,7 +9,7 @@ interface ITeacher{
     fname:string;
     mname:string;
     lname:string;
-    dob :string;
+    dob :Date;
     gender: string;
     address:string;
 }

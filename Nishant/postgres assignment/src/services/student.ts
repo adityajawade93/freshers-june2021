@@ -3,7 +3,7 @@ import sqlclient from '../database/db';
 export async function getStudentService() {
   try {
     await sqlclient.query('SET search_path TO College');
-    return (await sqlclient.query('SELECT * FROM Student'));
+    return (await sqlclient.query('SELECT * FROM Student ORDER BY fname'));
   } catch (e) {
     throw Error(e);
   }
@@ -19,7 +19,7 @@ export async function getStudentLengthService() {
 }
 
 export async function addStudentService(studentId:number, fname:string, mname:string,
-  lname:string, dob:string, gender:string, address:string) {
+  lname:string, dob:Date, gender:string, address:string) {
   try {
     await sqlclient.query('SET search_path TO College');
     const data = [studentId, fname, mname, lname, dob, gender, address];

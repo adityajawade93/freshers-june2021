@@ -1,9 +1,9 @@
 CREATE SCHEMA College;
 SET search_path TO College;
+create type as sex enum('male','female','others');
+    CREATE TABLE Student(student_id int PRIMARY KEY NOT NULL,fname text NOT NULL,mname text NULL,lname text NULL,dob date NOT NULL,gender sex NOT NULL,address text NOT NULL);
 
-    CREATE TABLE Student(student_id int PRIMARY KEY NOT NULL,fname text NOT NULL,mname text NULL,lname text NULL,dob date NOT NULL,gender char NULL,address text NOT NULL);
-
-CREATE TABLE Teacher(teacher_id int PRIMARY KEY NOT NULL,fname text NOT NULL,mname text NULL,lname text NULL,dob date NOT NULL,gender char NULL,address text NOT NULL);
+CREATE TABLE Teacher(teacher_id int PRIMARY KEY NOT NULL,fname text NOT NULL,mname text NULL,lname text NULL,dob date NOT NULL,gender sex NOT NULL,address text NOT NULL);
    
   CREATE TABLE subject(subject_id int PRIMARY KEY NOT NULL,subject_name text NOT NULL);
    

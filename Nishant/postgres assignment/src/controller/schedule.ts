@@ -1,5 +1,3 @@
-/* eslint-disable camelcase */
-
 import { Context } from 'vm';
 
 import addClassScheduleService from '../services/schedule';

@@ -1,5 +1,3 @@
-/* eslint-disable camelcase */
-
 import { Context } from 'vm';
 
 import { QueryResult } from 'pg';

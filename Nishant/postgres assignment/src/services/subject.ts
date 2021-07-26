@@ -3,7 +3,7 @@ import sqlclient from '../database/db';
 export async function getSubjectService() {
   try {
     await sqlclient.query('SET search_path TO College');
-    return (await sqlclient.query('SELECT * FROM subject'));
+    return (await sqlclient.query('SELECT * FROM subject ORDER BY subject_name'));
   } catch (e) {
     throw Error(e);
   }
@@ -12,7 +12,7 @@ export async function getSubjectService() {
 export async function getStudentBySubjectIdService(subjectId:number) {
   try {
     await sqlclient.query('SET search_path TO College');
-    return (await sqlclient.query(`SELECT S.student_id,S.fname FROM Student AS S,class_student,class_schedule WHERE subj_id=${subjectId} AND class_id=classid AND studid=student_id`));
+    return (await sqlclient.query(`SELECT S.student_id,S.fname FROM Student AS S,class_student,class_schedule WHERE subj_id=${subjectId} AND class_id=classid AND studid=student_id ORDER BY S.fname`));
   } catch (e) {
     throw Error(e);
   }
@@ -31,7 +31,7 @@ export async function addSubjectService(subjectId:number, subjectName:string) {
 export async function getSubjectMarksByStudentIdService(studentId:number) {
   try {
     await sqlclient.query('SET search_path TO College');
-    return (await sqlclient.query(`SELECT subject_id,subject_name,marks FROM result,subject WHERE studentid=${studentId} AND subjectid=subject_id`));
+    return (await sqlclient.query(`SELECT subject_id,subject_name,marks FROM result,subject WHERE studentid=${studentId} AND subjectid=subject_id ORDER BY subject_name`));
   } catch (e) {
     throw Error(e);
   }

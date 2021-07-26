@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import { Context } from 'vm';
 import { QueryResult } from 'pg';
 import * as studentService from '../services/student';
@@ -9,7 +8,7 @@ interface IStudent{
   fname:string;
   mname:string;
   lname:string;
-  dob :string;
+  dob :Date;
   gender: string;
   address:string;
   slice(a:number, b:number): IStudent;

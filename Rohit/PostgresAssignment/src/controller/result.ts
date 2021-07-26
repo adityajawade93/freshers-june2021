@@ -28,7 +28,7 @@ exports.getResultData = async (ctx: Context) => {
     ctx.response.status = 400;
     ctx.response.type = "application/json";
     ctx.body = {
-      msg: `something went wrong in adding result ${err}`,
+      msg: `something went wrong ${err}`,
     };
   }
 };
@@ -38,7 +38,7 @@ exports.add_reasultData_in_table = async (ctx: Context) => {
 
   const reqData = await resultSchema.validateAsync(req);
   if (reqData.error) {
-    ctx.response.status = 422;
+    ctx.response.status = 400;
     ctx.body = reqData.error.details[0].message;
     return;
   }
@@ -54,10 +54,10 @@ exports.add_reasultData_in_table = async (ctx: Context) => {
     ctx.response.type = "text/html";
     ctx.body = "data is inserted in result table";
   } catch (err) {
-    ctx.response.status = 400;
+    ctx.response.status = 500;
     ctx.response.type = "application/json";
     ctx.body = {
-      msg: `something went wrong in adding student ${err}`,
+      msg: `something went wrong in adding result ${err}`,
     };
   }
 };
@@ -67,7 +67,7 @@ exports.updateResult_by_studentId_and_subjectId = async (ctx: Context) => {
 
   const reqData = await updateResultSchema.validateAsync(req);
   if (reqData.error) {
-    ctx.response.status = 422;
+    ctx.response.status = 400;
     ctx.body = reqData.error.details[0].message;
     return;
   }
@@ -82,10 +82,10 @@ exports.updateResult_by_studentId_and_subjectId = async (ctx: Context) => {
     ctx.response.type = "text/html";
     ctx.body = "marks are updated in result table";
   } catch (err) {
-    ctx.response.status = 400;
+    ctx.response.status = 500;
     ctx.response.type = "application/json";
     ctx.body = {
-      msg: `something went wrong in adding student ${err}`,
+      msg: `something went wrong ${err}`,
     };
   }
 };

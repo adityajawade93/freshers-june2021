@@ -31,7 +31,7 @@ router.get('/result',result.getResultData);
 router.post('/result',result.add_reasultData_in_table);
 router.put('/result/:studentId/:subjectId',result.updateResult_by_studentId_and_subjectId);
 
-router.get('/classschedule',schedule.getClass_scheduleData);
+router.get('/schedule',schedule.getClass_scheduleData);
 router.post('/schedule',schedule.add_class_schedule_in_table);
 
 router.get('/subjectmarks/:studentId',mark.getSubjectMarks_by_studentId);

@@ -17,7 +17,7 @@ exports.getSubjectData = async (ctx: Context) => {
     ctx.response.type = "application/json";
     ctx.body = rows.rows;
   } catch (err) {
-    ctx.response.status = 400;
+    ctx.response.status = 500;
     ctx.response.type = "application/json";
     ctx.body = {
       msg: `something went wrong  ${err}`,
@@ -30,7 +30,7 @@ exports.add_subject_in_table = async (ctx: Context) => {
 
   const reqData = await subjectSchema.validateAsync(req);
   if (reqData.error) {
-    ctx.response.status = 422;
+    ctx.response.status = 400;
     ctx.body = reqData.error.details[0].message;
     return;
   }
@@ -41,7 +41,7 @@ exports.add_subject_in_table = async (ctx: Context) => {
     ctx.response.type = "text/html";
     ctx.body = "data is inserted in Subject table";
   } catch (err) {
-    ctx.response.status = 400;
+    ctx.response.status = 500;
     ctx.response.type = "application/json";
     ctx.body = {
       msg: `something went wrong in adding subject ${err}`,

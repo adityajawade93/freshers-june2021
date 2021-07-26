@@ -4,7 +4,7 @@ export const studentSchema = Joi.object().keys({
   studentId: Joi.number().required(),
   name: Joi.string().trim().required().min(4).max(30),
   dob: Joi.date().required(),
-  gender: Joi.string().uppercase().trim().valid(null, 'M', 'F'),
+  gender: Joi.string().lowercase().trim().valid(null, 'male', 'female', 'others'),
 });
 
 export const subjectSchema = Joi.object().keys({
@@ -16,7 +16,7 @@ export const teacherSchema = Joi.object().keys({
   teacherId: Joi.number().required(),
   teacher_fname: Joi.string().trim().required().min(4).max(30),
   teacher_lname: Joi.string().trim().required().min(4).max(30),
-  gender: Joi.string().uppercase().trim().valid(null, 'M', 'F'),
+  gender: Joi.string().lowercase().trim().valid(null, 'male', 'female','others'),
 });
 
 export const classSchema = Joi.object().keys({
@@ -26,7 +26,6 @@ export const classSchema = Joi.object().keys({
 
 export const scheduleSchema = Joi.object().keys({
   cls_Id: Joi.number().required(),
-  classno: Joi.number().required(),
   subjId: Joi.number().required(),
   subject_name: Joi.string().trim().required().min(2).max(20),
   teach_Id: Joi.number().required(),

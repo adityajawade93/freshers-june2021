@@ -23,7 +23,7 @@ exports.getSubjectMarks_by_studentId = async (ctx: Context) => {
     ctx.response.type = "application/json";
     ctx.body = rows.rows;
   } catch (err) {
-    ctx.response.status = 400;
+    ctx.response.status = 500;
     ctx.response.type = "application/json";
     ctx.body = {
       msg: `something went wrong ${err}`,

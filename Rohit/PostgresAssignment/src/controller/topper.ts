@@ -15,7 +15,7 @@ exports.getTopper_by_classId_and_subjectId = async (ctx: Context) => {
 
   const reqData = topSchema.validateAsync([classId, subjectId]);
   if (reqData.error) {
-    ctx.response.status = 422;
+    ctx.response.status = 400;
     ctx.body = reqData.error.details[0].message;
     return;
   }
@@ -30,7 +30,7 @@ exports.getTopper_by_classId_and_subjectId = async (ctx: Context) => {
     ctx.response.type = "application/json";
     ctx.body = rows.rows;
   } catch (err) {
-    ctx.response.status = 400;
+    ctx.response.status = 500;
     ctx.response.type = "application/json";
     ctx.body = {
       msg: `something went wrong  ${err}`,
@@ -55,7 +55,7 @@ exports.getTopTen_by_classId = async (ctx: Context) => {
     ctx.response.type = "application/json";
     ctx.body = rows.rows;
   } catch (err) {
-    ctx.response.status = 400;
+    ctx.response.status = 500;
     ctx.response.type = "application/json";
     ctx.body = {
       msg: `something went wrong ${err}`,

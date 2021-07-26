@@ -24,4 +24,5 @@ export const config = {
   dbHost: envVars.host,
   dbPassword: envVars.pass,
   dbName: envVars.name,
+  port: 4000,
 };

@@ -54,7 +54,7 @@ exports.getStudentData = async (ctx: Context) => {
     ctx.response.type = "application/json";
     ctx.body = rows.rows;
   } catch (err) {
-    ctx.response.status = 400;
+    ctx.response.status = 500;
     ctx.response.type = "application/json";
     ctx.body = {
       msg: `something went wrong ${err}`,
@@ -77,7 +77,7 @@ exports.studentData_by_classId = async (ctx: Context) => {
     ctx.response.type = "application/json";
     ctx.body = rows.rows;
   } catch (err) {
-    ctx.response.status = 400;
+    ctx.response.status = 500;
     ctx.response.type = "application/json";
     ctx.body = {
       msg: `something went wrong ${err}`,
@@ -101,7 +101,7 @@ exports.studentData_teacherId = async (ctx: Context) => {
     ctx.response.type = "application/json";
     ctx.body = rows.rows;
   } catch (err) {
-    ctx.response.status = 400;
+    ctx.response.status = 500;
     ctx.response.type = "application/json";
     ctx.body = {
       msg: `something went wrong ${err}`,
@@ -125,7 +125,7 @@ exports.studentData_subjectId = async (ctx: Context) => {
     ctx.response.type = "application/json";
     ctx.body = rows.rows;
   } catch (err) {
-    ctx.response.status = 400;
+    ctx.response.status = 500;
     ctx.response.type = "application/json";
     ctx.body = {
       msg: `something went wrong ${err}`,
@@ -138,7 +138,7 @@ exports.add_student_in_table = async (ctx: Context) => {
 
   const reqData = await studentSchema.validateAsync(req);
   if (reqData.error) {
-    ctx.response.status = 422;
+    ctx.response.status = 400;
     ctx.body = reqData.error.details[0].message;
     return;
   }
@@ -154,7 +154,7 @@ exports.add_student_in_table = async (ctx: Context) => {
     ctx.response.type = "text/html";
     ctx.body = "data is inserted in students table";
   } catch (err) {
-    ctx.response.status = 400;
+    ctx.response.status = 500;
     ctx.response.type = "application/json";
     ctx.body = {
       msg: `something went wrong in adding student ${err}`,

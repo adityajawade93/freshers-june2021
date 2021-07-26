@@ -1,10 +1,11 @@
 import { router } from "../router/router";
+import { config } from "../config/config";
 
 import { Context } from "vm";
 const bodyParser = require("koa-bodyparser");
 const Koa = require("koa");
 const json = require("koa-json");
-const port = 4000;
+const port = config.port;
 const app = new Koa();
 
 app.use(bodyParser());

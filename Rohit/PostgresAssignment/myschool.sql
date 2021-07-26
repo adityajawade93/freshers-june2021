@@ -1,33 +1,35 @@
 create schema myschool;
 set search_path to myschool;
 
+create type sex as enum('male','female','others');
+
 create table students(studentId int not null primary key,
-					  name text not null ,
+					  name varchar(40) not null ,
 					  dob date not null,
-					 gender char null);
+					 gender sex null);
 					 
-insert into students values('1','anurag','1997-02-04','M');
-insert into students values('2','niti','1999-02-06','F');
-insert into students values('3','ayog','1998-02-07','M');
-insert into students values('4','anup','1995-02-06','M');
-insert into students values('5','chirag','1997-05-04','M');
-insert into students values('6','rahul','1987-05-08','M');
-insert into students values('7','kaaju','1996-02-08','F');
-insert into students values('8','jaggu','1997-07-23','F');
-insert into students values('9','prince','1997-05-13','M');
-insert into students values('10','yash','2000-02-04','M');
+insert into students values('1','anurag','1997-02-04','male');
+insert into students values('2','niti','1999-02-06','female');
+insert into students values('3','ayog','1998-02-07','male');
+insert into students values('4','anupma','1995-02-06','female');
+insert into students values('5','chirag','1997-05-04','male');
+insert into students values('6','rahul','1987-05-08','male');
+insert into students values('7','kaaju','1996-02-08','female');
+insert into students values('8','jaggu','1997-07-23','female');
+insert into students values('9','prince','1997-05-13','male');
+insert into students values('10','yash','2000-02-04','male');
 
 create table teachers(teacherId int not null primary key,
-					teacher_fname text not null,
-					teacher_lname text not null,
-					 gender char 
+					teacher_fname varchar(40) not null,
+					teacher_lname varchar(40) null,
+					 gender sex null 
 					 );
 					 
-insert into teachers values('1','rajesh','verma','M');
-insert into teachers values('2','parmanand','verma','M');
-insert into teachers values('3','kuldeep','raj','M');
-insert into teachers values('4','nirupma','singh','F');
-insert into teachers values('5','abhishek','maurya','M');
+insert into teachers values('1','rajesh','verma','male');
+insert into teachers values('2','parmanand','verma','male');
+insert into teachers values('3','kuldeep','raj','male');
+insert into teachers values('4','nirupma','singh','female');
+insert into teachers values('5','abhishek','maurya','female');
 
 create table classes(classId int not null,
 				   stId int not null,
@@ -57,12 +59,12 @@ insert into classes values('103','10');
 insert into classes values('104','10');
 
 create table subject(subjectId int not null primary key,
-					 subject_name text not null
+					 subject_name varchar(30) not null
 					);
 
-insert into subject values('1','ds');
+insert into subject values('1','data structure');
 insert into subject values('2','c++');
-insert into subject values('3','js');
+insert into subject values('3','javaScript');
 insert into subject values('4','java');
 insert into subject values('5','python');
 
@@ -70,17 +72,16 @@ insert into subject values('5','python');
 select * from subject;
 
 create table class_schedule(cls_Id int PRIMARY KEY NOT NULL,
-							classno int NOT NULL,
-							subjId int UNIQUE NOT NULL,
-							subject_name text NOT NULL,
-							teach_Id int UNIQUE NOT NULL,
-							teacher_fname text NOT NULL);
+							subjId int NOT NULL,
+							subject_name varchar(30) NOT NULL,
+							teach_Id int NOT NULL,
+							teacher_fname varchar(40) NOT NULL);
 							
-insert into Class_schedule values('101','1','4','oops','1','rajesh');
-insert into Class_schedule values('102','2','2','algorithm','5','abhishek');
-insert into Class_schedule values('103','3','5','cpp','2','parmanand');
-insert into Class_schedule values('104','4','1','data structure','3','kuldeep');
-insert into Class_schedule values('105','5','3','networks','4','nirupma');
+insert into Class_schedule values('101','1','data strucure','1','rajesh');
+insert into Class_schedule values('102','2','c++','5','abhishek');
+insert into Class_schedule values('103','5','python','2','parmanand');
+insert into Class_schedule values('104','4','java','3','kuldeep');
+insert into Class_schedule values('105','3','javaScript','4','nirupma');
 
 select * from class_schedule;
 

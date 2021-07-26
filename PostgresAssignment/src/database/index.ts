@@ -12,10 +12,6 @@ const pool = new Pool({
 });
 
 export async function query(querystring: string) {
-	try {
-		let result = await pool.query(querystring);
-		return result;
-	} catch (e) {
-		throw new Error(e);
-	}
+	let result = await pool.query(querystring);
+	return result;
 }

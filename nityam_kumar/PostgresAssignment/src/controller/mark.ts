@@ -17,11 +17,11 @@ export const createMarks = async (ctx: Context) => {
   try {
     await markSchema.validateAsync(m1);
 
-    await marksService.checkStudentExist(m1);
-
-    await marksService.checkSubjectExist(m1);
-
-    await marksService.checkAlreadyExist(m1);
+    await Promise.all([
+      marksService.checkStudentExist(m1),
+      marksService.checkSubjectExist(m1),
+      marksService.checkAlreadyExist(m1),
+    ]);
 
     await marksService.addMarkDB(m1);
     ctx.status = 200;

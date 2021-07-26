@@ -75,7 +75,7 @@ export const fetchStudentsWithSub = async (ctx: Context) => {
   try {
     await subjectIDSchema.validateAsync({ subject_id });
   } catch (err) {
-    throw new AppError("BAD INPUT DATA", 400);
+    throw new AppError(err.message, 400);
   }
   try {
     const data = await subjectService.fetchStudentsWithSub(subject_id);

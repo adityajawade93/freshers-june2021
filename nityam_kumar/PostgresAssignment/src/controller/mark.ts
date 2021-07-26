@@ -58,7 +58,7 @@ export const modifyMarks = async (ctx: Context) => {
   try {
     await marksInputSchema.validateAsync({ student_id, subject_id, marks });
   } catch (err) {
-    throw new AppError("BAD INPUT DATA", 400);
+    throw new AppError(err.message, 400);
   }
 
   try {
@@ -79,7 +79,7 @@ export const fetchMarks = async (ctx: Context) => {
   try {
     await studentIDSchema.validateAsync({ student_id });
   } catch (err) {
-    throw new AppError("BAD INPUT DATA", 400);
+    throw new AppError(err.message, 400);
   }
 
   try {
@@ -114,7 +114,7 @@ export const fetchHighestMarksPerSubjectWithSubjectID = async (
   try {
     await subjectIDSchema.validateAsync({ subject_id });
   } catch (err) {
-    throw new AppError("BAD INPUT DATA", 400);
+    throw new AppError(err.message, 400);
   }
 
   try {
@@ -136,7 +136,7 @@ export const fetchTopBYNumber = async (ctx: Context) => {
   try {
     await fetchTopBYNumberSchema.validateAsync({ number });
   } catch (err) {
-    throw new AppError("BAD INPUT DATA", 400);
+    throw new AppError(err.message, 400);
   }
 
   try {
@@ -171,7 +171,7 @@ export const fetchTopperPerClassWithClassNumber = async (ctx: Context) => {
   try {
     await classNoSchema.validateAsync({ classNumber });
   } catch (err) {
-    throw new AppError("BAD INPUT DATA", 400);
+    throw new AppError(err.message, 400);
   }
 
   try {

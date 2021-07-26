@@ -38,7 +38,7 @@ export const getClassSchedule = async (ctx: Context) => {
   try {
     await classNoSchema.validateAsync({ classNumber });
   } catch (err) {
-    throw new AppError("BAD DATA", 400);
+    throw new AppError(err.message, 400);
   }
 
   try {
@@ -59,7 +59,7 @@ export const fetchStudentsWithClass = async (ctx: Context) => {
   try {
     await classNoSchema.validateAsync({ classNumber });
   } catch (err) {
-    throw new AppError("BAD DATA", 400);
+    throw new AppError(err.message, 400);
   }
   try {
     const data = await classService.fetchStudentsWithClass(classNumber);

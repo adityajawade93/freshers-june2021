@@ -42,7 +42,7 @@ export const modifyTeacher = async (ctx: Context) => {
   try {
     await teacherIDSchema.validateAsync({ teacher_id });
   } catch (err) {
-    throw new AppError("BAD INPUT DATA", 400);
+    throw new AppError(err.message, 400);
   }
 
   try {
@@ -156,7 +156,7 @@ export const fetchStudentsWithTeacher = async (ctx: Context) => {
   try {
     await teacherIDSchema.validateAsync({ teacher_id });
   } catch (err) {
-    throw new AppError("BAD INPUT DATA", 400);
+    throw new AppError(err.message, 400);
   }
 
   try {

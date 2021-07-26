@@ -1,15 +1,5 @@
 import { Context } from "vm";
-
-const Joi = require("joi");
-
-const scheduleSchema = Joi.object().keys({
-  cls_Id: Joi.number().required(),
-  classno: Joi.number().required(),
-  subjId: Joi.number().required(),
-  subject_name: Joi.string().trim().required(),
-  teach_Id: Joi.number().required(),
-  teacher_fname: Joi.string().trim().required(),
-});
+import { scheduleSchema } from "../validation/schema";
 
 const scheduleController = require("../services/classSchedule");
 
@@ -30,24 +20,25 @@ exports.getClass_scheduleData = async (ctx: Context) => {
     ctx.response.type = "application/json";
     ctx.body = rows.rows;
   } catch (err) {
-    ctx.response.status = 500;
-    ctx.response.type = "text/html";
-    ctx.body = "internal server error";
-    return;
+    ctx.response.status = 400;
+    ctx.response.type = "application/json";
+    ctx.body = {
+      msg: `something went wrong ${err}`,
+    };
   }
 };
 
 exports.add_class_schedule_in_table = async (ctx: Context) => {
+  let req: IClassScheduleInfo = ctx.request.body;
+
+  const reqData = await scheduleSchema.validateAsync(req);
+
+  if (reqData.error) {
+    ctx.response.status = 422;
+    ctx.body = reqData.error.details[0].message;
+    return;
+  }
   try {
-    let req: IClassScheduleInfo = ctx.request.body;
-    const reqData = await scheduleSchema.validateAsync(req);
-
-    if (reqData.error) {
-      ctx.response.status = 422;
-      ctx.body = reqData.error.details[0].message;
-      return;
-    }
-
     await scheduleController.add_class_schedule(
       req.cls_Id,
       req.classno,

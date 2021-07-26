@@ -1,9 +1,9 @@
-const studentClient = require("../database/dbconnect");
+const studentSql = require('../database/dbconnect')
 
 exports.get_student = async () => {
   try {
-    await studentClient.query("set search_path to myschool");
-    return await studentClient.query("select * from students");
+    await studentSql.query("set search_path to myschool");
+    return await studentSql.query("select * from students");
   } catch (err) {
     throw err;
   }
@@ -11,8 +11,8 @@ exports.get_student = async () => {
 
 exports.get_student_length = async () => {
   try {
-    await studentClient.query("set search_path to myschool");
-    return await studentClient.query("select Count(*) from students");
+    await studentSql.query("set search_path to myschool");
+    return await studentSql.query("select Count(*) from students");
   } catch (err) {
     throw err;
   }
@@ -20,8 +20,8 @@ exports.get_student_length = async () => {
 
 exports.get_student_by_classid = async (classId: number) => {
   try {
-    await studentClient.query("set search_path to myschool");
-    return await studentClient.query(
+    await studentSql.query("set search_path to myschool");
+    return await studentSql.query(
       `select S.studentId,S.name,S.dob,S.gender from myschool.students as S,classes where classId=${classId} and studentId=stId`
     );
   } catch (err) {
@@ -31,8 +31,8 @@ exports.get_student_by_classid = async (classId: number) => {
 
 exports.get_student_by_teacherid = async (teacherId: number) => {
   try {
-    await studentClient.query("set search_path to myschool");
-    return await studentClient.query(
+    await studentSql.query("set search_path to myschool");
+    return await studentSql.query(
       `select S.studentId,S.name,S.dob,S.gender from students as S,classes,class_schedule where teach_Id=${teacherId} and classId=cls_Id and stId=studentId`
     );
   } catch (err) {
@@ -42,8 +42,8 @@ exports.get_student_by_teacherid = async (teacherId: number) => {
 
 exports.get_student_by_subjectid = async (subjectId: number) => {
   try {
-    await studentClient.query("set search_path to myschool");
-    return await studentClient.query(
+    await studentSql.query("set search_path to myschool");
+    return await studentSql.query(
       `select S.studentId,S.name,S.dob,S.gender from students AS S,classes,class_schedule 
       where subjId=${subjectId} and classId=cls_Id and stId=studentId`
     );
@@ -59,9 +59,9 @@ exports.add_student = async (
   gender: string
 ) => {
   try {
-    await studentClient.query("set search_path to myschool");
+    await studentSql.query("set search_path to myschool");
     const data = [studentId, name, dob, gender];
-    return await studentClient.query(
+    return await studentSql.query(
       "insert into students values($1,$2,$3,$4)",
       data
     );

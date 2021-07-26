@@ -1,13 +1,5 @@
 import { Context } from "vm";
-
-const Joi = require("joi");
-const teacherSchema = Joi.object().keys({
-  teacherId: Joi.number().required(),
-  teacher_fname: Joi.string().trim().required(),
-  teacher_lname: Joi.string().trim().required(),
-  gender: Joi.string().required(),
-});
-
+import { teacherSchema } from "../validation/schema";
 const teacherController = require("../services/teacher");
 
 interface ITeacherInfo {
@@ -26,24 +18,25 @@ exports.getTeacherData = async (ctx: Context) => {
     ctx.response.type = "application/json";
     ctx.body = rows.rows;
   } catch (err) {
-    ctx.response.status = 500;
-    ctx.response.type = "text/html";
-    ctx.body = "internal server error";
-    return;
+    ctx.response.status = 400;
+    ctx.response.type = "application/json";
+    ctx.body = {
+      msg: `something went wrong  ${err}`,
+    };
   }
 };
 
 exports.add_teacher_in_table = async (ctx: Context) => {
+  let req: ITeacherInfo = ctx.request.body;
+
+  const reqData = await teacherSchema.validateAsync(req);
+
+  if (reqData.error) {
+    ctx.response.status = 422;
+    ctx.body = reqData.error.details[0].message;
+    return;
+  }
   try {
-    let req: ITeacherInfo = ctx.request.body;
-    const reqData = await teacherSchema.validateAsync(req);
-
-    if (reqData.error) {
-      ctx.response.status = 422;
-      ctx.body = reqData.error.details[0].message;
-      return;
-    }
-
     await teacherController.add_teacher(
       req.teacherId,
       req.teacher_fname,
@@ -58,7 +51,7 @@ exports.add_teacher_in_table = async (ctx: Context) => {
     ctx.response.status = 400;
     ctx.response.type = "application/json";
     ctx.body = {
-      msg: `something went wrong in adding student ${err}`,
+      msg: `something went wrong in adding teacher ${err}`,
     };
   }
 };

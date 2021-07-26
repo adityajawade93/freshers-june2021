@@ -1,24 +1,17 @@
 import { Context } from "vm";
-const Joi = require("joi");
-
-const resultSchema = Joi.object().keys({
-  studentid: Joi.number().required(),
-  class_Id: Joi.number().required(),
-  subject_Id: Joi.number().required(),
-  marks: Joi.number().required(),
-});
-
-const updateSchema = Joi.object().keys({
-  studentid: Joi.number().required(),
-  subject_Id: Joi.number().required(),
-  marks: Joi.number().required(),
-});
-
+import { resultSchema } from "../validation/schema";
+import { updateResultSchema } from "../validation/schema";
 const resultController = require("../services/result");
 
 interface IResultInfo {
   studentid: number;
   class_Id: number;
+  subject_Id: number;
+  marks: number;
+}
+
+interface IUpdateResult {
+  studentid: number;
   subject_Id: number;
   marks: number;
 }
@@ -41,15 +34,15 @@ exports.getResultData = async (ctx: Context) => {
 };
 
 exports.add_reasultData_in_table = async (ctx: Context) => {
-  try {
-    let req: IResultInfo = ctx.request.body;
-    const reqData = await resultSchema.validateAsync(req);
-    if (reqData.error) {
-      ctx.response.status = 422;
-      ctx.body = reqData.error.details[0].message;
-      return;
-    }
+  let req: IResultInfo = ctx.request.body;
 
+  const reqData = await resultSchema.validateAsync(req);
+  if (reqData.error) {
+    ctx.response.status = 422;
+    ctx.body = reqData.error.details[0].message;
+    return;
+  }
+  try {
     await resultController.add_result(
       req.studentid,
       req.class_Id,
@@ -70,33 +63,15 @@ exports.add_reasultData_in_table = async (ctx: Context) => {
 };
 
 exports.updateResult_by_studentId_and_subjectId = async (ctx: Context) => {
+  let req: IUpdateResult = ctx.request.body;
+
+  const reqData = await updateResultSchema.validateAsync(req);
+  if (reqData.error) {
+    ctx.response.status = 422;
+    ctx.body = reqData.error.details[0].message;
+    return;
+  }
   try {
-    let req: IResultInfo = ctx.request.body;
-    let [rows]: Array<{ rows: any }> = [];
-
-    const reqData = await updateSchema.validateAsync(req);
-    if (reqData.error) {
-      ctx.response.status = 422;
-      ctx.body = reqData.error.details[0].message;
-      return;
-    }
-
-    let flag = 0;
-    rows = await resultController.check_subject(req.studentid);
-    let length = await resultController.subject_length(req.studentid);
-    for (let i = 0; i < length.rows[0].count; i++) {
-      if (req.subject_Id === rows.rows[i].subjId) {
-        flag = 1;
-        break;
-      }
-    }
-    if (flag === 0) {
-      ctx.response.status = 400;
-      ctx.response.type = "text/html";
-      ctx.body = "This subject is not opted by the student";
-      return;
-    }
-
     await resultController.update_result(
       req.studentid,
       req.subject_Id,

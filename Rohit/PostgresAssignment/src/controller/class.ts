@@ -1,11 +1,5 @@
 import { Context } from "vm";
-
-const Joi = require("joi");
-
-const classSchema = Joi.object().keys({
-  classId: Joi.number().required(),
-  stId: Joi.number().required(),
-});
+import { classSchema } from "../validation/schema";
 
 const classController = require("../services/class");
 
@@ -23,24 +17,24 @@ exports.getClassInfo = async (ctx: Context) => {
     ctx.response.type = "application/json";
     ctx.body = rows.rows;
   } catch (err) {
-    ctx.response.status = 500;
-    ctx.response.type = "text/html";
-    ctx.body = "internal server error";
-    return;
+    ctx.response.status = 400;
+    ctx.response.type = "application/json";
+    ctx.body = {
+      msg: `something went wrong  ${err}`,
+    };
   }
 };
 
 exports.addStudentInClass = async (ctx: Context) => {
+  let req: IClassInfo = ctx.request.body;
+
+  const reqData = await classSchema.validateAsync(req);
+  if (reqData.error) {
+    ctx.response.status = 422;
+    ctx.body = reqData.error.details[0].message;
+    return;
+  }
   try {
-    let req: IClassInfo = ctx.request.body;
-
-    const reqData = await classSchema.validateAsync(req);
-    if (reqData.error) {
-      ctx.response.status = 422;
-      ctx.body = reqData.error.details[0].message;
-      return;
-    }
-
     await classController.add_student_to_class(req.classId, req.stId);
 
     ctx.response.status = 201;

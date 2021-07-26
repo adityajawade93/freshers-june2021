@@ -1,6 +1,6 @@
 const koarouter = require("@koa/router");
 
-const router = new koarouter();
+export const router = new koarouter();
 
 const student = require('../controller/student');
 const teacher = require('../controller/teacher');
@@ -39,5 +39,3 @@ router.get('/subjectmarks/:studentId',mark.getSubjectMarks_by_studentId);
 router.get('/topper/:classId/subject/:subjectId',topper.getTopper_by_classId_and_subjectId);
 router.get('/topten/:classId',topper.getTopTen_by_classId);
 
-
-module.exports = router;

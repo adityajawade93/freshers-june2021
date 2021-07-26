@@ -1,13 +1,5 @@
 import { Context } from "vm";
-const Joi = require("joi");
-
-const studentSchema = Joi.object().keys({
-  studentId: Joi.number().required(),
-  name: Joi.string().trim().required(),
-  dob: Joi.date().required(),
-  gender: Joi.string().required(),
-});
-
+import { studentSchema } from "../validation/schema";
 const studentController = require("../services/student");
 
 interface IStudentInfo {
@@ -26,15 +18,14 @@ interface IStudentDetails {
 }
 
 exports.getStudentData = async (ctx: Context) => {
+  const page = parseInt(ctx.request.query.page);
+  const size = parseInt(ctx.request.query.size);
   try {
     let [rows]: Array<{ rows: IStudentInfo }> = [];
     let length: any;
 
     rows = await studentController.get_student();
     length = await studentController.get_student_length();
-
-    const page = parseInt(ctx.request.query.page);
-    const size = parseInt(ctx.request.query.size);
     const totalPages = Math.ceil(length.rows[0].count / size);
     if (
       page === undefined ||
@@ -63,44 +54,46 @@ exports.getStudentData = async (ctx: Context) => {
     ctx.response.type = "application/json";
     ctx.body = rows.rows;
   } catch (err) {
-    ctx.response.status = 500;
-    ctx.response.type = "text/html";
-    ctx.body = "internal server error";
-    return;
+    ctx.response.status = 400;
+    ctx.response.type = "application/json";
+    ctx.body = {
+      msg: `something went wrong ${err}`,
+    };
   }
 };
 
 exports.studentData_by_classId = async (ctx: Context) => {
+  var classId: number = parseInt(ctx.params.classId);
+  if (classId === undefined || typeof classId !== "number") {
+    ctx.response.status = 400;
+    ctx.response.type = "text/html";
+    ctx.body = "Bad Request";
+    return;
+  }
   try {
-    var classId: number = parseInt(ctx.params.classId);
-    if (classId === undefined || typeof classId !== "number") {
-      ctx.response.status = 400;
-      ctx.response.type = "text/html";
-      ctx.body = "Bad Request";
-      return;
-    }
     let [rows]: Array<{ rows: IStudentDetails }> = [];
     rows = await studentController.get_student_by_classid(classId);
     ctx.response.status = 200;
     ctx.response.type = "application/json";
     ctx.body = rows.rows;
   } catch (err) {
-    ctx.response.status = 500;
-    ctx.response.type = "text/html";
-    ctx.body = "internal server error";
-    return;
+    ctx.response.status = 400;
+    ctx.response.type = "application/json";
+    ctx.body = {
+      msg: `something went wrong ${err}`,
+    };
   }
 };
 
 exports.studentData_teacherId = async (ctx: Context) => {
+  var teacherId: number = parseInt(ctx.params.teacherId);
+  if (teacherId === undefined || typeof teacherId !== "number") {
+    ctx.response.status = 400;
+    ctx.response.type = "text/html";
+    ctx.body = "Bad Request";
+    return;
+  }
   try {
-    var teacherId: number = parseInt(ctx.params.teacherId);
-    if (teacherId === undefined || typeof teacherId !== "number") {
-      ctx.response.status = 400;
-      ctx.response.type = "text/html";
-      ctx.body = "Bad Request";
-      return;
-    }
     let [rows]: Array<{ rows: IStudentDetails }> = [];
     rows = await studentController.get_student_by_teacherid(teacherId);
 
@@ -108,46 +101,48 @@ exports.studentData_teacherId = async (ctx: Context) => {
     ctx.response.type = "application/json";
     ctx.body = rows.rows;
   } catch (err) {
-    ctx.response.status = 500;
-    ctx.response.type = "text/html";
-    ctx.body = "internal server error";
-    return;
+    ctx.response.status = 400;
+    ctx.response.type = "application/json";
+    ctx.body = {
+      msg: `something went wrong ${err}`,
+    };
   }
 };
 
 exports.studentData_subjectId = async (ctx: Context) => {
-  try {
-    var subjectId: number = parseInt(ctx.params.subjectId);
+  var subjectId: number = parseInt(ctx.params.subjectId);
 
-    if (subjectId === undefined || typeof subjectId !== "number") {
-      ctx.response.status = 400;
-      ctx.response.type = "text/html";
-      ctx.body = "Bad Request";
-      return;
-    }
+  if (subjectId === undefined || typeof subjectId !== "number") {
+    ctx.response.status = 400;
+    ctx.response.type = "text/html";
+    ctx.body = "Bad Request";
+    return;
+  }
+  try {
     let [rows]: Array<{ rows: IStudentDetails }> = [];
     rows = await studentController.get_student_by_subjectid(subjectId);
     ctx.response.status = 200;
     ctx.response.type = "application/json";
     ctx.body = rows.rows;
   } catch (err) {
-    ctx.response.status = 500;
-    ctx.response.type = "text/html";
-    ctx.body = "internal server error";
-    return;
+    ctx.response.status = 400;
+    ctx.response.type = "application/json";
+    ctx.body = {
+      msg: `something went wrong ${err}`,
+    };
   }
 };
 
 exports.add_student_in_table = async (ctx: Context) => {
-  try {
-    let req: IStudentDetails = ctx.request.body;
-    const reqData = await studentSchema.validateAsync(req);
-    if (reqData.error) {
-      ctx.response.status = 422;
-      ctx.body = reqData.error.details[0].message;
-      return;
-    }
+  let req: IStudentDetails = ctx.request.body;
 
+  const reqData = await studentSchema.validateAsync(req);
+  if (reqData.error) {
+    ctx.response.status = 422;
+    ctx.body = reqData.error.details[0].message;
+    return;
+  }
+  try {
     await studentController.add_student(
       req.studentId,
       req.name,

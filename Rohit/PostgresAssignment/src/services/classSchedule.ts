@@ -1,9 +1,9 @@
-const scheduleClient = require("../database/dbconnect");
+const scheduleSql = require('../database/dbconnect')
 
 exports.get_class_schedule = async () => {
   try {
-    await scheduleClient.query("set search_path to myschool");
-    return await scheduleClient.query("select * from class_schedule");
+    await scheduleSql.query("set search_path to myschool");
+    return await scheduleSql.query("select * from class_schedule");
   } catch (err) {
     throw err;
   }
@@ -19,7 +19,7 @@ exports.add_class_schedule = async (
 ) => {
   try {
     const data = [cls_Id, classno, subjId, subject_name, teach_Id, teacher_fname];
-    return await scheduleClient.query(
+    return await scheduleSql.query(
       "insert into myschool.class_schedule(cls_Id, classno, subjId, subject_name, teach_Id, teacher_fname) values($1,$2,$3,$4,$5,$6)",
       data
     );

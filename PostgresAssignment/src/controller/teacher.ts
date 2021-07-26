@@ -18,6 +18,8 @@ export async function getTeachers(ctx: Context): Promise<void> {
 		return;
 	} catch (e) {
 		ctx.status = 500;
+
+		if (e.status) ctx.status = e.status;
 		ctx.body = { error: e.message };
 	}
 }
@@ -30,6 +32,8 @@ export async function studentOfteacher(ctx: Context): Promise<void> {
 		ctx.body = requiredStudent;
 	} catch (e) {
 		ctx.status = 500;
+
+		if (e.status) ctx.status = e.status;
 		ctx.body = { error: e.message };
 	}
 }
@@ -39,7 +43,7 @@ export async function addTeacher(ctx: Context): Promise<void> {
 	try {
 		const response = await teacherSchema.validate(obj);
 		if (response.error) {
-			ctx.response.status = 422;
+			ctx.response.status = 400;
 			ctx.body = response.error.details[0].message;
 			return;
 		}
@@ -51,6 +55,8 @@ export async function addTeacher(ctx: Context): Promise<void> {
 		};
 	} catch (e) {
 		ctx.status = 500;
+
+		if (e.status) ctx.status = e.status;
 		ctx.body = { error: e.message };
 	}
 }

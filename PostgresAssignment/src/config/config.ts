@@ -3,7 +3,6 @@ const joi = require("joi");
 const path = require("path");
 dotenv.config({ path: path.join(__dirname, "../../.env") });
 
-console.log(process.env.db_name, typeof process.env.db_name);
 const envVarsSchema = joi
 	.object({
 		db_Port: joi
@@ -21,12 +20,14 @@ const envVarsSchema = joi
 
 const { value: envVars, error } = envVarsSchema.validate(process.env);
 
-if (envVars.error) {
-	throw new Error(`Config Validation Error`);
+if (error) {
+	throw new Error(`Config Validation Error : ${error}`);
 }
 
-export const dbName = process.env.db_name;
-export const dbPort = envVars.db_Port;
-export const dbUser = envVars.db_user;
-export const dbHost = envVars.db_host;
-export const dbPassword = envVars.db_pass;
+module.exports = {
+	dbName: process.env.db_name,
+	dbPort: envVars.db_Port,
+	dbUser: envVars.db_user,
+	dbHost: envVars.db_host,
+	dbPassword: envVars.db_pass,
+};

@@ -1,11 +1,13 @@
 import Koa from "koa";
 import bodyParser from "koa-bodyparser";
 import { Context } from "vm";
-import { dbPort, dbHost } from "../config/config";
+
+const config = require("../config/config");
+
 import { router } from "../routes/routes";
 
-const port = dbPort;
-const host = dbHost;
+const port = config.dbPort;
+const host = config.dbHost;
 
 export const startApp = function() {
 	const app = new Koa();
@@ -18,6 +20,7 @@ export const startApp = function() {
 		ctx.body = "Kindly Enter some valid URL";
 	});
 
-	app.listen(port, host);
-	console.log(`Server listening on http://${host}:${port}`);
+	app.listen(port, () => {
+		console.log(`Server listening on http://${host}:${port}`);
+	});
 };

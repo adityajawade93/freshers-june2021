@@ -22,6 +22,8 @@ export async function getSubject(ctx: Context): Promise<void> {
 		};
 	} catch (e) {
 		ctx.status = 500;
+
+		if (e.status) ctx.status = e.status;
 		ctx.body = { error: e.message };
 	}
 }
@@ -34,6 +36,8 @@ export async function getStudentOfSubject(ctx: Context): Promise<void> {
 		ctx.body = requestedStudent;
 	} catch (e) {
 		ctx.status = 500;
+
+		if (e.status) ctx.status = e.status;
 		ctx.body = { error: e.message };
 	}
 }
@@ -43,7 +47,7 @@ export async function addSubject(ctx: Context): Promise<void> {
 	try {
 		const response = await subjectSchema.validate(obj);
 		if (response.error) {
-			ctx.response.status = 422;
+			ctx.response.status = 400;
 			ctx.body = response.error.details[0].message;
 			return;
 		}
@@ -59,6 +63,8 @@ export async function addSubject(ctx: Context): Promise<void> {
 		};
 	} catch (e) {
 		ctx.status = 500;
+
+		if (e.status) ctx.status = e.status;
 		ctx.body = { error: e.message };
 	}
 }

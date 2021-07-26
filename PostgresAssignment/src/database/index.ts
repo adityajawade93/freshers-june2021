@@ -1,12 +1,11 @@
 const { Pool } = require("pg");
-import { dbName, dbHost, dbPort, dbPassword, dbUser } from "../config/config";
+const config = require("../config/config");
 
 const pool = new Pool({
-	port: 5432,
-	user: dbUser,
-	password: dbPassword,
-	host: dbHost,
-	database: dbName,
+	user: config.dbUser,
+	password: config.dbPassword,
+	host: config.dbHost,
+	database: config.dbName,
 	max: 20,
 	connectionTimeoutMillsis: 0,
 	idleTimeoutMillsis: 0,

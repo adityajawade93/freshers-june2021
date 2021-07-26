@@ -25,6 +25,8 @@ export async function getMarksOfStudent(ctx: Context): Promise<void> {
 		};
 	} catch (e) {
 		ctx.status = 500;
+
+		if (e.status) ctx.status = e.status;
 		ctx.body = { error: e.message };
 	}
 }
@@ -34,7 +36,7 @@ export async function updateMarks(ctx: Context) {
 	try {
 		const response = marksSchema.validate(obj);
 		if (response.error) {
-			ctx.response.status = 422;
+			ctx.response.status = 400;
 			ctx.body = response.error.details[0].message;
 			return;
 		}
@@ -50,6 +52,8 @@ export async function updateMarks(ctx: Context) {
 		};
 	} catch (e) {
 		ctx.status = 500;
+
+		if (e.status) ctx.status = e.status;
 		ctx.body = { error: e.message };
 	}
 }
@@ -59,7 +63,7 @@ export async function addMarks(ctx: any): Promise<void> {
 	try {
 		const response = await marksSchema.validate(obj);
 		if (response.error) {
-			ctx.response.status = 422;
+			ctx.response.status = 400;
 			ctx.body = response.error.details[0].message;
 			return;
 		}
@@ -71,6 +75,8 @@ export async function addMarks(ctx: any): Promise<void> {
 		};
 	} catch (e) {
 		ctx.status = 500;
+
+		if (e.status) ctx.status = e.status;
 		ctx.body = { error: e.message };
 	}
 }
@@ -85,6 +91,8 @@ export async function highestMarksInSubject(ctx: Context): Promise<void> {
 		};
 	} catch (e) {
 		ctx.status = 500;
+
+		if (e.status) ctx.status = e.status;
 		ctx.body = { error: e.message };
 	}
 }
@@ -97,6 +105,8 @@ export async function topper(ctx: Context): Promise<void> {
 		ctx.body = toppers;
 	} catch (e) {
 		ctx.status = 500;
+
+		if (e.status) ctx.status = e.status;
 		ctx.body = { error: e.message };
 	}
 }

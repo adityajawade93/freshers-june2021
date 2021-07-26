@@ -27,7 +27,7 @@ export async function getClass(ctx: Context): Promise<void> {
 }
 
 export async function studentsOfClass(ctx: Context): Promise<void> {
-	const classId = ctx.params.classId;
+	const classId: string = ctx.params.classId;
 	try {
 		const requiredStudent = await student_of_classes(classId);
 		ctx.response.status = 200;
@@ -48,7 +48,7 @@ export async function addClass(ctx: Context): Promise<void> {
 	try {
 		const response = await classSchema.validate(obj);
 		if (response.error) {
-			ctx.response.status = 422;
+			ctx.response.status = 400;
 			ctx.body = response.error.details[0].message;
 			return;
 		}
@@ -60,6 +60,8 @@ export async function addClass(ctx: Context): Promise<void> {
 		};
 	} catch (e) {
 		ctx.status = 500;
+
+		if (e.status) ctx.status = e.status;
 		ctx.body = { error: e.message };
 	}
 }

@@ -19,6 +19,15 @@ export const studentSchema = Joi.object({
 		.required(),
 });
 
+export const studentParamsSchema = Joi.object({
+	page: Joi.number()
+		.positive()
+		.required(), //min length max length
+	size: Joi.number()
+		.positive()
+		.required(),
+});
+
 export const classSchema = Joi.object({
 	name: Joi.string()
 		.trim()

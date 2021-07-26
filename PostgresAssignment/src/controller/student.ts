@@ -11,28 +11,37 @@ interface paginationInterface {
 	offset: number;
 }
 
-import { studentSchema } from "../helper/validation";
-interface student {
+import { studentSchema, studentParamsSchema } from "../helper/validation";
+interface studentI {
 	name: string;
 	classId: string;
 	sex: string;
 	phone: string;
 }
-
+interface studentParamsI {
+	page: number;
+	size: number;
+}
 export async function getStudent(ctx: Context): Promise<void> {
-	const page = parseInt(ctx.request.query.page);
-	const size = parseInt(ctx.request.query.size);
+	const obj: studentParamsI = ctx.request.query;
 	try {
-		const validParams: boolean = validatePage(page, size);
+		const response = await studentParamsSchema.validate(obj);
+		console.log(response);
+		if (response.error) {
+			ctx.response.status = 400;
+			ctx.body = response.error.details[0].message;
+			return;
+		}
+
+		const validParams: boolean = validatePage(obj.page, obj.size);
 		const totalStudent: number = await getStudentCount();
-		// console.log(totalStudent)
 
 		const boundary: paginationInterface = { offset: 0, limit: totalStudent };
 		// if the page and offset is not valid
 
 		if (validParams) {
-			boundary.offset = size;
-			boundary.limit = page * size;
+			boundary.offset = obj.size;
+			boundary.limit = obj.page * obj.size;
 		}
 
 		const allstudent = await allStudents(boundary.offset, boundary.limit);
@@ -51,14 +60,12 @@ export async function getStudent(ctx: Context): Promise<void> {
 }
 
 export async function addStudent(ctx: Context): Promise<void> {
-	const obj: student = ctx.request.body;
+	const obj: studentI = ctx.request.body;
 
 	try {
-		console.log(obj);
 		const response = await studentSchema.validate(obj);
-		console.log(response);
 		if (response.error) {
-			ctx.response.status = 422;
+			ctx.response.status = 400;
 			ctx.body = response.error.details[0].message;
 			return;
 		}

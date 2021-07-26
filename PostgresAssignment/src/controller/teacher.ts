@@ -17,9 +17,7 @@ export async function getTeachers(ctx: Context): Promise<void> {
 		};
 		return;
 	} catch (e) {
-		ctx.status = 500;
-
-		if (e.status) ctx.status = e.status;
+		ctx.status = !e.status ? 500 : e.status;
 		ctx.body = { error: e.message };
 	}
 }
@@ -31,22 +29,20 @@ export async function studentOfteacher(ctx: Context): Promise<void> {
 		ctx.response.status = 200;
 		ctx.body = requiredStudent;
 	} catch (e) {
-		ctx.status = 500;
-
-		if (e.status) ctx.status = e.status;
+		ctx.status = !e.status ? 500 : e.status;
 		ctx.body = { error: e.message };
 	}
 }
 
 export async function addTeacher(ctx: Context): Promise<void> {
 	const obj = ctx.request.body;
+	const response = await teacherSchema.validate(obj);
+	if (response.error) {
+		ctx.response.status = 400;
+		ctx.body = response.error.details[0].message;
+		return;
+	}
 	try {
-		const response = await teacherSchema.validate(obj);
-		if (response.error) {
-			ctx.response.status = 400;
-			ctx.body = response.error.details[0].message;
-			return;
-		}
 		const newTeacher = await add_teacher(obj.name, obj.sex, obj.phone);
 		ctx.response.status = 200;
 		ctx.body = {
@@ -54,9 +50,7 @@ export async function addTeacher(ctx: Context): Promise<void> {
 			dataAdded: newTeacher,
 		};
 	} catch (e) {
-		ctx.status = 500;
-
-		if (e.status) ctx.status = e.status;
+		ctx.status = !e.status ? 500 : e.status;
 		ctx.body = { error: e.message };
 	}
 }

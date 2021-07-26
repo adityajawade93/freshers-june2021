@@ -24,18 +24,16 @@ interface studentParamsI {
 }
 export async function getStudent(ctx: Context): Promise<void> {
 	const obj: studentParamsI = ctx.request.query;
+	const response = await studentParamsSchema.validate(obj);
+	if (response.error) {
+		ctx.response.status = 400;
+		ctx.body = response.error.details[0].message;
+		return;
+	}
+	const validParams: boolean = validatePage(obj.page, obj.size);
+
 	try {
-		const response = await studentParamsSchema.validate(obj);
-		console.log(response);
-		if (response.error) {
-			ctx.response.status = 400;
-			ctx.body = response.error.details[0].message;
-			return;
-		}
-
-		const validParams: boolean = validatePage(obj.page, obj.size);
 		const totalStudent: number = await getStudentCount();
-
 		const boundary: paginationInterface = { offset: 0, limit: totalStudent };
 		// if the page and offset is not valid
 
@@ -52,24 +50,21 @@ export async function getStudent(ctx: Context): Promise<void> {
 			data: allstudent,
 		};
 	} catch (e) {
-		ctx.status = 500;
-		if (e.status) ctx.status = e.status;
-
+		ctx.status = !e.status ? 500 : e.status;
 		ctx.body = { error: e.message };
 	}
 }
 
 export async function addStudent(ctx: Context): Promise<void> {
 	const obj: studentI = ctx.request.body;
+	const response = await studentSchema.validate(obj);
+	if (response.error) {
+		ctx.response.status = 400;
+		ctx.body = response.error.details[0].message;
+		return;
+	}
 
 	try {
-		const response = await studentSchema.validate(obj);
-		if (response.error) {
-			ctx.response.status = 400;
-			ctx.body = response.error.details[0].message;
-			return;
-		}
-
 		const addedStudent = await add_student(
 			obj.name,
 			obj.sex,
@@ -82,9 +77,7 @@ export async function addStudent(ctx: Context): Promise<void> {
 			data_added: addedStudent,
 		};
 	} catch (e) {
-		ctx.status = 500;
-		if (e.status) ctx.status = e.status;
-
+		ctx.status = !e.status ? 500 : e.status;
 		ctx.body = { error: e.message };
 	}
 }

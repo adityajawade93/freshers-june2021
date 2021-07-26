@@ -20,8 +20,7 @@ export async function getClass(ctx: Context): Promise<void> {
 			data: allClasses,
 		};
 	} catch (e) {
-		ctx.status = 500;
-		if (e.status) ctx.status = e.status;
+		ctx.status = !e.status ? 500 : e.status;
 		ctx.body = { error: e.message };
 	}
 }
@@ -36,22 +35,20 @@ export async function studentsOfClass(ctx: Context): Promise<void> {
 			data: requiredStudent,
 		};
 	} catch (e) {
-		ctx.status = 500;
-
-		if (e.status) ctx.status = e.status;
+		ctx.status = !e.status ? 500 : e.status;
 		ctx.body = { error: e.message };
 	}
 }
 
 export async function addClass(ctx: Context): Promise<void> {
 	const obj: classI = ctx.request.body;
+	const response = await classSchema.validate(obj);
+	if (response.error) {
+		ctx.response.status = 400;
+		ctx.body = response.error.details[0].message;
+		return;
+	}
 	try {
-		const response = await classSchema.validate(obj);
-		if (response.error) {
-			ctx.response.status = 400;
-			ctx.body = response.error.details[0].message;
-			return;
-		}
 		const classAdded = await add_class(obj.name.toLowerCase(), obj.room);
 		ctx.response.status = 201;
 		ctx.body = {
@@ -59,9 +56,7 @@ export async function addClass(ctx: Context): Promise<void> {
 			data: classAdded,
 		};
 	} catch (e) {
-		ctx.status = 500;
-
-		if (e.status) ctx.status = e.status;
+		ctx.status = !e.status ? 500 : e.status;
 		ctx.body = { error: e.message };
 	}
 }

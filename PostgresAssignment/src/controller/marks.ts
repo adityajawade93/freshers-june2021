@@ -24,22 +24,20 @@ export async function getMarksOfStudent(ctx: Context): Promise<void> {
 			marks: marksObtained,
 		};
 	} catch (e) {
-		ctx.status = 500;
-
-		if (e.status) ctx.status = e.status;
+		ctx.status = !e.status ? 500 : e.status;
 		ctx.body = { error: e.message };
 	}
 }
 
 export async function updateMarks(ctx: Context) {
 	const obj = ctx.request.body;
+	const response = marksSchema.validate(obj);
+	if (response.error) {
+		ctx.response.status = 400;
+		ctx.body = response.error.details[0].message;
+		return;
+	}
 	try {
-		const response = marksSchema.validate(obj);
-		if (response.error) {
-			ctx.response.status = 400;
-			ctx.body = response.error.details[0].message;
-			return;
-		}
 		const updatedMarks = await update_marks(
 			obj.studentId,
 			obj.subjectId,
@@ -51,22 +49,20 @@ export async function updateMarks(ctx: Context) {
 			data: updatedMarks,
 		};
 	} catch (e) {
-		ctx.status = 500;
-
-		if (e.status) ctx.status = e.status;
+		ctx.status = !e.status ? 500 : e.status;
 		ctx.body = { error: e.message };
 	}
 }
 
 export async function addMarks(ctx: any): Promise<void> {
 	const obj = ctx.request.body;
+	const response = await marksSchema.validate(obj);
+	if (response.error) {
+		ctx.response.status = 400;
+		ctx.body = response.error.details[0].message;
+		return;
+	}
 	try {
-		const response = await marksSchema.validate(obj);
-		if (response.error) {
-			ctx.response.status = 400;
-			ctx.body = response.error.details[0].message;
-			return;
-		}
 		const addedMarks = await add_marks(obj.studentID, obj.subjectID, obj.marks);
 		ctx.response.status = 201;
 		ctx.body = {
@@ -74,9 +70,7 @@ export async function addMarks(ctx: any): Promise<void> {
 			data: addedMarks,
 		};
 	} catch (e) {
-		ctx.status = 500;
-
-		if (e.status) ctx.status = e.status;
+		ctx.status = !e.status ? 500 : e.status;
 		ctx.body = { error: e.message };
 	}
 }
@@ -90,9 +84,7 @@ export async function highestMarksInSubject(ctx: Context): Promise<void> {
 			data: marks,
 		};
 	} catch (e) {
-		ctx.status = 500;
-
-		if (e.status) ctx.status = e.status;
+		ctx.status = !e.status ? 500 : e.status;
 		ctx.body = { error: e.message };
 	}
 }
@@ -104,9 +96,7 @@ export async function topper(ctx: Context): Promise<void> {
 		ctx.response.status = 200;
 		ctx.body = toppers;
 	} catch (e) {
-		ctx.status = 500;
-
-		if (e.status) ctx.status = e.status;
+		ctx.status = !e.status ? 500 : e.status;
 		ctx.body = { error: e.message };
 	}
 }

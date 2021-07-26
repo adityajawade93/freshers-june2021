@@ -21,9 +21,7 @@ export async function getSubject(ctx: Context): Promise<void> {
 			data: allSubject,
 		};
 	} catch (e) {
-		ctx.status = 500;
-
-		if (e.status) ctx.status = e.status;
+		ctx.status = !e.status ? 500 : e.status;
 		ctx.body = { error: e.message };
 	}
 }
@@ -35,22 +33,20 @@ export async function getStudentOfSubject(ctx: Context): Promise<void> {
 		ctx.response.status = 200;
 		ctx.body = requestedStudent;
 	} catch (e) {
-		ctx.status = 500;
-
-		if (e.status) ctx.status = e.status;
+		ctx.status = !e.status ? 500 : e.status;
 		ctx.body = { error: e.message };
 	}
 }
 
 export async function addSubject(ctx: Context): Promise<void> {
 	const obj: subjectI = ctx.request.body;
+	const response = await subjectSchema.validate(obj);
+	if (response.error) {
+		ctx.response.status = 400;
+		ctx.body = response.error.details[0].message;
+		return;
+	}
 	try {
-		const response = await subjectSchema.validate(obj);
-		if (response.error) {
-			ctx.response.status = 400;
-			ctx.body = response.error.details[0].message;
-			return;
-		}
 		const addedSubject = await add_subejct(
 			obj.name,
 			obj.classId,
@@ -62,9 +58,7 @@ export async function addSubject(ctx: Context): Promise<void> {
 			dataAdded: addedSubject,
 		};
 	} catch (e) {
-		ctx.status = 500;
-
-		if (e.status) ctx.status = e.status;
+		ctx.status = !e.status ? 500 : e.status;
 		ctx.body = { error: e.message };
 	}
 }

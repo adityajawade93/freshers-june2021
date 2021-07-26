@@ -19,34 +19,39 @@ interface IResultUpdate{
 
 export async function addResult(ctx: Context) {
   const req:IResult = ctx.request.body;
+  const reqBody = await validation.addResultSchema.validate(req);
+  if (reqBody.error) {
+    ctx.response.status = 400;
+    ctx.response.type = 'text/html';
+    ctx.body = 'Bad Request';
+    return;
+  }
   try {
-    await validation.addResultSchema.validateAsync(req);
-    await serviceresult.addResultService(req.result_id, req.studentid, req.clas_id,
+    await serviceresult.addResult(req.result_id, req.studentid, req.clas_id,
       req.subjectid, req.marks);
 
     ctx.response.status = 200;
     ctx.response.type = 'text/html';
     ctx.body = 'data is inserted in result table';
   } catch (e) {
-    if (e.isJoi === true) {
-      ctx.response.status = 422;
-      ctx.response.type = 'text/html';
-      ctx.body = 'unprocessable entity';
-    } else {
-      ctx.response.status = 500;
-      ctx.response.type = 'text/html';
-      ctx.body = 'internal server error';
-    }
+    ctx.response.status = 500;
+    ctx.response.type = 'text/html';
+    ctx.body = 'internal server error';
   }
 }
 
 export async function updateResult(ctx: Context) {
   const req:IResultUpdate = ctx.request.body;
   let [rows]: Array<{rows: any}> = [];
+  let flag = 0;
+  const reqBody = await validation.updateResultSchema.validate(req);
+  if (reqBody.error) {
+    ctx.response.status = 400;
+    ctx.response.type = 'text/html';
+    ctx.body = 'Bad Request';
+    return;
+  }
   try {
-    await validation.updateResultSchema.validateAsync(req);
-
-    let flag = 0;
     rows = await serviceresult.checkSubject(req.studentid);
     const length = await serviceresult.subjectLength(req.studentid);
     for (let i = 0; i < length.rows[0].count; i++) {
@@ -63,20 +68,14 @@ export async function updateResult(ctx: Context) {
       return;
     }
 
-    await serviceresult.updateResultService(req.studentid, req.subjectid, req.marks);
+    await serviceresult.updateResult(req.studentid, req.subjectid, req.marks);
 
     ctx.response.status = 200;
     ctx.response.type = 'text/html';
     ctx.body = 'marks are updated in result table';
   } catch (e) {
-    if (e.isJoi === true) {
-      ctx.response.status = 422;
-      ctx.response.type = 'text/html';
-      ctx.body = 'unprocessable entity';
-    } else {
-      ctx.response.status = 500;
-      ctx.response.type = 'text/html';
-      ctx.body = 'internal server error';
-    }
+    ctx.response.status = 500;
+    ctx.response.type = 'text/html';
+    ctx.body = 'internal server error';
   }
 }

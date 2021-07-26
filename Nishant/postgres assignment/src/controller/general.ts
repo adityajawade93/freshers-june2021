@@ -9,25 +9,24 @@ export async function gettopperByclassIdAndSubjectId(ctx: Context) {
   classId = Number(classId);
   subjectId = Number(subjectId);
   const data = [classId, subjectId];
+  const reqBody = await validategeneral.gettopperByclassIdAndSubjectIdSchema.validateAsync(data);
+  if (reqBody.error) {
+    ctx.response.status = 400;
+    ctx.response.type = 'text/html';
+    ctx.body = 'Bad Request';
+    return;
+  }
   try {
-    await validategeneral.gettopperByclassIdAndSubjectIdSchema.validateAsync(data);
-
-    const rows:QueryResult = await servicegeneral.gettopperByclassIdAndSubjectIdService(classId,
+    const rows:QueryResult = await servicegeneral.gettopperByclassIdAndSubjectId(classId,
       subjectId);
 
     ctx.response.status = 200;
     ctx.response.type = 'application/json';
     ctx.body = rows.rows;
   } catch (e) {
-    if (e.isJoi === true) {
-      ctx.response.status = 422;
-      ctx.response.type = 'text/html';
-      ctx.body = 'unprocessable entity';
-    } else {
-      ctx.response.status = 500;
-      ctx.response.type = 'text/html';
-      ctx.body = 'internal server error';
-    }
+    ctx.response.status = 500;
+    ctx.response.type = 'text/html';
+    ctx.body = 'internal server error';
   }
 }
 
@@ -35,21 +34,23 @@ export async function gettopstudent(ctx: Context) {
   let { classId, count }:{classId:number, count:number} = ctx.params;
   classId = Number(classId);
   count = Number(count);
+  const data = [classId, count];
+  const reqBody = await validategeneral.getTopStudentSchema.validateAsync(data);
+  if (reqBody.error) {
+    ctx.response.status = 400;
+    ctx.response.type = 'text/html';
+    ctx.body = 'Bad Request';
+    return;
+  }
   try {
-    const rows:QueryResult = await servicegeneral.gettopstudentService(classId, count);
+    const rows:QueryResult = await servicegeneral.gettopstudent(classId, count);
 
     ctx.response.status = 200;
     ctx.response.type = 'application/json';
     ctx.body = rows.rows;
   } catch (e) {
-    if (e.isJoi === true) {
-      ctx.response.status = 422;
-      ctx.response.type = 'text/html';
-      ctx.body = 'unprocessable entity';
-    } else {
-      ctx.response.status = 500;
-      ctx.response.type = 'text/html';
-      ctx.body = 'internal server error';
-    }
+    ctx.response.status = 500;
+    ctx.response.type = 'text/html';
+    ctx.body = 'internal server error';
   }
 }

@@ -16,7 +16,7 @@ interface ITeacher{
 
 export async function getTeacher(ctx: Context) {
   try {
-    const rows:QueryResult = await serviceteacher.getTeacherService();
+    const rows:QueryResult = await serviceteacher.getTeacher();
 
     ctx.response.status = 200;
     ctx.response.type = 'application/json';
@@ -31,45 +31,45 @@ export async function getTeacher(ctx: Context) {
 export async function getStudentByTeacherId(ctx: Context) {
   let { teacherId }:{teacherId:number} = ctx.params;
   teacherId = Number(teacherId);
+  const reqBody = await validateteacher.getStudentByTeacherIdSchema.validateAsync(teacherId);
+  if (reqBody.error) {
+    ctx.response.status = 400;
+    ctx.response.type = 'text/html';
+    ctx.body = 'Bad Request';
+    return;
+  }
   try {
-    await validateteacher.getStudentByTeacherIdSchema.validateAsync(teacherId);
-    const rows:QueryResult = await serviceteacher.getStudentByTeacherIdService(teacherId);
+    const rows:QueryResult = await serviceteacher.getStudentByTeacherId(teacherId);
 
     ctx.response.status = 200;
     ctx.response.type = 'application/json';
     ctx.body = rows.rows;
   } catch (e) {
-    if (e.isJoi === true) {
-      ctx.response.status = 422;
-      ctx.response.type = 'text/html';
-      ctx.body = 'unprocessable entity';
-    } else {
-      ctx.response.status = 500;
-      ctx.response.type = 'text/html';
-      ctx.body = 'internal server error';
-    }
+    ctx.response.status = 500;
+    ctx.response.type = 'text/html';
+    ctx.body = 'internal server error';
   }
 }
 
 export async function addTeacher(ctx: Context) {
   const req:ITeacher = ctx.request.body;
+  const reqBody = await validateteacher.addTeacherSchema.validateAsync(req);
+  if (reqBody.error) {
+    ctx.response.status = 400;
+    ctx.response.type = 'text/html';
+    ctx.body = 'Bad Request';
+    return;
+  }
   try {
-    await validateteacher.addTeacherSchema.validateAsync(req);
-    await serviceteacher.addTeacherService(req.teacher_id, req.fname, req.mname, req.lname,
+    await serviceteacher.addTeacher(req.teacher_id, req.fname, req.mname, req.lname,
       req.dob, req.gender, req.address);
 
     ctx.response.status = 200;
     ctx.response.type = 'text/html';
     ctx.body = 'data is inserted in teacher table';
   } catch (e) {
-    if (e.isJoi === true) {
-      ctx.response.status = 422;
-      ctx.response.type = 'text/html';
-      ctx.body = 'unprocessable entity';
-    } else {
-      ctx.response.status = 500;
-      ctx.response.type = 'text/html';
-      ctx.body = 'internal server error';
-    }
+    ctx.response.status = 500;
+    ctx.response.type = 'text/html';
+    ctx.body = 'internal server error';
   }
 }

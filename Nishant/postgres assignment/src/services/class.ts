@@ -1,28 +1,25 @@
 import sqlclient from '../database/db';
 
-export async function getClassService() {
+export async function getClass() {
   try {
-    await sqlclient.query('SET search_path TO College');
-    return (await sqlclient.query('SELECT * FROM Class_schedule ORDER BY classno'));
+    return (await sqlclient.query('SELECT * FROM College.Class_schedule ORDER BY classno'));
   } catch (e) {
     throw Error(e);
   }
 }
 
-export async function getStudentByClassIdService(classId:number) {
+export async function getStudentByClassId(classId:number) {
   try {
-    await sqlclient.query('SET search_path TO College');
-    return (await sqlclient.query(`SELECT S.student_id,S.fname FROM Student AS S,class_student WHERE class_id=${classId} AND studid=student_id ORDER BY S.fname`));
+    return (await sqlclient.query(`SELECT S.student_id,S.fname FROM College.Student AS S,College.class_student WHERE class_id=${classId} AND studid=student_id ORDER BY S.fname`));
   } catch (e) {
     throw Error(e);
   }
 }
 
-export async function addStudentInClassService(classId:number, studId:number) {
+export async function addStudentInClass(classId:number, studId:number) {
   try {
-    await sqlclient.query('SET search_path TO College');
     const data = [classId, studId];
-    return (await sqlclient.query('INSERT INTO class_student values($1,$2)', data));
+    return (await sqlclient.query('INSERT INTO College.class_student values($1,$2)', data));
   } catch (e) {
     throw Error(e);
   }

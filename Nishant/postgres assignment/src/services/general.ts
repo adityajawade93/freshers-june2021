@@ -1,19 +1,17 @@
 import sqlclient from '../database/db';
 
-export async function gettopperByclassIdAndSubjectIdService(classId:number, subjectId:number) {
+export async function gettopperByclassIdAndSubjectId(classId:number, subjectId:number) {
   try {
-    await sqlclient.query('SET search_path TO College');
-    return (await sqlclient.query(`SELECT student_id,fname,S.marks FROM (SELECT * FROM result WHERE clas_id=${classId} AND subjectid=${subjectId} ORDER BY marks DESC) AS S,Student WHERE S.studentid=student_id LIMIT 1`));
+    return (await sqlclient.query(`SELECT student_id,fname,S.marks FROM (SELECT * FROM College.result WHERE clas_id=${classId} AND subjectid=${subjectId} ORDER BY marks DESC) AS S,College.Student WHERE S.studentid=student_id LIMIT 1 ORDER BY fname`));
   } catch (e) {
     throw Error(e);
   }
 }
 
-export async function gettopstudentService(classId:number, count:number) {
+export async function gettopstudent(classId:number, count:number) {
   try {
-    await sqlclient.query('SET search_path TO College');
     return (await sqlclient.query(`SELECT s.student_id , s.fname , a.total_marks
-          FROM college.student s
+          FROM College.student s
           INNER JOIN(
           SELECT SUM(r.marks) AS total_marks , s.student_id
           FROM college.student s
@@ -25,7 +23,7 @@ export async function gettopstudentService(classId:number, count:number) {
           ) a
           ON s.student_id = a.student_id
           ORDER BY total_marks DESC
-          LIMIT ${count}`));
+          LIMIT ${count} ORDER BY s.fname`));
   } catch (e) {
     throw Error(e);
   }

@@ -1,17 +1,17 @@
 CREATE SCHEMA College;
 SET search_path TO College;
 create type sex as enum('male','female','others');
-    CREATE TABLE Student(student_id int PRIMARY KEY NOT NULL,fname text NOT NULL,mname text NULL,lname text NULL,dob date NOT NULL,gender sex NOT NULL,address text NOT NULL);
+CREATE TABLE Student(student_id int PRIMARY KEY NOT NULL,fname varchar(20) NOT NULL,mname varchar(20) NULL,lname varchar(20) NULL,dob date NOT NULL,gender sex NOT NULL,address varchar(50) NOT NULL);
 
-CREATE TABLE Teacher(teacher_id int PRIMARY KEY NOT NULL,fname text NOT NULL,mname text NULL,lname text NULL,dob date NOT NULL,gender sex NOT NULL,address text NOT NULL);
+CREATE TABLE Teacher(teacher_id int PRIMARY KEY NOT NULL,fname varchar(20) NOT NULL,mname varchar(20) NULL,lname varchar(20) NULL,dob date NOT NULL,gender sex NOT NULL,address varchar(50) NOT NULL);
    
-  CREATE TABLE subject(subject_id int PRIMARY KEY NOT NULL,subject_name text NOT NULL);
+  CREATE TABLE subject(subject_id int PRIMARY KEY NOT NULL,subject_name varchar(20) NOT NULL);
    
-     CREATE TABLE Class_schedule(classid int PRIMARY KEY NOT NULL,classno int NOT NULL,subj_id int UNIQUE NOT NULL,subj_name text NOT NULL,t_id int UNIQUE NOT NULL,t_fname text NOT NULL);
+     CREATE TABLE Class_schedule(classid int PRIMARY KEY NOT NULL,classno int NOT NULL,subj_id int UNIQUE NOT NULL,subj_name varchar(20) NOT NULL,t_id int UNIQUE NOT NULL,t_fname varchar(20) NOT NULL);
    
     CREATE TABLE Class_student(class_id int NOT NULL,studid int NOT NULL,PRIMARY KEY(class_id,studid));
    
-    CREATE TABLE Result(result_id int PRIMARY KEY NOT NULL,studentid int NOT NULL,clas_id int NOT NULL,subjectid int NOT NULL,marks int NOT NULL);  
+    CREATE TABLE Result(result_id int PRIMARY KEY NOT NULL,studentid int NOT NULL,clas_id int NOT NULL,subjectid int NOT NULL,marks smallint NOT NULL);  
    
    INSERT INTO Student values('1','sachin','ramesh','tendulkar','1967-08-11','male','lucknow');
       INSERT INTO Student values('2','akshita',NULL,'mahajan','1997-08-12','female','jammu');

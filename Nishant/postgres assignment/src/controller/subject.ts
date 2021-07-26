@@ -11,7 +11,7 @@ interface ISubject{
 
 export async function getSubject(ctx: Context) {
   try {
-    const rows : QueryResult = await servicesubject.getSubjectService();
+    const rows : QueryResult = await servicesubject.getSubject();
 
     ctx.response.status = 200;
     ctx.response.type = 'application/json';
@@ -28,63 +28,63 @@ export async function getStudentBySubjectId(ctx: Context) {
   subjectId = Number(subjectId);
   try {
     await validatesubject.getStudentBySubjectIdSchema.validateAsync(subjectId);
-    const rows:QueryResult = await servicesubject.getStudentBySubjectIdService(subjectId);
+  } catch (e) {
+    ctx.response.status = 400;
+    ctx.response.type = 'text/html';
+    ctx.body = 'Bad Request';
+  }
+  try {
+    const rows:QueryResult = await servicesubject.getStudentBySubjectId(subjectId);
     ctx.response.status = 200;
     ctx.response.type = 'application/json';
     ctx.body = rows.rows;
   } catch (e) {
-    if (e.isJoi === true) {
-      ctx.response.status = 422;
-      ctx.response.type = 'text/html';
-      ctx.body = 'unprocessable entity';
-    } else {
-      ctx.response.status = 500;
-      ctx.response.type = 'text/html';
-      ctx.body = 'internal server error';
-    }
+    ctx.response.status = 500;
+    ctx.response.type = 'text/html';
+    ctx.body = 'internal server error';
   }
 }
 
 export async function getSubjectMarksByStudentId(ctx: Context) {
   let { studentId }:{studentId:number} = ctx.params;
   studentId = Number(studentId);
+  const reqBody = await validatesubject.getSubjectMarksBySubjectIdSchema.validateAsync(studentId);
+  if (reqBody.error) {
+    ctx.response.status = 400;
+    ctx.response.type = 'text/html';
+    ctx.body = 'Bad Request';
+    return;
+  }
   try {
-    await validatesubject.getSubjectMarksBySubjectIdSchema.validateAsync(studentId);
-    const rows:QueryResult = await servicesubject.getSubjectMarksByStudentIdService(studentId);
+    const rows:QueryResult = await servicesubject.getSubjectMarksByStudentId(studentId);
     ctx.response.status = 200;
     ctx.response.type = 'application/json';
     ctx.body = rows.rows;
   } catch (e) {
-    if (e.isJoi === true) {
-      ctx.response.status = 422;
-      ctx.response.type = 'text/html';
-      ctx.body = 'unprocessable entity';
-    } else {
-      ctx.response.status = 500;
-      ctx.response.type = 'text/html';
-      ctx.body = 'internal server error';
-    }
+    ctx.response.status = 500;
+    ctx.response.type = 'text/html';
+    ctx.body = 'internal server error';
   }
 }
 
 export async function addSubject(ctx: Context) {
   const req:ISubject = ctx.request.body;
+  const reqBody = await validatesubject.addSubjectSchema.validateAsync(req);
+  if (reqBody.error) {
+    ctx.response.status = 400;
+    ctx.response.type = 'text/html';
+    ctx.body = 'Bad Request';
+    return;
+  }
   try {
-    await validatesubject.addSubjectSchema.validateAsync(req);
-    await servicesubject.addSubjectService(req.subject_id, req.subject_name);
+    await servicesubject.addSubject(req.subject_id, req.subject_name);
 
     ctx.response.status = 200;
     ctx.response.type = 'text/html';
     ctx.body = 'data is inserted in Subject table';
   } catch (e) {
-    if (e.isJoi === true) {
-      ctx.response.status = 422;
-      ctx.response.type = 'text/html';
-      ctx.body = 'unprocessable entity';
-    } else {
-      ctx.response.status = 500;
-      ctx.response.type = 'text/html';
-      ctx.body = 'internal server error';
-    }
+    ctx.response.status = 500;
+    ctx.response.type = 'text/html';
+    ctx.body = 'internal server error';
   }
 }

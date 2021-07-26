@@ -50,9 +50,8 @@ export async function getStudent(ctx: Context) {
 }
 
 export async function addStudent(ctx: Context) {
+  const req:IStudent = ctx.request.body;
   try {
-    const req:IStudent = ctx.request.body;
-
     await addStudentSchema.validateAsync(req);
     await studentService.addStudentService(req.student_id, req.fname, req.mname, req.lname, req.dob,
       req.gender, req.address);

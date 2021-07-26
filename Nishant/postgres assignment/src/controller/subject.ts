@@ -24,9 +24,9 @@ export async function getSubject(ctx: Context) {
 }
 
 export async function getStudentBySubjectId(ctx: Context) {
+  let { subjectId }:{subjectId:number} = ctx.params;
+  subjectId = Number(subjectId);
   try {
-    let { subjectId }:{subjectId:number} = ctx.params;
-    subjectId = Number(subjectId);
     await validatesubject.getStudentBySubjectIdSchema.validateAsync(subjectId);
     const rows:QueryResult = await servicesubject.getStudentBySubjectIdService(subjectId);
     ctx.response.status = 200;
@@ -46,9 +46,9 @@ export async function getStudentBySubjectId(ctx: Context) {
 }
 
 export async function getSubjectMarksByStudentId(ctx: Context) {
+  let { studentId }:{studentId:number} = ctx.params;
+  studentId = Number(studentId);
   try {
-    let { studentId }:{studentId:number} = ctx.params;
-    studentId = Number(studentId);
     await validatesubject.getSubjectMarksBySubjectIdSchema.validateAsync(studentId);
     const rows:QueryResult = await servicesubject.getSubjectMarksByStudentIdService(studentId);
     ctx.response.status = 200;
@@ -68,8 +68,8 @@ export async function getSubjectMarksByStudentId(ctx: Context) {
 }
 
 export async function addSubject(ctx: Context) {
+  const req:ISubject = ctx.request.body;
   try {
-    const req:ISubject = ctx.request.body;
     await validatesubject.addSubjectSchema.validateAsync(req);
     await servicesubject.addSubjectService(req.subject_id, req.subject_name);
 

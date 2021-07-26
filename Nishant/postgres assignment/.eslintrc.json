@@ -23,7 +23,8 @@
         "no-unused-vars":"off",
         "import/extensions":"off",
         "new-cap":"off",
-        "camelcase":"off"
+        "camelcase":"off",
+        "no-shadow":"off"
         
     },
     "settings": {

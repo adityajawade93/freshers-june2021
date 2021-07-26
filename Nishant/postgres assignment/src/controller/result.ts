@@ -18,8 +18,8 @@ interface IResultUpdate{
 }
 
 export async function addResult(ctx: Context) {
+  const req:IResult = ctx.request.body;
   try {
-    const req:IResult = ctx.request.body;
     await validation.addResultSchema.validateAsync(req);
     await serviceresult.addResultService(req.result_id, req.studentid, req.clas_id,
       req.subjectid, req.marks);
@@ -41,9 +41,9 @@ export async function addResult(ctx: Context) {
 }
 
 export async function updateResult(ctx: Context) {
+  const req:IResultUpdate = ctx.request.body;
+  let [rows]: Array<{rows: any}> = [];
   try {
-    const req:IResultUpdate = ctx.request.body;
-    let [rows]: Array<{rows: any}> = [];
     await validation.updateResultSchema.validateAsync(req);
 
     let flag = 0;

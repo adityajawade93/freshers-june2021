@@ -23,8 +23,8 @@ export async function getClass(ctx: Context) {
 }
 
 export async function getStudentByClassId(ctx: Context) {
+  const classId:number = parseInt(ctx.params.classId);
   try {
-    const classId:number = parseInt(ctx.params.classId);
     await validateclass.getStudentByClassIdSchema.validateAsync(classId);
     const rows:QueryResult = await serviceclass.getStudentByClassIdService(classId);
     ctx.response.status = 200;
@@ -44,8 +44,8 @@ export async function getStudentByClassId(ctx: Context) {
 }
 
 export async function addStudentInClass(ctx: Context) {
+  const req:IClass = ctx.request.body;
   try {
-    const req:IClass = ctx.request.body;
     await validateclass.addStudentInClassSchema.validateAsync(req);
     await serviceclass.addStudentInClassService(req.class_id, req.studid);
 

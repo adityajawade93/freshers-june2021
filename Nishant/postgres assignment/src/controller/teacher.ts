@@ -29,9 +29,9 @@ export async function getTeacher(ctx: Context) {
 }
 
 export async function getStudentByTeacherId(ctx: Context) {
+  let { teacherId }:{teacherId:number} = ctx.params;
+  teacherId = Number(teacherId);
   try {
-    let { teacherId }:{teacherId:number} = ctx.params;
-    teacherId = Number(teacherId);
     await validateteacher.getStudentByTeacherIdSchema.validateAsync(teacherId);
     const rows:QueryResult = await serviceteacher.getStudentByTeacherIdService(teacherId);
 
@@ -52,8 +52,8 @@ export async function getStudentByTeacherId(ctx: Context) {
 }
 
 export async function addTeacher(ctx: Context) {
+  const req:ITeacher = ctx.request.body;
   try {
-    const req:ITeacher = ctx.request.body;
     await validateteacher.addTeacherSchema.validateAsync(req);
     await serviceteacher.addTeacherService(req.teacher_id, req.fname, req.mname, req.lname,
       req.dob, req.gender, req.address);

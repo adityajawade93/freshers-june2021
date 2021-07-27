@@ -5,6 +5,12 @@ import {
 	addTeacher as add_teacher,
 } from "../services/teachers";
 
+interface ITeacher {
+	name: string;
+	sex: string;
+	phone: string;
+}
+
 import { teacherSchema } from "../helper/validation";
 
 export async function getTeachers(ctx: Context): Promise<void> {
@@ -35,7 +41,7 @@ export async function studentOfteacher(ctx: Context): Promise<void> {
 }
 
 export async function addTeacher(ctx: Context): Promise<void> {
-	const obj = ctx.request.body;
+	const obj: ITeacher = ctx.request.body;
 	const response = await teacherSchema.validate(obj);
 	if (response.error) {
 		ctx.response.status = 400;

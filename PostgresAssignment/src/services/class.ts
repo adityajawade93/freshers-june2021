@@ -1,7 +1,7 @@
 import { query } from "../database/index";
 
 export async function getClasses(): Promise<Array<string>> {
-	const response = await query(`SELET * FROM school.class order by name DESC`);
+	const response = await query(`SELECT * FROM school.class order by name DESC`);
 	return response.rows;
 }
 

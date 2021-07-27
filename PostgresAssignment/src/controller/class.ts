@@ -6,7 +6,7 @@ import {
 } from "../services/class";
 import { classSchema } from "../helper/validation";
 
-interface classI {
+interface IClass {
 	name: string;
 	room: number;
 }
@@ -41,7 +41,7 @@ export async function studentsOfClass(ctx: Context): Promise<void> {
 }
 
 export async function addClass(ctx: Context): Promise<void> {
-	const obj: classI = ctx.request.body;
+	const obj: IClass = ctx.request.body;
 	const response = await classSchema.validate(obj);
 	if (response.error) {
 		ctx.response.status = 400;

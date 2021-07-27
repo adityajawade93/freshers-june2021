@@ -8,7 +8,7 @@ import {
 } from "../services/marks";
 import { marksSchema } from "../helper/validation";
 
-interface marksI {
+interface IMarks {
 	studentId: string;
 	subjectId: string;
 	marks: number;
@@ -30,7 +30,7 @@ export async function getMarksOfStudent(ctx: Context): Promise<void> {
 }
 
 export async function updateMarks(ctx: Context) {
-	const obj = ctx.request.body;
+	const obj: IMarks = ctx.request.body;
 	const response = marksSchema.validate(obj);
 	if (response.error) {
 		ctx.response.status = 400;
@@ -55,7 +55,7 @@ export async function updateMarks(ctx: Context) {
 }
 
 export async function addMarks(ctx: any): Promise<void> {
-	const obj = ctx.request.body;
+	const obj: IMarks = ctx.request.body;
 	const response = await marksSchema.validate(obj);
 	if (response.error) {
 		ctx.response.status = 400;
@@ -63,7 +63,7 @@ export async function addMarks(ctx: any): Promise<void> {
 		return;
 	}
 	try {
-		const addedMarks = await add_marks(obj.studentID, obj.subjectID, obj.marks);
+		const addedMarks = await add_marks(obj.studentId, obj.subjectId, obj.marks);
 		ctx.response.status = 201;
 		ctx.body = {
 			msg: "marks added",

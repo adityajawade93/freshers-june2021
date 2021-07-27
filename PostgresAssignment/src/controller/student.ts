@@ -6,24 +6,24 @@ import {
 	addStudent as add_student,
 } from "../services/student";
 
-interface paginationInterface {
+interface IPagination {
 	limit: number;
 	offset: number;
 }
 
 import { studentSchema, studentParamsSchema } from "../helper/validation";
-interface studentI {
+interface IStudent {
 	name: string;
 	classId: string;
 	sex: string;
 	phone: string;
 }
-interface studentParamsI {
+interface IStudentParams {
 	page: number;
 	size: number;
 }
 export async function getStudent(ctx: Context): Promise<void> {
-	const obj: studentParamsI = ctx.request.query;
+	const obj: IStudentParams = ctx.request.query;
 	const response = await studentParamsSchema.validate(obj);
 	if (response.error) {
 		ctx.response.status = 400;
@@ -34,7 +34,7 @@ export async function getStudent(ctx: Context): Promise<void> {
 
 	try {
 		const totalStudent: number = await getStudentCount();
-		const boundary: paginationInterface = { offset: 0, limit: totalStudent };
+		const boundary: IPagination = { offset: 0, limit: totalStudent };
 		// if the page and offset is not valid
 
 		if (validParams) {
@@ -56,7 +56,7 @@ export async function getStudent(ctx: Context): Promise<void> {
 }
 
 export async function addStudent(ctx: Context): Promise<void> {
-	const obj: studentI = ctx.request.body;
+	const obj: IStudent = ctx.request.body;
 	const response = await studentSchema.validate(obj);
 	if (response.error) {
 		ctx.response.status = 400;

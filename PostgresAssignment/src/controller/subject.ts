@@ -6,7 +6,7 @@ import {
 } from "../services/subject";
 import { subjectSchema } from "../helper/validation";
 
-interface subjectI {
+interface ISubject {
 	name: string;
 	classId: string;
 	teacherId: string;
@@ -39,7 +39,7 @@ export async function getStudentOfSubject(ctx: Context): Promise<void> {
 }
 
 export async function addSubject(ctx: Context): Promise<void> {
-	const obj: subjectI = ctx.request.body;
+	const obj: ISubject = ctx.request.body;
 	const response = await subjectSchema.validate(obj);
 	if (response.error) {
 		ctx.response.status = 400;

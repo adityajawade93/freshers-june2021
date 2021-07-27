@@ -10,12 +10,6 @@ interface IMarksInfo {
 
 exports.getSubjectMarks_by_studentId = async (ctx: Context) => {
   var studentId: number = parseInt(ctx.params.studentId);
-  if (studentId === undefined || typeof studentId !== "number") {
-    ctx.response.status = 400;
-    ctx.response.type = "text/html";
-    ctx.body = "Bad Request";
-    return;
-  }
   try {
     let [rows]: Array<{ rows: IMarksInfo }> = [];
     rows = await marksController.get_subjectmarks_by_studentid(studentId);

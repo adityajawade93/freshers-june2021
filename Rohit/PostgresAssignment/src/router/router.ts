@@ -21,7 +21,7 @@ router.get('/teacher',teacher.getTeacherData);
 router.post('/teacher',teacher.add_teacher_in_table);
 
 router.get('/class',clas.getClassInfo);
-router.post('/classes',clas.addStudentInClass);
+router.post('/class',clas.addStudentInClass);
 
 router.get('/subject',subject.getSubjectData);
 router.post('/subject',subject.add_subject_in_table);

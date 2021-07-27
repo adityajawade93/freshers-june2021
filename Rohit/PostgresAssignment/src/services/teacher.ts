@@ -1,12 +1,7 @@
-const teacherSql = require('../database/dbconnect')
+const teacherSql = require("../database/dbconnect");
 
 exports.get_teacher = async () => {
-  try {
-    await teacherSql.query("set search_path to myschool");
-    return await teacherSql.query("select * from teachers");
-  } catch (err) {
-    throw err;
-  }
+  return await teacherSql.query("select * from myschool.teachers order by teacherId");
 };
 
 exports.add_teacher = async (
@@ -15,14 +10,9 @@ exports.add_teacher = async (
   teacher_lname: string,
   gender: string
 ) => {
-  try {
-    await teacherSql.query("set search_path to myschool");
-    const data = [teacherId, teacher_fname, teacher_lname, gender];
-    return await teacherSql.query(
-      "insert into teachers values($1,$2,$3,$4)",
-      data
-    );
-  } catch (err) {
-    throw err;
-  }
+  const data = [teacherId, teacher_fname, teacher_lname, gender];
+  return await teacherSql.query(
+    "insert into myschool.teachers values($1,$2,$3,$4)",
+    data
+  );
 };

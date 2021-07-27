@@ -2,7 +2,7 @@
   "name": "api_myschool",
   "version": "1.0.0",
   "description": "",
-  "main": "src/app/server.js",
+  "main": "dist/app/server.js",
   "dependencies": {
     "@koa/router": "^10.0.0",
     "dotenv": "^10.0.0",
@@ -11,7 +11,9 @@
     "koa-bodyparser": "^4.3.0",
     "koa-json": "^2.0.2",
     "nodemon": "^2.0.12",
-    "pg": "^8.6.0"
+    "path": "^0.12.7",
+    "pg": "^8.6.0",
+    "typescript": "^4.3.5"
   },
   "devDependencies": {
     "@types/node": "^15.14.0",
@@ -26,7 +28,7 @@
     "dev": "nodemon src/app/server.ts",
     "lint": "eslint ./",
     "build": "tsc -p .",
-    "start": "node src/app/server.js"
+    "start": "node dist/app/server.js"
   },
   "author": "",
   "license": "ISC"

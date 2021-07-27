@@ -63,13 +63,7 @@ exports.getStudentData = async (ctx: Context) => {
 };
 
 exports.studentData_by_classId = async (ctx: Context) => {
-  var classId: number = parseInt(ctx.params.classId);
-  if (classId === undefined || typeof classId !== "number") {
-    ctx.response.status = 400;
-    ctx.response.type = "text/html";
-    ctx.body = "Bad Request";
-    return;
-  }
+  const classId: number = parseInt(ctx.params.classId);
   try {
     let [rows]: Array<{ rows: IStudentDetails }> = [];
     rows = await studentController.get_student_by_classid(classId);
@@ -87,12 +81,6 @@ exports.studentData_by_classId = async (ctx: Context) => {
 
 exports.studentData_teacherId = async (ctx: Context) => {
   var teacherId: number = parseInt(ctx.params.teacherId);
-  if (teacherId === undefined || typeof teacherId !== "number") {
-    ctx.response.status = 400;
-    ctx.response.type = "text/html";
-    ctx.body = "Bad Request";
-    return;
-  }
   try {
     let [rows]: Array<{ rows: IStudentDetails }> = [];
     rows = await studentController.get_student_by_teacherid(teacherId);
@@ -111,13 +99,6 @@ exports.studentData_teacherId = async (ctx: Context) => {
 
 exports.studentData_subjectId = async (ctx: Context) => {
   var subjectId: number = parseInt(ctx.params.subjectId);
-
-  if (subjectId === undefined || typeof subjectId !== "number") {
-    ctx.response.status = 400;
-    ctx.response.type = "text/html";
-    ctx.body = "Bad Request";
-    return;
-  }
   try {
     let [rows]: Array<{ rows: IStudentDetails }> = [];
     rows = await studentController.get_student_by_subjectid(subjectId);

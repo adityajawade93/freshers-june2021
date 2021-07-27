@@ -6,10 +6,11 @@ dotenv.config({ path: path.join(__dirname, "../.env") });
 
 const envVarsSchema = Joi.object({
   port: Joi.number().positive().required(),
+  db_port: Joi.number().positive().required(),
   user: Joi.string().required(),
   host: Joi.string().required(),
   name: Joi.string().required(),
-  pass: Joi.string().required().description('password to the database'),
+  pass: Joi.string().required().description("password to the database"),
 }).unknown();
 
 const { value: envVars } = envVarsSchema.validate(process.env);
@@ -19,10 +20,10 @@ if (envVars.error) {
 }
 
 export const config = {
-  dbPort: envVars.port,
-  dbUser: envVars.user, 
+  dbPort: envVars.db_port,
+  dbUser: envVars.user,
   dbHost: envVars.host,
   dbPassword: envVars.pass,
   dbName: envVars.name,
-  port: 4000,
+  port: envVars.port,
 };

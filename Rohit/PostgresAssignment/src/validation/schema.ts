@@ -4,7 +4,10 @@ export const studentSchema = Joi.object().keys({
   studentId: Joi.number().required(),
   name: Joi.string().trim().required().min(4).max(30),
   dob: Joi.date().required(),
-  gender: Joi.string().lowercase().trim().valid(null, 'male', 'female', 'others'),
+  gender: Joi.string()
+    .lowercase()
+    .trim()
+    .valid(null, "male", "female", "others"),
 });
 
 export const subjectSchema = Joi.object().keys({
@@ -16,7 +19,10 @@ export const teacherSchema = Joi.object().keys({
   teacherId: Joi.number().required(),
   teacher_fname: Joi.string().trim().required().min(4).max(30),
   teacher_lname: Joi.string().trim().required().min(4).max(30),
-  gender: Joi.string().lowercase().trim().valid(null, 'male', 'female','others'),
+  gender: Joi.string()
+    .lowercase()
+    .trim()
+    .valid(null, "male", "female", "others"),
 });
 
 export const classSchema = Joi.object().keys({
@@ -45,8 +51,8 @@ export const updateResultSchema = Joi.object().keys({
   marks: Joi.number().required(),
 });
 
-export const topSchema = Joi.object().keys({
-  studentId: Joi.number().required(),
-  name: Joi.string().trim().required().min(4).max(30),
-  marks: Joi.number().required(),
+export const topIdSchema = Joi.object({
+  classId: Joi.number().required(),
+  subjectId: Joi.number().required(),
 });
+

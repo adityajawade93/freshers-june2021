@@ -1,25 +1,18 @@
-const topSql = require('../database/dbconnect')
+const topSql = require("../database/dbconnect");
 
 exports.get_topper_by_classId_and_subjectId = async (
   classId: number,
   subjectId: number
 ) => {
-  try {
-    await topSql.query("set search_path to myschool");
-    return await topSql.query(
-      `select s.studentId,s.name,r.marks from (select * from result where class_Id=${classId} 
-      and subject_Id=${subjectId} order by marks desc) as r,students as s
+  return await topSql.query(
+    `select s.studentId,s.name,r.marks from (select * from myschool.result where class_Id=${classId} 
+      and subject_Id=${subjectId} order by marks desc) as r,myschool.students as s
       where r.studentid=s.studentId limit 1`
-    );
-  } catch (err) {
-    throw err;
-  }
+  );
 };
 
 exports.get_topten_students = async (classId: number) => {
-  try {
-    await topSql.query("set search_path to myschool");
-    return await topSql.query(`select s.studentId , s.name , a.total_marks
+  return await topSql.query(`select s.studentId , s.name , a.total_marks
             from myschool.students s
             inner join(
             select sum(r.marks) AS total_marks , s.studentId
@@ -33,7 +26,4 @@ exports.get_topten_students = async (classId: number) => {
             on s.studentId = a.studentId
             order BY total_marks desc
             limit 10`);
-  } catch (err) {
-    throw err;
-  }
 };

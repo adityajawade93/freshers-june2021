@@ -17,6 +17,6 @@ export async function addClass(
 	room: number
 ): Promise<Array<string>> {
 	const response = await query(`INSERT INTO school.class(name,room) 
-            VALUES (${name},'${room}') RETURNING classid`);
+            VALUES ('${name}','${room}') RETURNING classid`);
 	return response.rows;
 }

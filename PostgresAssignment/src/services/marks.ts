@@ -9,7 +9,7 @@ export async function getMarksOfStudent(
 		     from school.marks m
 		     inner join school.student st on st.studentid = m.studentid
 		     where m.studentid='${studentId}'
-		  order by st.name DESC, m.marks ASC;`
+		  order by st.name DESC, m.marks ASC`
 		);
 		return response.rows;
 	} catch (e) {
@@ -55,7 +55,7 @@ export async function topper(topperCount: number): Promise<Array<string>> {
 	const response = await query(
 		`select st.studentid, st.name, sum(marks) as total from school.marks m
 		inner join school.student st on st.studentid = m.studentid
-		group by st.studentid order by total desc limit 1`
+		group by st.studentid order by total desc limit ${topperCount}`
 	);
 	return response.rows;
 }

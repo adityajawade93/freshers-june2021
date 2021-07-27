@@ -7,7 +7,7 @@ export async function getClasses(): Promise<Array<string>> {
 
 export async function studentOfClass(classId: string): Promise<Array<string>> {
 	const response = await query(
-		`select * from school.student where classid = '${classId} order by name'`
+		`select * from school.student where classid = '${classId}' order by name`
 	);
 	return response.rows;
 }

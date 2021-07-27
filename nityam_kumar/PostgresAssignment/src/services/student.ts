@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+
 import db from "../db";
 
 import AppError from "../utils/appError";
@@ -36,43 +38,28 @@ export const modifyStudent = async (
   student_id: string
 ) => {
   try {
-    if (
-      fname &&
-      typeof fname === "string" &&
-      fname.length >= 3 &&
-      fname.length <= 25
-    ) {
+    if (fname) {
       await db.query("update student set fname=$1 where st_id=$2", [
         fname.trim(),
         student_id,
       ]);
     }
 
-    if (
-      lname &&
-      typeof lname === "string" &&
-      lname.length >= 3 &&
-      lname.length <= 25
-    ) {
+    if (lname) {
       await db.query("update student set lname=$1 where st_id=$2", [
         lname.trim(),
         student_id,
       ]);
     }
 
-    if (age && typeof age === "number" && age > 0 && age <= 110) {
+    if (age) {
       await db.query("update student set age=$1 where st_id=$2", [
         age,
         student_id,
       ]);
     }
 
-    if (
-      class_number &&
-      typeof class_number === "number" &&
-      class_number > 0 &&
-      class_number <= 12
-    ) {
+    if (class_number) {
       await db.query("update student set cl_no=$1 where st_id=$2", [
         class_number,
         student_id,
@@ -84,25 +71,17 @@ export const modifyStudent = async (
 };
 
 export const checkExists = async (student_id: string) => {
-  try {
-    const res = await db.query("select * from student where st_id =$1", [
-      student_id,
-    ]);
-    if (res.rows.length === 0) {
-      throw new AppError(`student with this id not found`, 400);
-    }
-  } catch (err) {
-    throw err;
+  const res = await db.query("select * from student where st_id =$1", [
+    student_id,
+  ]);
+  if (res.rows.length === 0) {
+    throw new AppError(`student with this id not found`, 400);
   }
 };
 
 export const countStudents = async () => {
-  try {
-    const result = await db.query("SELECT count(*) from student");
-    return result.rows[0].count;
-  } catch (e) {
-    throw e;
-  }
+  const result = await db.query("SELECT count(*) from student");
+  return result.rows[0].count;
 };
 
 export const getStudents = async (start_index: number, req_size: number) => {

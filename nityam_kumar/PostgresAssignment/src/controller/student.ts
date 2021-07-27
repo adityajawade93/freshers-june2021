@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import uuid from "uniqid";
 import { Context } from "vm";
 import * as studentService from "../services/student";
@@ -6,7 +7,10 @@ import studentSchema from "../db/validateSchema/studentSchema";
 import paginationSchema from "../db/validateSchema/paginationSchema";
 
 import AppError from "../utils/appError";
-import { studentIDSchema } from "../db/validateSchema/helperSchema";
+import {
+  studentIDSchema,
+  studentModifySchema,
+} from "../db/validateSchema/helperSchema";
 
 interface IStudent {
   class_number: number;
@@ -26,16 +30,12 @@ export const createStudent = async (ctx: Context) => {
     throw new AppError(err.message, 400);
   }
 
-  try {
-    s1.student_id = uuid();
-    const msg = await studentService.addStudent(s1);
-    ctx.status = 200;
-    ctx.body = {
-      status: `successfully created student with ${s1.student_id}`,
-    };
-  } catch (err) {
-    throw err;
-  }
+  s1.student_id = uuid();
+  await studentService.addStudent(s1);
+  ctx.status = 200;
+  ctx.body = {
+    status: `successfully created student with ${s1.student_id}`,
+  };
 };
 
 export const modifyStudent = async (ctx: Context) => {
@@ -43,29 +43,31 @@ export const modifyStudent = async (ctx: Context) => {
   const { fname, lname, age, class_number } = ctx.request.body;
 
   try {
-    await studentIDSchema.validateAsync({ student_id: student_id });
-  } catch (err) {
-    throw new AppError(err.message, 400);
-  }
-
-  try {
-    await studentService.checkExists(student_id);
-
-    await studentService.modifyStudent(
+    await studentModifySchema.validateAsync({
       fname,
       lname,
       age,
       class_number,
-      student_id
-    );
-
-    ctx.status = 200;
-    ctx.body = {
-      status: `successfully updated student with ${student_id}`,
-    };
+      student_id,
+    });
   } catch (err) {
-    throw err;
+    throw new AppError(err.message, 400);
   }
+
+  await studentService.checkExists(student_id);
+
+  await studentService.modifyStudent(
+    fname,
+    lname,
+    age,
+    class_number,
+    student_id
+  );
+
+  ctx.status = 200;
+  ctx.body = {
+    status: `successfully updated student with ${student_id}`,
+  };
 };
 
 export const getStudents = async (ctx: Context) => {
@@ -78,38 +80,29 @@ export const getStudents = async (ctx: Context) => {
     throw new AppError(err.message, 400);
   }
 
-  try {
-    page = Number(page);
-    size = Number(size);
+  page = Number(page);
+  size = Number(size);
 
-    let student_table_size: number = await studentService.countStudents();
-    const max_page_limit: number = Math.ceil(student_table_size / size);
-    const max_size_limit = 500;
+  const student_table_size: number = await studentService.countStudents();
+  const max_page_limit: number = Math.ceil(student_table_size / size);
+  const max_size_limit = 500;
 
-    if (
-      page <= 0 ||
-      page > max_page_limit ||
-      size < 0 ||
-      size > max_size_limit
-    ) {
-      throw new AppError("Page NOT FOUND!!", 404);
-    }
-
-    const start_index = (page - 1) * size;
-    const end_index = Math.min(page * size, student_table_size);
-    const req_size = end_index - start_index;
-
-    const result = await studentService.getStudents(start_index, req_size);
-
-    ctx.status = 200;
-    ctx.body = {
-      status: `successfull`,
-      total_student: student_table_size,
-      data: result,
-    };
-  } catch (err) {
-    throw err;
+  if (page <= 0 || page > max_page_limit || size < 0 || size > max_size_limit) {
+    throw new AppError("Page NOT FOUND!!", 404);
   }
+
+  const start_index = (page - 1) * size;
+  const end_index = Math.min(page * size, student_table_size);
+  const req_size = end_index - start_index;
+
+  const result = await studentService.getStudents(start_index, req_size);
+
+  ctx.status = 200;
+  ctx.body = {
+    status: `successfull`,
+    total_student: student_table_size,
+    data: result,
+  };
 };
 
 export const getStudentSchedule = async (ctx: Context) => {
@@ -121,14 +114,10 @@ export const getStudentSchedule = async (ctx: Context) => {
     throw new AppError(err.message, 400);
   }
 
-  try {
-    const result = await studentService.getStudentSchedule(student_id);
-    ctx.status = 200;
-    ctx.body = {
-      status: `successfull`,
-      data: result,
-    };
-  } catch (err) {
-    throw err;
-  }
+  const result = await studentService.getStudentSchedule(student_id);
+  ctx.status = 200;
+  ctx.body = {
+    status: `successfull`,
+    data: result,
+  };
 };

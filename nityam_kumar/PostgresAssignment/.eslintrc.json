@@ -1,16 +1,22 @@
 {
   "parser": "@typescript-eslint/parser",
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    }
+  },
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
     "airbnb",
     "prettier"
-    // "plugin:node/recommended"
   ],
   "plugins": ["@typescript-eslint", "prettier"],
   "rules": {
-    // "prettier/prettier": "error",
+    "keyword-spacing": 2,
     "spaced-comment": "off",
     "no-console": "warn",
     "consistent-return": "off",
@@ -20,17 +26,32 @@
     "no-param-reassign": "off",
     "no-return-await": "off",
     "no-underscore-dangle": "off",
+    "camelcase": "off",
     "class-methods-use-this": "off",
+    "@typescript-eslint/camelcase": "off",
+    "import/prefer-default-export": "off",
     "prefer-destructuring": ["error", { "object": true, "array": false }],
     "no-unused-vars": [
       "error",
-      { "argsIgnorePattern": "req|res|next|val|ctx|next" }
+      { "argsIgnorePattern": "req|res|next|val|ctx|next|client" }
     ],
     "prettier/prettier": [
       "error",
       {
         "endOfLine": "auto"
       }
-    ]
+    ],
+    "rules": {
+      "import/extensions": [
+        "error",
+        "ignorePackages",
+        {
+          "js": "never",
+          "jsx": "never",
+          "ts": "never",
+          "tsx": "never"
+        }
+      ]
+    }
   }
 }

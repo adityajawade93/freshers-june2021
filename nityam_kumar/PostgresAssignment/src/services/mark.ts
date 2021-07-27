@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import db from "../db";
 
 import AppError from "../utils/appError";
@@ -11,18 +12,14 @@ interface IMark {
 }
 
 export const fetchMarks = async (student_id: string) => {
-  try {
-    const data = await db.query(
-      "select s.fname,s.lname,s.cl_no,m1.marks from marks as m1,student as s where m1.st_id=$1 and s.st_id= m1.st_id order by s.fname",
-      [student_id.trim()]
-    );
-    if (data.rows.length === 0) {
-      throw new AppError("id not found", 404);
-    }
-    return data.rows;
-  } catch (err) {
-    throw err;
+  const data = await db.query(
+    "select s.fname,s.lname,s.cl_no,m1.marks from marks as m1,student as s where m1.st_id=$1 and s.st_id= m1.st_id order by s.fname",
+    [student_id.trim()]
+  );
+  if (data.rows.length === 0) {
+    throw new AppError("id not found", 404);
   }
+  return data.rows;
 };
 
 export const fetchHighestMarksPerSubject = async () => {
@@ -126,58 +123,42 @@ export const fetchTopperPerClassWithClassNumber = async (
 };
 
 export const checkStudentExist = async (m1: IMark) => {
-  try {
-    const text4 = "select * from student where st_id =$1";
-    const values4 = [m1.student_id.trim()];
-    const check_student = await db.query(text4, values4);
-    if (check_student.rows.length === 0) {
-      throw new AppError(
-        `student with this id not available!! Enter valid student id`,
-        401
-      );
-    }
-  } catch (err) {
-    throw err;
+  const text4 = "select * from student where st_id =$1";
+  const values4 = [m1.student_id.trim()];
+  const check_student = await db.query(text4, values4);
+  if (check_student.rows.length === 0) {
+    throw new AppError(
+      `student with this id not available!! Enter valid student id`,
+      401
+    );
   }
 };
 
 export const checkSubjectExist = async (m1: IMark) => {
-  try {
-    const text5 =
-      "select * from classes where cl_no =$1 and sub_id =$2 and teacher_id =$3";
-    const values5 = [
-      m1.class_number,
-      m1.subject_id.trim(),
-      m1.teacher_id.trim(),
-    ];
-    const check_subject_cl = await db.query(text5, values5);
-    if (check_subject_cl.rows.length === 0) {
-      throw new AppError(
-        `subject with this class not available!! Enter valid Details`,
-        401
-      );
-    }
-  } catch (err) {
-    throw err;
+  const text5 =
+    "select * from classes where cl_no =$1 and sub_id =$2 and teacher_id =$3";
+  const values5 = [m1.class_number, m1.subject_id.trim(), m1.teacher_id.trim()];
+  const check_subject_cl = await db.query(text5, values5);
+  if (check_subject_cl.rows.length === 0) {
+    throw new AppError(
+      `subject with this class not available!! Enter valid Details`,
+      401
+    );
   }
 };
 
 export const checkAlreadyExist = async (m1: IMark) => {
-  try {
-    const text6 =
-      "select * from marks where cl_no =$1 and sub_id =$2 and teacher_id =$3 and st_id=$4";
-    const values6 = [
-      m1.class_number,
-      m1.subject_id.trim(),
-      m1.teacher_id.trim(),
-      m1.student_id.trim(),
-    ];
-    const check_already_exist = await db.query(text6, values6);
-    if (check_already_exist.rows.length > 0) {
-      throw new AppError(`data already available `, 409);
-    }
-  } catch (err) {
-    throw err;
+  const text6 =
+    "select * from marks where cl_no =$1 and sub_id =$2 and teacher_id =$3 and st_id=$4";
+  const values6 = [
+    m1.class_number,
+    m1.subject_id.trim(),
+    m1.teacher_id.trim(),
+    m1.student_id.trim(),
+  ];
+  const check_already_exist = await db.query(text6, values6);
+  if (check_already_exist.rows.length > 0) {
+    throw new AppError(`data already available `, 409);
   }
 };
 
@@ -198,31 +179,26 @@ export const addMark = async (m1: IMark) => {
 };
 
 export const checkExist = async (student_id: string, subject_id: string) => {
-  try {
-    const res = await db.query(
-      "select * from marks where st_id =$1 and sub_id=$2",
-      [student_id.trim(), subject_id.trim()]
-    );
-    if (res.rows.length === 0) {
-      throw new AppError(`either subject or student id not available`, 401);
-    }
-  } catch (err) {
-    throw err;
+  const res = await db.query(
+    "select * from marks where st_id =$1 and sub_id=$2",
+    [student_id.trim(), subject_id.trim()]
+  );
+  if (res.rows.length === 0) {
+    throw new AppError(`either subject or student id not available`, 401);
   }
 };
 
 export const ModifyMarks = async (
-  marks: number | null | undefined,
+  marks: number,
   student_id: string,
   subject_id: string
 ) => {
   try {
-    if (marks && typeof marks === "number" && marks > 0 && marks <= 100) {
-      await db.query(
-        "update marks set marks=$1 where st_id =$2 and sub_id=$3",
-        [marks, student_id.trim(), subject_id.trim()]
-      );
-    }
+    await db.query("update marks set marks=$1 where st_id =$2 and sub_id=$3", [
+      marks,
+      student_id.trim(),
+      subject_id.trim(),
+    ]);
   } catch (err) {
     throw new AppError(err.message, 502);
   }

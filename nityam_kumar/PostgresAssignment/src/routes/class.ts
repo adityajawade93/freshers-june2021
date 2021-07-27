@@ -14,9 +14,6 @@ router.get("/", getClasses);
 router.get("/scheduleSchool", getSchedule);
 router.get("/schedule/:classNumber", getClassSchedule);
 
-
 router.get("/:classNumber/student", fetchStudentsWithClass);
-
-
 
 export default router;

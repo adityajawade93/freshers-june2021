@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { Context } from "vm";
 import * as marksService from "../services/mark";
 
@@ -29,25 +30,17 @@ export const createMarks = async (ctx: Context) => {
     throw new AppError(err.message, 400);
   }
 
-  try {
-    await Promise.all([
-      marksService.checkStudentExist(m1),
-      marksService.checkSubjectExist(m1),
-      marksService.checkAlreadyExist(m1),
-    ]);
-  } catch (err) {
-    throw err;
-  }
+  await Promise.all([
+    marksService.checkStudentExist(m1),
+    marksService.checkSubjectExist(m1),
+    marksService.checkAlreadyExist(m1),
+  ]);
 
-  try {
-    await marksService.addMark(m1);
-    ctx.status = 200;
-    ctx.body = {
-      status: `successfully created marks with ${m1.student_id} & ${m1.subject_id}`,
-    };
-  } catch (err) {
-    throw err;
-  }
+  await marksService.addMark(m1);
+  ctx.status = 200;
+  ctx.body = {
+    status: `successfully created marks with ${m1.student_id} & ${m1.subject_id}`,
+  };
 };
 
 export const modifyMarks = async (ctx: Context) => {
@@ -61,16 +54,12 @@ export const modifyMarks = async (ctx: Context) => {
     throw new AppError(err.message, 400);
   }
 
-  try {
-    await marksService.checkExist(student_id, subject_id);
-    await marksService.ModifyMarks(marks, student_id, subject_id);
-    ctx.status = 200;
-    ctx.body = {
-      status: `successfully updated marks with ${student_id} & ${subject_id} with ${marks}`,
-    };
-  } catch (err) {
-    throw err;
-  }
+  await marksService.checkExist(student_id, subject_id);
+  await marksService.ModifyMarks(marks, student_id, subject_id);
+  ctx.status = 200;
+  ctx.body = {
+    status: `successfully updated marks with ${student_id} & ${subject_id} with ${marks}`,
+  };
 };
 
 export const fetchMarks = async (ctx: Context) => {
@@ -82,34 +71,28 @@ export const fetchMarks = async (ctx: Context) => {
     throw new AppError(err.message, 400);
   }
 
-  try {
-    const data = await marksService.fetchMarks(student_id);
-    ctx.status = 200;
-    ctx.body = {
-      status: `successfull`,
-      data: data,
-    };
-  } catch (err) {
-    throw err;
-  }
+  const data = await marksService.fetchMarks(student_id);
+  ctx.status = 200;
+  ctx.body = {
+    status: `successfull`,
+    data: data,
+  };
 };
 
-export const fetchHighestMarksPerSubject = async (ctx: Context) => {
-  try {
-    const data = await marksService.fetchHighestMarksPerSubject();
-    ctx.status = 200;
-    ctx.body = {
-      status: `successfull`,
-      data: data,
-    };
-  } catch (err) {
-    throw err;
-  }
+export const fetchHighestMarksPerSubject = async (
+  ctx: Context
+): Promise<void> => {
+  const data = await marksService.fetchHighestMarksPerSubject();
+  ctx.status = 200;
+  ctx.body = {
+    status: `successfull`,
+    data: data,
+  };
 };
 
 export const fetchHighestMarksPerSubjectWithSubjectID = async (
   ctx: Context
-) => {
+): Promise<void> => {
   const subject_id = ctx.params.subjectId;
   try {
     await subjectIDSchema.validateAsync({ subject_id });
@@ -117,18 +100,14 @@ export const fetchHighestMarksPerSubjectWithSubjectID = async (
     throw new AppError(err.message, 400);
   }
 
-  try {
-    const data = await marksService.fetchHighestMarksPerSubjectWithSubjectID(
-      subject_id
-    );
-    ctx.status = 200;
-    ctx.body = {
-      status: `successfull`,
-      data: data,
-    };
-  } catch (err) {
-    throw err;
-  }
+  const data = await marksService.fetchHighestMarksPerSubjectWithSubjectID(
+    subject_id
+  );
+  ctx.status = 200;
+  ctx.body = {
+    status: `successfull`,
+    data: data,
+  };
 };
 
 export const fetchTopBYNumber = async (ctx: Context) => {
@@ -139,33 +118,27 @@ export const fetchTopBYNumber = async (ctx: Context) => {
     throw new AppError(err.message, 400);
   }
 
-  try {
-    number = Number(number);
-    const data = await marksService.fetchTopBYNumber(number);
-    ctx.status = 200;
-    ctx.body = {
-      status: `successfull`,
-      data: data,
-    };
-  } catch (err) {
-    throw err;
-  }
+  number = Number(number);
+  const data = await marksService.fetchTopBYNumber(number);
+  ctx.status = 200;
+  ctx.body = {
+    status: `successfull`,
+    data: data,
+  };
 };
 
 export const fetchTopperPerClass = async (ctx: Context) => {
-  try {
-    const data = await marksService.fetchTopperPerClass();
-    ctx.status = 200;
-    ctx.body = {
-      status: `successfull`,
-      data: data,
-    };
-  } catch (err) {
-    throw err;
-  }
+  const data = await marksService.fetchTopperPerClass();
+  ctx.status = 200;
+  ctx.body = {
+    status: `successfull`,
+    data: data,
+  };
 };
 
-export const fetchTopperPerClassWithClassNumber = async (ctx: Context) => {
+export const fetchTopperPerClassWithClassNumber = async (
+  ctx: Context
+): Promise<void> => {
   let classNumber = ctx.params.classNumber;
 
   try {
@@ -174,17 +147,13 @@ export const fetchTopperPerClassWithClassNumber = async (ctx: Context) => {
     throw new AppError(err.message, 400);
   }
 
-  try {
-    classNumber = Number(classNumber);
-    const data = await marksService.fetchTopperPerClassWithClassNumber(
-      classNumber
-    );
-    ctx.status = 200;
-    ctx.body = {
-      status: `successfull`,
-      data: data,
-    };
-  } catch (err) {
-    throw err;
-  }
+  classNumber = Number(classNumber);
+  const data = await marksService.fetchTopperPerClassWithClassNumber(
+    classNumber
+  );
+  ctx.status = 200;
+  ctx.body = {
+    status: `successfull`,
+    data: data,
+  };
 };

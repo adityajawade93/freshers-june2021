@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { Context } from "vm";
 
 import * as classService from "../services/classes";
@@ -7,29 +8,21 @@ import AppError from "../utils/appError";
 import { classNoSchema } from "../db/validateSchema/helperSchema";
 
 export const getClasses = async (ctx: Context) => {
-  try {
-    const AllAvailableClasses = await classService.getClasses();
-    ctx.status = 200;
-    ctx.body = {
-      status: `successfull`,
-      data: AllAvailableClasses,
-    };
-  } catch (err) {
-    throw err;
-  }
+  const AllAvailableClasses = await classService.getClasses();
+  ctx.status = 200;
+  ctx.body = {
+    status: `successfull`,
+    data: AllAvailableClasses,
+  };
 };
 
 export const getSchedule = async (ctx: Context) => {
-  try {
-    const data = await classService.getSchedule();
-    ctx.status = 200;
-    ctx.body = {
-      status: `successfull`,
-      data: data,
-    };
-  } catch (err) {
-    throw err;
-  }
+  const data = await classService.getSchedule();
+  ctx.status = 200;
+  ctx.body = {
+    status: `successfull`,
+    data: data,
+  };
 };
 
 export const getClassSchedule = async (ctx: Context) => {
@@ -41,17 +34,13 @@ export const getClassSchedule = async (ctx: Context) => {
     throw new AppError(err.message, 400);
   }
 
-  try {
-    classNumber = Number(classNumber);
-    const data = await classService.getClassSchedule(classNumber);
-    ctx.status = 200;
-    ctx.body = {
-      status: `successfull`,
-      data: data,
-    };
-  } catch (err) {
-    throw err;
-  }
+  classNumber = Number(classNumber);
+  const data = await classService.getClassSchedule(classNumber);
+  ctx.status = 200;
+  ctx.body = {
+    status: `successfull`,
+    data: data,
+  };
 };
 
 export const fetchStudentsWithClass = async (ctx: Context) => {
@@ -61,15 +50,12 @@ export const fetchStudentsWithClass = async (ctx: Context) => {
   } catch (err) {
     throw new AppError(err.message, 400);
   }
-  try {
-    const data = await classService.fetchStudentsWithClass(classNumber);
 
-    ctx.status = 200;
-    ctx.body = {
-      status: `successfull`,
-      data: data,
-    };
-  } catch (err) {
-    throw err;
-  }
+  const data = await classService.fetchStudentsWithClass(classNumber);
+
+  ctx.status = 200;
+  ctx.body = {
+    status: `successfull`,
+    data: data,
+  };
 };

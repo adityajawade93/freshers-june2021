@@ -1,10 +1,13 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import db from "../db";
 
 import AppError from "../utils/appError";
 
 export const getClasses = async () => {
   try {
-    const data = await db.query("select distinct cl_no as class from student order by fname");
+    const data = await db.query(
+      "select distinct cl_no as class from student order by fname"
+    );
     return data.rows;
   } catch (err) {
     throw new AppError(err.message, 502);

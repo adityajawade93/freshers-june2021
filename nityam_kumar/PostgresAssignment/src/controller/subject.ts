@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import uuid from "uniqid";
 import { Context } from "vm";
 import * as subjectService from "../services/subject";
@@ -24,50 +25,30 @@ export const createSubject = async (ctx: Context) => {
     throw new AppError(err.message, 400);
   }
 
-  try {
-    await Promise.all([
-      teacherService.checkExists(s1.teacher_id),
-      subjectService.checkAlreadyExist(s1),
-    ]);
-  } catch (err) {
-    throw err;
-  }
+  await Promise.all([
+    teacherService.checkExists(s1.teacher_id),
+    subjectService.checkAlreadyExist(s1),
+  ]);
 
-  try {
-    s1.subject_id = uuid();
-    await subjectService.addSubject(s1);
-  } catch (err) {
-    throw err;
-  }
+  s1.subject_id = uuid();
+  await subjectService.addSubject(s1);
 
-  try {
-    await subjectService.addTeaches(s1);
-  } catch (err) {
-    throw err;
-  }
+  await subjectService.addTeaches(s1);
 
-  try {
-    await subjectService.addClass(s1);
-    ctx.status = 200;
-    ctx.body = {
-      status: `successfully created subject with ${s1.subject_id}`,
-    };
-  } catch (err) {
-    throw err;
-  }
+  await subjectService.addClass(s1);
+  ctx.status = 200;
+  ctx.body = {
+    status: `successfully created subject with ${s1.subject_id}`,
+  };
 };
 
 export const getSubject = async (ctx: Context) => {
-  try {
-    const data = await subjectService.getSubject();
-    ctx.status = 200;
-    ctx.body = {
-      status: `successfull`,
-      data: data,
-    };
-  } catch (err) {
-    throw err;
-  }
+  const data = await subjectService.getSubject();
+  ctx.status = 200;
+  ctx.body = {
+    status: `successfull`,
+    data: data,
+  };
 };
 
 export const fetchStudentsWithSub = async (ctx: Context) => {
@@ -77,15 +58,12 @@ export const fetchStudentsWithSub = async (ctx: Context) => {
   } catch (err) {
     throw new AppError(err.message, 400);
   }
-  try {
-    const data = await subjectService.fetchStudentsWithSub(subject_id);
 
-    ctx.status = 200;
-    ctx.body = {
-      status: `successfull`,
-      data: data,
-    };
-  } catch (err) {
-    throw err;
-  }
+  const data = await subjectService.fetchStudentsWithSub(subject_id);
+
+  ctx.status = 200;
+  ctx.body = {
+    status: `successfull`,
+    data: data,
+  };
 };

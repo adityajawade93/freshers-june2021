@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+
 import db from "../db";
 
 import AppError from "../utils/appError";
@@ -19,30 +21,22 @@ export const getSubject = async () => {
 };
 
 export const fetchStudentsWithSub = async (subject_id: string) => {
-  try {
-    const data = await db.query(
-      "select s1.fname,s1.lname,s1.cl_no,s1.age,sub.sub_id,sub.sub_name from subject as sub,student as s1 where sub.sub_id=$1 and sub.cl_no=s1.cl_no order by s1.fname",
-      [subject_id.trim()]
-    );
-    if (data.rows.length === 0) {
-      throw new AppError("id not found", 404);
-    }
-    return data.rows;
-  } catch (err) {
-    throw err;
+  const data = await db.query(
+    "select s1.fname,s1.lname,s1.cl_no,s1.age,sub.sub_id,sub.sub_name from subject as sub,student as s1 where sub.sub_id=$1 and sub.cl_no=s1.cl_no order by s1.fname",
+    [subject_id.trim()]
+  );
+  if (data.rows.length === 0) {
+    throw new AppError("id not found", 404);
   }
+  return data.rows;
 };
 
 export const checkAlreadyExist = async (s1: ISubject) => {
-  try {
-    const text5 = "select * from subject where cl_no=$1 and sub_name=$2";
-    const values5 = [s1.class_number, s1.subject_name.trim()];
-    const check_already_exist = await db.query(text5, values5);
-    if (check_already_exist.rows.length > 0) {
-      throw new AppError("subject already exist in this class", 409);
-    }
-  } catch (err) {
-    throw err;
+  const text5 = "select * from subject where cl_no=$1 and sub_name=$2";
+  const values5 = [s1.class_number, s1.subject_name.trim()];
+  const check_already_exist = await db.query(text5, values5);
+  if (check_already_exist.rows.length > 0) {
+    throw new AppError("subject already exist in this class", 409);
   }
 };
 

@@ -1,7 +1,11 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import uuid from "uniqid";
 import { Context } from "vm";
 import * as teacherService from "../services/teacher";
-import { teacherIDSchema } from "../db/validateSchema/helperSchema";
+import {
+  teacherIDSchema,
+  teacherModifySchema,
+} from "../db/validateSchema/helperSchema";
 import teacherSchema from "../db/validateSchema/teacherSchema";
 import paginationSchema from "../db/validateSchema/paginationSchema";
 import AppError from "../utils/appError";
@@ -23,16 +27,12 @@ export const createTeacher = async (ctx: Context) => {
     throw new AppError(err.message, 400);
   }
 
-  try {
-    t1.teacher_id = uuid();
-    await teacherService.addTeacher(t1);
-    ctx.status = 200;
-    ctx.body = {
-      status: `successfully created teacher with ${t1.teacher_id}`,
-    };
-  } catch (err) {
-    throw err;
-  }
+  t1.teacher_id = uuid();
+  await teacherService.addTeacher(t1);
+  ctx.status = 200;
+  ctx.body = {
+    status: `successfully created teacher with ${t1.teacher_id}`,
+  };
 };
 
 export const modifyTeacher = async (ctx: Context) => {
@@ -40,22 +40,18 @@ export const modifyTeacher = async (ctx: Context) => {
   const { fname, lname, age } = ctx.request.body;
 
   try {
-    await teacherIDSchema.validateAsync({ teacher_id });
+    await teacherModifySchema.validateAsync({ fname, lname, age, teacher_id });
   } catch (err) {
     throw new AppError(err.message, 400);
   }
 
-  try {
-    await teacherService.checkExists(teacher_id);
-    await teacherService.modifyTeacher(fname, lname, age, teacher_id);
+  await teacherService.checkExists(teacher_id);
+  await teacherService.modifyTeacher(fname, lname, age, teacher_id);
 
-    ctx.status = 200;
-    ctx.body = {
-      status: `successfully updated teacher with ${teacher_id}`,
-    };
-  } catch (err) {
-    throw err;
-  }
+  ctx.status = 200;
+  ctx.body = {
+    status: `successfully updated teacher with ${teacher_id}`,
+  };
 };
 
 export const getTeachers = async (ctx: Context) => {
@@ -68,37 +64,28 @@ export const getTeachers = async (ctx: Context) => {
     throw new AppError(err.message, 400);
   }
 
-  try {
-    page = Number(page);
-    size = Number(size);
+  page = Number(page);
+  size = Number(size);
 
-    let teacher_table_size: number = await teacherService.countTeachers();
-    const max_page_limit = Math.ceil(teacher_table_size / size);
-    const max_size_limit = 500;
+  const teacher_table_size: number = await teacherService.countTeachers();
+  const max_page_limit = Math.ceil(teacher_table_size / size);
+  const max_size_limit = 500;
 
-    if (
-      page <= 0 ||
-      page > max_page_limit ||
-      size < 0 ||
-      size > max_size_limit
-    ) {
-      throw new AppError("NOT FOUND!!", 404);
-    }
-
-    const start_index = (page - 1) * size;
-    const end_index = Math.min(page * size, teacher_table_size);
-    const req_size = end_index - start_index;
-    const data = await teacherService.getTeachers(start_index, req_size);
-
-    ctx.status = 200;
-    ctx.body = {
-      status: `successfull`,
-      total_teachers: teacher_table_size,
-      data: data,
-    };
-  } catch (err) {
-    throw err;
+  if (page <= 0 || page > max_page_limit || size < 0 || size > max_size_limit) {
+    throw new AppError("NOT FOUND!!", 404);
   }
+
+  const start_index = (page - 1) * size;
+  const end_index = Math.min(page * size, teacher_table_size);
+  const req_size = end_index - start_index;
+  const data = await teacherService.getTeachers(start_index, req_size);
+
+  ctx.status = 200;
+  ctx.body = {
+    status: `successfull`,
+    total_teachers: teacher_table_size,
+    data: data,
+  };
 };
 
 export const getTeachersTeaching = async (ctx: Context) => {
@@ -111,44 +98,32 @@ export const getTeachersTeaching = async (ctx: Context) => {
     throw new AppError(err.message, 400);
   }
 
-  try {
-    page = Number(page);
-    size = Number(size);
+  page = Number(page);
+  size = Number(size);
 
-    let teacher_table_size: number =
-      await teacherService.countTeachersTeaching();
+  const teacher_table_size: number =
+    await teacherService.countTeachersTeaching();
 
-    const max_page_limit = Math.ceil(teacher_table_size / size);
+  const max_page_limit = Math.ceil(teacher_table_size / size);
 
-    const max_size_limit = 500;
+  const max_size_limit = 500;
 
-    if (
-      page <= 0 ||
-      page > max_page_limit ||
-      size < 0 ||
-      size > max_size_limit
-    ) {
-      throw new AppError("NOT FOUND!!", 404);
-    }
-
-    const start_index = (page - 1) * size;
-    const end_index = Math.min(page * size, teacher_table_size);
-    const req_size = end_index - start_index;
-
-    const data = await teacherService.getTeachersTeaching(
-      start_index,
-      req_size
-    );
-
-    ctx.status = 200;
-    ctx.body = {
-      status: `successfull`,
-      total: teacher_table_size,
-      data: data,
-    };
-  } catch (err) {
-    throw err;
+  if (page <= 0 || page > max_page_limit || size < 0 || size > max_size_limit) {
+    throw new AppError("NOT FOUND!!", 404);
   }
+
+  const start_index = (page - 1) * size;
+  const end_index = Math.min(page * size, teacher_table_size);
+  const req_size = end_index - start_index;
+
+  const data = await teacherService.getTeachersTeaching(start_index, req_size);
+
+  ctx.status = 200;
+  ctx.body = {
+    status: `successfull`,
+    total: teacher_table_size,
+    data: data,
+  };
 };
 
 export const fetchStudentsWithTeacher = async (ctx: Context) => {
@@ -159,15 +134,11 @@ export const fetchStudentsWithTeacher = async (ctx: Context) => {
     throw new AppError(err.message, 400);
   }
 
-  try {
-    const data = await teacherService.fetchStudentWithTeacherID(teacher_id);
+  const data = await teacherService.fetchStudentWithTeacherID(teacher_id);
 
-    ctx.status = 200;
-    ctx.body = {
-      status: `successfull`,
-      data: data,
-    };
-  } catch (err) {
-    throw err;
-  }
+  ctx.status = 200;
+  ctx.body = {
+    status: `successfull`,
+    data: data,
+  };
 };

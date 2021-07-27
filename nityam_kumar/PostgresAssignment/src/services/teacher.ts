@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+
 import db from "../db";
 
 import AppError from "../utils/appError";
@@ -27,18 +29,14 @@ export const addTeacher = async (t1: ITeacher) => {
 };
 
 export const checkExists = async (teacher_id: string) => {
-  try {
-    const res = await db.query("select * from teacher where teacher_id =$1", [
-      teacher_id,
-    ]);
-    if (res.rows.length === 0) {
-      throw new AppError(
-        "Teacher with this id not available!! Enter valid teacher id",
-        401
-      );
-    }
-  } catch (err) {
-    throw err;
+  const res = await db.query("select * from teacher where teacher_id =$1", [
+    teacher_id,
+  ]);
+  if (res.rows.length === 0) {
+    throw new AppError(
+      "Teacher with this id not available!! Enter valid teacher id",
+      401
+    );
   }
 };
 
@@ -49,31 +47,21 @@ export const modifyTeacher = async (
   teacher_id: string | null | undefined
 ) => {
   try {
-    if (
-      fname &&
-      typeof fname === "string" &&
-      fname.length >= 3 &&
-      fname.length <= 25
-    ) {
+    if (fname) {
       await db.query("update teacher set fname=$1 where teacher_id=$2", [
         fname.trim(),
         teacher_id,
       ]);
     }
 
-    if (
-      lname &&
-      typeof lname === "string" &&
-      lname.length >= 3 &&
-      lname.length <= 25
-    ) {
+    if (lname) {
       await db.query("update teacher set lname=$1 where teacher_id=$2", [
         lname.trim(),
         teacher_id,
       ]);
     }
 
-    if (age && typeof age === "number" && age > 0 && age <= 110) {
+    if (age) {
       await db.query("update teacher set age=$1 where teacher_id=$2", [
         age,
         teacher_id,
@@ -132,16 +120,12 @@ export const getTeachersTeaching = async (
 };
 
 export const fetchStudentWithTeacherID = async (teacher_id: string) => {
-  try {
-    const data = await db.query(
-      "select s1.st_id,s1.fname,s1.lname,s1.age,s1.cl_no from student as s1 where s1.cl_no in (select distinct cl_no from subject as sub where teacher_id=$1 order by s1.fname",
-      [teacher_id]
-    );
-    if (data.rows.length === 0) {
-      throw new AppError("ID NOT FOUND", 404);
-    }
-    return data.rows;
-  } catch (e) {
-    throw e;
+  const data = await db.query(
+    "select s1.st_id,s1.fname,s1.lname,s1.age,s1.cl_no from student as s1 where s1.cl_no in (select distinct cl_no from subject as sub where teacher_id=$1 order by s1.fname",
+    [teacher_id]
+  );
+  if (data.rows.length === 0) {
+    throw new AppError("ID NOT FOUND", 404);
   }
+  return data.rows;
 };

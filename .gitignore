@@ -1,3 +1,5 @@
-Nishant/postgres assignment/node_modules
-Nishant/postgres assignment/dist
-Nishant/postgres assignment/.env
+.env
+node_modules
+dist
+.vscode
+.DS_Store

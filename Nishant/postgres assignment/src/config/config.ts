@@ -9,6 +9,7 @@ const envVarsSchema = joi.object({
   DB_USER: joi.string().required(),
   DB_HOST: joi.string().required(),
   DB_PASSWORD: joi.string().required().description('password to the database'),
+  PORT: joi.number().positive().required(),
 })
   .unknown();
 
@@ -22,5 +23,6 @@ const config = {
   dbHost: envVars.DB_HOST,
   dbUser: envVars.DB_USER,
   dbPassword: envVars.DB_PASSWORD,
+  port: envVars.PORT,
 };
 export default config;

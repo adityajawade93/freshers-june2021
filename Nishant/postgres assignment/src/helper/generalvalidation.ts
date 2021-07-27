@@ -7,7 +7,7 @@ const gettopperByclassIdAndSubjectIdSchema = Joi.object({
 
 const getTopStudentSchema = Joi.object({
   classId: Joi.number().required(),
-  count: Joi.number().required,
+  count: Joi.number().required(),
 });
 
 export { gettopperByclassIdAndSubjectIdSchema, getTopStudentSchema };

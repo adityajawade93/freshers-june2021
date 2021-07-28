@@ -36,17 +36,23 @@ export const createMarks = async (ctx: Context) => {
     marksService.checkAlreadyExist(m1),
   ]);
   if (value[0] === 0) {
-    throw new AppError(
-      `student with this id not available!! Enter valid student id`,
-      401
-    );
+    ctx.status = 401;
+    ctx.body = {
+      status: `student with this id not available!! Enter valid student id`,
+    };
+    return;
   } else if (value[1] === 0) {
-    throw new AppError(
-      `subject with this class not available!! Enter valid Details`,
-      401
-    );
+    ctx.status = 401;
+    ctx.body = {
+      status: `subject with this class not available!! Enter valid Details`,
+    };
+    return;
   } else if (value[2] > 0) {
-    throw new AppError(`data already available `, 409);
+    ctx.status = 409;
+    ctx.body = {
+      status: `data already available `,
+    };
+    return;
   }
 
   await marksService.addMark(m1);

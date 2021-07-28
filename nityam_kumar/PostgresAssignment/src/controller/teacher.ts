@@ -79,9 +79,8 @@ export const getTeachers = async (ctx: Context) => {
 
   const teacher_table_size: number = await teacherService.countTeachers();
   const max_page_limit = Math.ceil(teacher_table_size / size);
-  const max_size_limit = 500;
 
-  if (page <= 0 || page > max_page_limit || size < 0 || size > max_size_limit) {
+  if (page > max_page_limit) {
     throw new AppError("NOT FOUND!!", 404);
   }
 
@@ -116,9 +115,7 @@ export const getTeachersTeaching = async (ctx: Context) => {
 
   const max_page_limit = Math.ceil(teacher_table_size / size);
 
-  const max_size_limit = 500;
-
-  if (page <= 0 || page > max_page_limit || size < 0 || size > max_size_limit) {
+  if (page > max_page_limit) {
     throw new AppError("NOT FOUND!!", 404);
   }
 

@@ -31,12 +31,17 @@ export const createSubject = async (ctx: Context) => {
   ]);
 
   if (data[0] === 0) {
-    throw new AppError(
-      "Teacher with this id not available!! Enter valid teacher id",
-      401
-    );
+    ctx.status = 401;
+    ctx.body = {
+      status: "Teacher with this id not available!! Enter valid teacher id",
+    };
+    return;
   } else if (data[1] > 0) {
-    throw new AppError("subject already exist in this class", 409);
+    ctx.status = 409;
+    ctx.body = {
+      status: "subject already exist in this class",
+    };
+    return;
   }
 
   s1.subject_id = uuid();

@@ -90,9 +90,9 @@ export const getStudents = async (ctx: Context) => {
 
   const student_table_size: number = await studentService.countStudents();
   const max_page_limit: number = Math.ceil(student_table_size / size);
-  const max_size_limit = 500;
+  
 
-  if (page <= 0 || page > max_page_limit || size < 0 || size > max_size_limit) {
+  if (page > max_page_limit) {
     throw new AppError("Page NOT FOUND!!", 404);
   }
 

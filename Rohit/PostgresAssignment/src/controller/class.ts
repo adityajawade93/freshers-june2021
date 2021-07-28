@@ -26,7 +26,7 @@ exports.getClassInfo = async (ctx: Context) => {
 };
 
 exports.addStudentInClass = async (ctx: Context) => {
-  let req: IClassInfo = ctx.request.body;
+  const req: IClassInfo = ctx.request.body;
 
   const reqData = await classSchema.validateAsync(req);
   if (reqData.error) {

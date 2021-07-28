@@ -1,7 +1,7 @@
 const classSql = require("../database/dbconnect");
 
 exports.get_classes = async () => {
-  return await classSql.query("select * from myschool.classes");
+  return await classSql.query("select * from myschool.classes order by classId");
 };
 
 exports.add_student_to_class = async (classId: number, stId: number) => {

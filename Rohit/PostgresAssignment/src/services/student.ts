@@ -10,20 +10,22 @@ exports.get_student_length = async () => {
 
 exports.get_student_by_classid = async (classId: number) => {
   return await studentSql.query(
-    `select S.studentId,S.name,S.dob,S.gender from myschool.students as S,myschool.classes where classId=${classId} and studentId=stId`
+    `select S.studentId,S.name,S.dob,S.gender from myschool.students as S,myschool.classes 
+    where classId=${classId} and studentId=stId order by studentId`
   );
 };
 
 exports.get_student_by_teacherid = async (teacherId: number) => {
   return await studentSql.query(
-    `select S.studentId,S.name,S.dob,S.gender from myschool.students as S,myschool.classes,myschool.class_schedule where teach_Id=${teacherId} and classId=cls_Id and stId=studentId`
+    `select S.studentId,S.name,S.dob,S.gender from myschool.students as S,myschool.classes,myschool.class_schedule 
+    where teach_Id=${teacherId} and classId=cls_Id and stId=studentId order by studentId`
   );
 };
 
 exports.get_student_by_subjectid = async (subjectId: number) => {
   return await studentSql.query(
     `select S.studentId,S.name,S.dob,S.gender from myschool.students AS S,myschool.classes,myschool.class_schedule 
-      where subjId=${subjectId} and classId=cls_Id and stId=studentId`
+      where subjId=${subjectId} and classId=cls_Id and stId=studentId order by studentId`
   );
 };
 

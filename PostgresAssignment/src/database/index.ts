@@ -11,7 +11,7 @@ const pool = new Pool({
 	idleTimeoutMillsis: 0,
 });
 
-export async function query(querystring: string) {
+export async function query(querystring: string): Promise<any | never> {
 	let result = await pool.query(querystring);
 	return result;
 }

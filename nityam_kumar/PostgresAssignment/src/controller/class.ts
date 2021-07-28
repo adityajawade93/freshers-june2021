@@ -52,7 +52,9 @@ export const fetchStudentsWithClass = async (ctx: Context) => {
   }
 
   const data = await classService.fetchStudentsWithClass(classNumber);
-
+  if (data.length === 0) {
+    throw new AppError("classNumber NOT FOUND", 404);
+  }
   ctx.status = 200;
   ctx.body = {
     status: `successfull`,

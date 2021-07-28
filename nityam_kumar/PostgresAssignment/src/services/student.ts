@@ -28,7 +28,7 @@ export const addStudent = async (s1: IStudent) => {
     ];
     await db.query(text, values);
   } catch (err) {
-    throw new AppError(err.message, 502);
+    throw new AppError("Internal Server Error", 500);
   }
 };
 
@@ -76,22 +76,28 @@ export const modifyStudent = async (
       ]);
     }
   } catch (err) {
-    throw new AppError(err.message, 502);
+    throw new AppError("Internal Server Error", 500);
   }
 };
 
 export const checkExists = async (student_id: string) => {
-  const res = await db.query("select * from student where st_id =$1", [
-    student_id,
-  ]);
-  if (res.rows.length === 0) {
-    throw new AppError(`student with this id not found`, 400);
+  try {
+    const res = await db.query("select * from student where st_id =$1", [
+      student_id,
+    ]);
+    return res.rows.length;
+  } catch (err) {
+    throw new AppError("Internal Server Error", 500);
   }
 };
 
 export const countStudents = async () => {
-  const result = await db.query("SELECT count(*) from student");
-  return result.rows[0].count;
+  try {
+    const result = await db.query("SELECT count(*) from student");
+    return result.rows[0].count;
+  } catch (err) {
+    throw new AppError("Internal Server Error", 500);
+  }
 };
 
 export const getStudents = async (start_index: number, req_size: number) => {
@@ -102,7 +108,7 @@ export const getStudents = async (start_index: number, req_size: number) => {
     );
     return data.rows;
   } catch (err) {
-    throw new AppError(err.message, 502);
+    throw new AppError("Internal Server Error", 500);
   }
 };
 
@@ -114,6 +120,6 @@ export const getStudentSchedule = async (studentId: string) => {
     );
     return data.rows;
   } catch (err) {
-    throw new AppError(err.message, 502);
+    throw new AppError("Internal Server Error", 500);
   }
 };

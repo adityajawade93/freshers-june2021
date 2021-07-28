@@ -25,10 +25,19 @@ export const createSubject = async (ctx: Context) => {
     throw new AppError(err.message, 400);
   }
 
-  await Promise.all([
+  const data = await Promise.all([
     teacherService.checkExists(s1.teacher_id),
     subjectService.checkAlreadyExist(s1),
   ]);
+
+  if (data[0] === 0) {
+    throw new AppError(
+      "Teacher with this id not available!! Enter valid teacher id",
+      401
+    );
+  } else if (data[1] > 0) {
+    throw new AppError("subject already exist in this class", 409);
+  }
 
   s1.subject_id = uuid();
   await subjectService.addSubject(s1);
@@ -60,7 +69,9 @@ export const fetchStudentsWithSub = async (ctx: Context) => {
   }
 
   const data = await subjectService.fetchStudentsWithSub(subject_id);
-
+  if (data.length === 0) {
+    throw new AppError("id not found", 404);
+  }
   ctx.status = 200;
   ctx.body = {
     status: `successfull`,

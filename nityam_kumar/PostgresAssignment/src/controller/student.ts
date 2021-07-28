@@ -56,8 +56,10 @@ export const modifyStudent = async (ctx: Context) => {
     throw new AppError(err.message, 400);
   }
 
-  await studentService.checkExists(student_id);
-
+  const data = await studentService.checkExists(student_id);
+  if (data === 0) {
+    throw new AppError(`student with this id not found`, 404);
+  }
   await studentService.modifyStudent(
     fname,
     lname,

@@ -10,7 +10,7 @@ export const getClasses = async () => {
     );
     return data.rows;
   } catch (err) {
-    throw new AppError(err.message, 502);
+    throw new AppError("Internal Server Error", 500);
   }
 };
 
@@ -26,7 +26,7 @@ export const getSchedule = async () => {
       order by class_no`);
     return data.rows;
   } catch (err) {
-    throw new AppError(err.message, 502);
+    throw new AppError("Internal Server Error", 500);
   }
 };
 
@@ -38,7 +38,7 @@ export const getClassSchedule = async (classNumber: number) => {
     );
     return data.rows;
   } catch (err) {
-    throw new AppError(err.message, 502);
+    throw new AppError("Internal Server Error", 500);
   }
 };
 
@@ -48,11 +48,8 @@ export const fetchStudentsWithClass = async (class_number: number) => {
       "select * from student where cl_no=$1 order by fname ",
       [class_number]
     );
-    if (data.rows.length === 0) {
-      throw new AppError("classNumber NOT FOUND", 404);
-    }
     return data.rows;
   } catch (err) {
-    throw new AppError(err.message, 502);
+    throw new AppError("Internal Server Error", 500);
   }
 };

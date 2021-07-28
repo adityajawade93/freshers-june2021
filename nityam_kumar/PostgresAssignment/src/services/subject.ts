@@ -16,27 +16,30 @@ export const getSubject = async () => {
     const data = await db.query("select * from subject order by sub_name");
     return data.rows;
   } catch (err) {
-    throw new AppError(err.message, 502);
+    throw new AppError("Internal Server Error", 500);
   }
 };
 
 export const fetchStudentsWithSub = async (subject_id: string) => {
-  const data = await db.query(
-    "select s1.fname,s1.lname,s1.cl_no,s1.age,sub.sub_id,sub.sub_name from subject as sub,student as s1 where sub.sub_id=$1 and sub.cl_no=s1.cl_no order by s1.fname",
-    [subject_id.trim()]
-  );
-  if (data.rows.length === 0) {
-    throw new AppError("id not found", 404);
+  try {
+    const data = await db.query(
+      "select s1.fname,s1.lname,s1.cl_no,s1.age,sub.sub_id,sub.sub_name from subject as sub,student as s1 where sub.sub_id=$1 and sub.cl_no=s1.cl_no order by s1.fname",
+      [subject_id.trim()]
+    );
+    return data.rows;
+  } catch (err) {
+    throw new AppError("Internal Server Error", 500);
   }
-  return data.rows;
 };
 
 export const checkAlreadyExist = async (s1: ISubject) => {
-  const text5 = "select * from subject where cl_no=$1 and sub_name=$2";
-  const values5 = [s1.class_number, s1.subject_name.trim()];
-  const check_already_exist = await db.query(text5, values5);
-  if (check_already_exist.rows.length > 0) {
-    throw new AppError("subject already exist in this class", 409);
+  try {
+    const text5 = "select * from subject where cl_no=$1 and sub_name=$2";
+    const values5 = [s1.class_number, s1.subject_name.trim()];
+    const check_already_exist = await db.query(text5, values5);
+    return check_already_exist.rows.length;
+  } catch (err) {
+    throw new AppError("Internal Server Error", 500);
   }
 };
 
@@ -51,7 +54,7 @@ export const addSubject = async (s1: ISubject) => {
     ];
     await db.query(text, values);
   } catch (err) {
-    throw new AppError(err.message, 502);
+    throw new AppError("Internal Server Error", 500);
   }
 };
 
@@ -61,7 +64,7 @@ export const addTeaches = async (s1: ISubject) => {
     const values2 = [s1.teacher_id.trim(), s1.subject_id];
     await db.query(text2, values2);
   } catch (err) {
-    throw new AppError(err.message, 502);
+    throw new AppError("Internal Server Error", 500);
   }
 };
 
@@ -71,6 +74,6 @@ export const addClass = async (s1: ISubject) => {
     const values3 = [s1.class_number, s1.subject_id, s1.teacher_id.trim()];
     await db.query(text3, values3);
   } catch (err) {
-    throw new AppError(err.message, 502);
+    throw new AppError("Internal Server Error", 500);
   }
 };

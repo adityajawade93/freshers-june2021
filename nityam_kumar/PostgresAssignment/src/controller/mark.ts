@@ -30,11 +30,24 @@ export const createMarks = async (ctx: Context) => {
     throw new AppError(err.message, 400);
   }
 
-  await Promise.all([
+  const value = await Promise.all([
     marksService.checkStudentExist(m1),
     marksService.checkSubjectExist(m1),
     marksService.checkAlreadyExist(m1),
   ]);
+  if (value[0] === 0) {
+    throw new AppError(
+      `student with this id not available!! Enter valid student id`,
+      401
+    );
+  } else if (value[1] === 0) {
+    throw new AppError(
+      `subject with this class not available!! Enter valid Details`,
+      401
+    );
+  } else if (value[2] > 0) {
+    throw new AppError(`data already available `, 409);
+  }
 
   await marksService.addMark(m1);
   ctx.status = 200;
@@ -54,7 +67,10 @@ export const modifyMarks = async (ctx: Context) => {
     throw new AppError(err.message, 400);
   }
 
-  await marksService.checkExist(student_id, subject_id);
+  const data = await marksService.checkExist(student_id, subject_id);
+  if (data === 0) {
+    throw new AppError(`either subject or student id not available`, 401);
+  }
   await marksService.ModifyMarks(marks, student_id, subject_id);
   ctx.status = 200;
   ctx.body = {
@@ -72,6 +88,9 @@ export const fetchMarks = async (ctx: Context) => {
   }
 
   const data = await marksService.fetchMarks(student_id);
+  if (data.length === 0) {
+    throw new AppError("student id not found", 404);
+  }
   ctx.status = 200;
   ctx.body = {
     status: `successfull`,
@@ -79,9 +98,7 @@ export const fetchMarks = async (ctx: Context) => {
   };
 };
 
-export const fetchHighestMarksPerSubject = async (
-  ctx: Context
-): Promise<void> => {
+export const fetchHighestMarksPerSubject = async (ctx: Context) => {
   const data = await marksService.fetchHighestMarksPerSubject();
   ctx.status = 200;
   ctx.body = {
@@ -92,7 +109,7 @@ export const fetchHighestMarksPerSubject = async (
 
 export const fetchHighestMarksPerSubjectWithSubjectID = async (
   ctx: Context
-): Promise<void> => {
+) => {
   const subject_id = ctx.params.subjectId;
   try {
     await subjectIDSchema.validateAsync({ subject_id });
@@ -136,9 +153,7 @@ export const fetchTopperPerClass = async (ctx: Context) => {
   };
 };
 
-export const fetchTopperPerClassWithClassNumber = async (
-  ctx: Context
-): Promise<void> => {
+export const fetchTopperPerClassWithClassNumber = async (ctx: Context) => {
   let classNumber = ctx.params.classNumber;
 
   try {

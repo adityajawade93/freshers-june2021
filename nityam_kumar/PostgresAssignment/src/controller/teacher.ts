@@ -52,7 +52,10 @@ export const modifyTeacher = async (ctx: Context) => {
     throw new AppError(err.message, 400);
   }
 
-  await teacherService.checkExists(teacher_id);
+  const data = await teacherService.checkExists(teacher_id);
+  if (data === 0) {
+    throw new AppError("ID NOT found", 404);
+  }
   await teacherService.modifyTeacher(fname, lname, age, teacher_id, dob);
 
   ctx.status = 200;
@@ -142,7 +145,9 @@ export const fetchStudentsWithTeacher = async (ctx: Context) => {
   }
 
   const data = await teacherService.fetchStudentWithTeacherID(teacher_id);
-
+  if (data.length === 0) {
+    throw new AppError("ID NOT FOUND", 404);
+  }
   ctx.status = 200;
   ctx.body = {
     status: `successfull`,

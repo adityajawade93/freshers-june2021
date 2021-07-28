@@ -26,19 +26,18 @@ export const addTeacher = async (t1: ITeacher) => {
     ];
     await db.query(text, values);
   } catch (err) {
-    throw new AppError(err.message, 502);
+    throw new AppError("Internal Server Error", 500);
   }
 };
 
 export const checkExists = async (teacher_id: string) => {
-  const res = await db.query("select * from teacher where teacher_id =$1", [
-    teacher_id,
-  ]);
-  if (res.rows.length === 0) {
-    throw new AppError(
-      "Teacher with this id not available!! Enter valid teacher id",
-      401
-    );
+  try {
+    const res = await db.query("select * from teacher where teacher_id =$1", [
+      teacher_id,
+    ]);
+    return res.rows.length;
+  } catch (err) {
+    throw new AppError("Internal Server Error", 500);
   }
 };
 
@@ -77,7 +76,7 @@ export const modifyTeacher = async (
       ]);
     }
   } catch (err) {
-    throw new AppError(err.message, 502);
+    throw new AppError("Internal Server Error", 500);
   }
 };
 
@@ -86,7 +85,7 @@ export const countTeachers = async () => {
     const result = await db.query("SELECT count(*) from teacher");
     return result.rows[0].count;
   } catch (err) {
-    throw new AppError(err.message, 502);
+    throw new AppError("Internal Server Error", 500);
   }
 };
 
@@ -98,7 +97,7 @@ export const getTeachers = async (start_index: number, req_size: number) => {
     );
     return data.rows;
   } catch (err) {
-    throw new AppError(err.message, 502);
+    throw new AppError("Internal Server Error", 500);
   }
 };
 
@@ -109,7 +108,7 @@ export const countTeachersTeaching = async () => {
     );
     return result.rows[0].count;
   } catch (err) {
-    throw new AppError(err.message, 502);
+    throw new AppError("Internal Server Error", 500);
   }
 };
 
@@ -124,17 +123,18 @@ export const getTeachersTeaching = async (
     );
     return data.rows;
   } catch (err) {
-    throw new AppError(err.message, 502);
+    throw new AppError("Internal Server Error", 500);
   }
 };
 
 export const fetchStudentWithTeacherID = async (teacher_id: string) => {
-  const data = await db.query(
-    "select s1.st_id,s1.fname,s1.lname,s1.age,s1.cl_no from student as s1 where s1.cl_no in (select distinct cl_no from subject as sub where teacher_id=$1 order by s1.fname",
-    [teacher_id]
-  );
-  if (data.rows.length === 0) {
-    throw new AppError("ID NOT FOUND", 404);
+  try {
+    const data = await db.query(
+      "select s1.st_id,s1.fname,s1.lname,s1.age,s1.cl_no from student as s1 where s1.cl_no in (select distinct cl_no from subject as sub where teacher_id=$1 order by s1.fname",
+      [teacher_id]
+    );
+    return data.rows;
+  } catch (err) {
+    throw new AppError("Internal Server Error", 500);
   }
-  return data.rows;
 };

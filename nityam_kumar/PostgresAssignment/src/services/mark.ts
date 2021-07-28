@@ -12,14 +12,15 @@ interface IMark {
 }
 
 export const fetchMarks = async (student_id: string) => {
-  const data = await db.query(
-    "select s.fname,s.lname,s.cl_no,m1.marks from marks as m1,student as s where m1.st_id=$1 and s.st_id= m1.st_id order by s.fname",
-    [student_id.trim()]
-  );
-  if (data.rows.length === 0) {
-    throw new AppError("id not found", 404);
+  try {
+    const data = await db.query(
+      "select s.fname,s.lname,s.cl_no,m1.marks from marks as m1,student as s where m1.st_id=$1 and s.st_id= m1.st_id order by s.fname",
+      [student_id.trim()]
+    );
+    return data.rows;
+  } catch (err) {
+    throw new AppError("Internal Server Error", 500);
   }
-  return data.rows;
 };
 
 export const fetchHighestMarksPerSubject = async () => {
@@ -29,7 +30,7 @@ export const fetchHighestMarksPerSubject = async () => {
     );
     return data.rows;
   } catch (err) {
-    throw new AppError(err.message, 502);
+    throw new AppError("Internal Server Error", 500);
   }
 };
 
@@ -49,7 +50,7 @@ export const fetchHighestMarksPerSubjectWithSubjectID = async (
     );
     return data.rows;
   } catch (err) {
-    throw new AppError(err.message, 502);
+    throw new AppError("Internal Server Error", 500);
   }
 };
 
@@ -61,7 +62,7 @@ export const fetchTopBYNumber = async (number: number) => {
     );
     return data.rows;
   } catch (err) {
-    throw new AppError(err.message, 502);
+    throw new AppError("Internal Server Error", 500);
   }
 };
 
@@ -86,7 +87,7 @@ export const fetchTopperPerClass = async () => {
         order by maxa3.highest_marks desc`);
     return data.rows;
   } catch (err) {
-    throw new AppError(err.message, 502);
+    throw new AppError("Internal Server Error", 500);
   }
 };
 
@@ -118,47 +119,51 @@ export const fetchTopperPerClassWithClassNumber = async (
     );
     return data.rows;
   } catch (err) {
-    throw new AppError(err.message, 502);
+    throw new AppError("Internal Server Error", 500);
   }
 };
 
 export const checkStudentExist = async (m1: IMark) => {
-  const text4 = "select * from student where st_id =$1";
-  const values4 = [m1.student_id.trim()];
-  const check_student = await db.query(text4, values4);
-  if (check_student.rows.length === 0) {
-    throw new AppError(
-      `student with this id not available!! Enter valid student id`,
-      401
-    );
+  try {
+    const text4 = "select * from student where st_id =$1";
+    const values4 = [m1.student_id.trim()];
+    const check_student = await db.query(text4, values4);
+    return check_student.rows.length;
+  } catch (err) {
+    throw new AppError("Internal Server Error", 500);
   }
 };
 
 export const checkSubjectExist = async (m1: IMark) => {
-  const text5 =
-    "select * from classes where cl_no =$1 and sub_id =$2 and teacher_id =$3";
-  const values5 = [m1.class_number, m1.subject_id.trim(), m1.teacher_id.trim()];
-  const check_subject_cl = await db.query(text5, values5);
-  if (check_subject_cl.rows.length === 0) {
-    throw new AppError(
-      `subject with this class not available!! Enter valid Details`,
-      401
-    );
+  try {
+    const text5 =
+      "select * from classes where cl_no =$1 and sub_id =$2 and teacher_id =$3";
+    const values5 = [
+      m1.class_number,
+      m1.subject_id.trim(),
+      m1.teacher_id.trim(),
+    ];
+    const check_subject_cl = await db.query(text5, values5);
+    return check_subject_cl.rows.length;
+  } catch (err) {
+    throw new AppError("Internal Server Error", 500);
   }
 };
 
 export const checkAlreadyExist = async (m1: IMark) => {
-  const text6 =
-    "select * from marks where cl_no =$1 and sub_id =$2 and teacher_id =$3 and st_id=$4";
-  const values6 = [
-    m1.class_number,
-    m1.subject_id.trim(),
-    m1.teacher_id.trim(),
-    m1.student_id.trim(),
-  ];
-  const check_already_exist = await db.query(text6, values6);
-  if (check_already_exist.rows.length > 0) {
-    throw new AppError(`data already available `, 409);
+  try {
+    const text6 =
+      "select * from marks where cl_no =$1 and sub_id =$2 and teacher_id =$3 and st_id=$4";
+    const values6 = [
+      m1.class_number,
+      m1.subject_id.trim(),
+      m1.teacher_id.trim(),
+      m1.student_id.trim(),
+    ];
+    const check_already_exist = await db.query(text6, values6);
+    return check_already_exist.rows.length;
+  } catch (err) {
+    throw new AppError("Internal Server Error", 500);
   }
 };
 
@@ -174,17 +179,19 @@ export const addMark = async (m1: IMark) => {
     ];
     await db.query(text, values);
   } catch (err) {
-    throw new AppError(err.message, 502);
+    throw new AppError("Internal Server Error", 500);
   }
 };
 
 export const checkExist = async (student_id: string, subject_id: string) => {
-  const res = await db.query(
-    "select * from marks where st_id =$1 and sub_id=$2",
-    [student_id.trim(), subject_id.trim()]
-  );
-  if (res.rows.length === 0) {
-    throw new AppError(`either subject or student id not available`, 401);
+  try {
+    const res = await db.query(
+      "select * from marks where st_id =$1 and sub_id=$2",
+      [student_id.trim(), subject_id.trim()]
+    );
+    return res.rows.length;
+  } catch (err) {
+    throw new AppError("Internal Server Error", 500);
   }
 };
 
@@ -200,6 +207,6 @@ export const ModifyMarks = async (
       subject_id.trim(),
     ]);
   } catch (err) {
-    throw new AppError(err.message, 502);
+    throw new AppError("Internal Server Error", 500);
   }
 };

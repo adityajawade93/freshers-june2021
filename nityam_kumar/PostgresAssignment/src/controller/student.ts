@@ -19,6 +19,7 @@ interface IStudent {
   fname: string;
   lname: string;
   sex?: string;
+  dob: Date;
 }
 
 export const createStudent = async (ctx: Context) => {
@@ -40,7 +41,7 @@ export const createStudent = async (ctx: Context) => {
 
 export const modifyStudent = async (ctx: Context) => {
   const student_id = ctx.params.studentID;
-  const { fname, lname, age, class_number } = ctx.request.body;
+  const { fname, lname, age, class_number, dob } = ctx.request.body;
 
   try {
     await studentModifySchema.validateAsync({
@@ -49,6 +50,7 @@ export const modifyStudent = async (ctx: Context) => {
       age,
       class_number,
       student_id,
+      dob,
     });
   } catch (err) {
     throw new AppError(err.message, 400);
@@ -61,7 +63,8 @@ export const modifyStudent = async (ctx: Context) => {
     lname,
     age,
     class_number,
-    student_id
+    student_id,
+    dob
   );
 
   ctx.status = 200;

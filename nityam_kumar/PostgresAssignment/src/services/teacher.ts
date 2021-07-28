@@ -10,17 +10,19 @@ interface ITeacher {
   lname: string;
   teacher_id?: string;
   sex?: string;
+  dob: Date;
 }
 
 export const addTeacher = async (t1: ITeacher) => {
   try {
-    const text = "INSERT INTO teacher VALUES($1,$2,$3,$4,$5)";
+    const text = "INSERT INTO teacher VALUES($1,$2,$3,$4,$5,$6)";
     const values = [
       t1.teacher_id,
       t1.fname.trim(),
       t1.lname.trim(),
       t1.age,
       t1.sex,
+      t1.dob,
     ];
     await db.query(text, values);
   } catch (err) {
@@ -44,7 +46,8 @@ export const modifyTeacher = async (
   fname: string | null | undefined,
   lname: string | null | undefined,
   age: number | null | undefined,
-  teacher_id: string | null | undefined
+  teacher_id: string | null | undefined,
+  dob: Date | null | undefined
 ) => {
   try {
     if (fname) {
@@ -64,6 +67,12 @@ export const modifyTeacher = async (
     if (age) {
       await db.query("update teacher set age=$1 where teacher_id=$2", [
         age,
+        teacher_id,
+      ]);
+    }
+    if (dob) {
+      await db.query("update teacher set dob=$1 where teacher_id=$2", [
+        dob,
         teacher_id,
       ]);
     }

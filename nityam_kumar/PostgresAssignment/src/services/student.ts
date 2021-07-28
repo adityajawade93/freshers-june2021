@@ -11,11 +11,12 @@ interface IStudent {
   fname: string;
   lname: string;
   sex?: string;
+  dob: Date;
 }
 
 export const addStudent = async (s1: IStudent) => {
   try {
-    const text = "INSERT INTO student VALUES($1,$2,$3,$4,$5,$6)";
+    const text = "INSERT INTO student VALUES($1,$2,$3,$4,$5,$6,$6)";
     const values = [
       s1.student_id,
       s1.fname.trim(),
@@ -23,6 +24,7 @@ export const addStudent = async (s1: IStudent) => {
       s1.age,
       s1.class_number,
       s1.sex,
+      s1.dob,
     ];
     await db.query(text, values);
   } catch (err) {
@@ -35,7 +37,8 @@ export const modifyStudent = async (
   lname: string | null | undefined,
   age: number | null | undefined,
   class_number: number | null | undefined,
-  student_id: string
+  student_id: string,
+  dob: string | null | undefined
 ) => {
   try {
     if (fname) {
@@ -62,6 +65,13 @@ export const modifyStudent = async (
     if (class_number) {
       await db.query("update student set cl_no=$1 where st_id=$2", [
         class_number,
+        student_id,
+      ]);
+    }
+
+    if (dob) {
+      await db.query("update student set dob=$1 where st_id=$2", [
+        dob,
         student_id,
       ]);
     }

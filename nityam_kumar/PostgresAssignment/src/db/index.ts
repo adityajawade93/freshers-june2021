@@ -6,11 +6,11 @@ let pool: Pool;
 (async function () {
   try {
     pool = new Pool({
-      user: config.dbUser,
-      password: config.dbPassword,
-      host: config.dbHost,
-      database: process.env.DB_DATABASE,
-      port: config.dbPort,
+      user: config.DBUser,
+      password: config.DBPassword,
+      host: config.DBHost,
+      database: process.env.DBDATABASE,
+      port: config.DBPort,
     });
 
     const client = await pool.connect();

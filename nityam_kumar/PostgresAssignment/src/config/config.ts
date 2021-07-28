@@ -20,9 +20,9 @@ if (envVars.error) {
 }
 
 export const config = {
-  dbPort: envVars.DB_PORT,
-  dbUser: envVars.DB_USER,
-  dbHost: envVars.DB_HOST,
-  dbPassword: envVars.DB_PASSWORD,
-  port: envVars.PORT,
+  DBPort: envVars.DBPORT,
+  DBUser: envVars.DBUSER,
+  DBHost: envVars.DBHOST,
+  DBPassword: envVars.DBPASSWORD,
+  Port: envVars.PORT,
 };

@@ -36,6 +36,7 @@ export const studentModifySchema = Joi.object({
   age: Joi.number().min(1).max(110),
   class_number: Joi.number().min(1).max(12),
   student_id: Joi.string().trim().required().max(50),
+  dob: Joi.date(),
 });
 
 export const teacherModifySchema = Joi.object({
@@ -43,4 +44,5 @@ export const teacherModifySchema = Joi.object({
   lname: Joi.string().trim().min(3).max(25),
   age: Joi.number().min(1).max(110),
   teacher_id: Joi.string().trim().required().max(50),
+  dob: Joi.date(),
 });

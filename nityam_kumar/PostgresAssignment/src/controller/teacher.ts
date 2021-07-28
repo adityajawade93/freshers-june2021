@@ -16,6 +16,7 @@ interface ITeacher {
   lname: string;
   teacher_id?: string;
   sex?: string;
+  dob: Date;
 }
 
 export const createTeacher = async (ctx: Context) => {
@@ -37,16 +38,22 @@ export const createTeacher = async (ctx: Context) => {
 
 export const modifyTeacher = async (ctx: Context) => {
   const teacher_id = ctx.params.teacherId;
-  const { fname, lname, age } = ctx.request.body;
+  const { fname, lname, age, dob } = ctx.request.body;
 
   try {
-    await teacherModifySchema.validateAsync({ fname, lname, age, teacher_id });
+    await teacherModifySchema.validateAsync({
+      fname,
+      lname,
+      age,
+      teacher_id,
+      dob,
+    });
   } catch (err) {
     throw new AppError(err.message, 400);
   }
 
   await teacherService.checkExists(teacher_id);
-  await teacherService.modifyTeacher(fname, lname, age, teacher_id);
+  await teacherService.modifyTeacher(fname, lname, age, teacher_id, dob);
 
   ctx.status = 200;
   ctx.body = {

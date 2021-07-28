@@ -1,2 +1,7 @@
 node_modules/
 linting/
+.env
+node_modules
+dist
+.vscode
+.DS_Store

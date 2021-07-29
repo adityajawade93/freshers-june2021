@@ -1,11 +1,11 @@
 import {client} from "../Database/Client";
 
-export const getTeacherInfoFromDB = async () => {
+export const getTeacherInfo = async () => {
 
-    return (await client.query("SELECT * FROM school.teacher")).rows;
+    return (await client.query("SELECT * FROM school.teacher ORDER BY tid")).rows;
 }
 
-export const insertTeacherInfoIntoDB = async (teacherInfo:any) => {
+export const insertTeacherInfo = async (teacherInfo:any) => {
     
     return (await client.query("INSERT INTO school.teacher VALUES ($1,$2,$3,$4);", teacherInfo)).rows;
 }

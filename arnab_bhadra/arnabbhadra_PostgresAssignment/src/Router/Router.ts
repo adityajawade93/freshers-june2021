@@ -3,7 +3,7 @@ import * as teacherController from "../Controller/TeacherController";
 import * as subjectController from "../Controller/SubjectController";
 import * as classController from "../Controller/ClassController";
 import * as koaroute from '@koa/router';
-
+//@ts-ignore
 const router: koaroute<any> = new koaroute();
 router.get("/student", studentController.getStudentInfo);
 router.get("/student/:id", studentController.getStudentInfoByStudentid);

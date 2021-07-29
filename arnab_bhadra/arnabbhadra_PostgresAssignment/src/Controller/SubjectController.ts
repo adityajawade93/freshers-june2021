@@ -10,8 +10,8 @@ export const insertSubjectInfo = async (ctx: koa.Context, next: koa.Next): Promi
     const subjectInfo: any = ctx.request.body;
     if (subjectInfo.name !== undefined) {
         const suid: string | null = uuid.v4();
-        let alternatetid: string | null = null;
-        let tid: string | null = null;
+        let alternatetid: any = null;
+        let tid: any = null;
         if (subjectInfo.tid !== undefined) {
             tid = subjectInfo.tid;
         }
@@ -25,12 +25,12 @@ export const insertSubjectInfo = async (ctx: koa.Context, next: koa.Next): Promi
             alternatetid: alternatetid
         }
         try{
-            await subjectModel.insertSubjectInfoIntoDB([subjectEntity.suid, subjectEntity.sname, subjectEntity.tid, subjectEntity.alternatetid]);
+            await subjectModel.insertSubjectInfo([subjectEntity.suid, subjectEntity.sname, subjectEntity.tid, subjectEntity.alternatetid]);
             ctx.status = 200;
             ctx.body = "Data inserted successfully";
         }
         catch{
-            ctx.status = 406;
+            ctx.status = 500;
             ctx.body = message.errorMessage;
         }
 
@@ -46,13 +46,13 @@ export const getSubjectInfo = async (ctx: koa.Context, next: koa.Next): Promise<
         size: Number(ctx.query.size)
     }
     try{
-        const subjectinfo: any=subjectModel.getSubjectInfoFromDB();
+        const subjectinfo: any=subjectModel.getSubjectInfo();
         if (subjectinfo.length === 0) {
             ctx.status = 200;
             ctx.body = "There is no subject information.";
         }
         else{
-            const rangeOfInformation: boolean | Array<number> = validationPageAndPageSize(pageSizeData, subjectinfo.length);
+            const rangeOfInformation: any = validationPageAndPageSize(pageSizeData, subjectinfo.length);
             if (rangeOfInformation === false) {
                 ctx.status = 406;
                 ctx.body = message.invalidPageMessage;

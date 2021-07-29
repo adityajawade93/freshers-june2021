@@ -1,4 +1,7 @@
 import {app} from "./Application/app";
-app.listen(3000,()=>{
-    console.log("Server started at 3000");
+const dotenv = require('dotenv');
+const path = require('path');
+dotenv.config({ path: path.join(__dirname, './../../.env') });
+app.listen(process.env.PORT,()=>{
+    console.log("Server started at",process.env.PORT);
 });

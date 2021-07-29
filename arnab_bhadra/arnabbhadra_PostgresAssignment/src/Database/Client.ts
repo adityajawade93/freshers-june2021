@@ -1,11 +1,14 @@
 import { Pool } from 'pg';
+const dotenv = require('dotenv');
+const path = require('path');
+dotenv.config({ path: path.join(__dirname, './../../.env') });
 
 const client: Pool = new Pool({
-    user: "arnab",
-    password: "1234",
-    host: "127.0.0.1",
-    port: 5432,
-    database: "zopsmart"
+    user: process.env.DBUSER,
+    password: process.env.DBPASSWORD,
+    host: process.env.DBHOST,
+    port: Number(process.env.DBPORT),
+    database: process.env.DATABASE
 });
 
 export {client};

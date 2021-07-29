@@ -13,7 +13,7 @@ export const getTeacherInfo = async (ctx: koa.Context, next: koa.Next) : Promise
         size: Number(ctx.query.size)
     }
     try{
-        const teacherinfo: any=teacherModel.getTeacherInfoFromDB();
+        const teacherinfo: any=teacherModel.getTeacherInfo();
         if (teacherinfo.length === 0) {
             ctx.status = 200;
             ctx.body = "There is no teacher information.";
@@ -32,7 +32,7 @@ export const getTeacherInfo = async (ctx: koa.Context, next: koa.Next) : Promise
         }
     }
     catch{
-        ctx.status = 400;
+        ctx.status = 500;
         ctx.body = message.errorMessage;
     }
 }
@@ -51,12 +51,12 @@ export const insertTeacherInfo = async (ctx: koa.Context, next: koa.Next): Promi
             specialization: specialization
         }
         try{
-            await teacherModel.insertTeacherInfoIntoDB([teacherEntity.tid, teacherEntity.tname, teacherEntity.specialization, teacherEntity.contactno])
+            await teacherModel.insertTeacherInfo([teacherEntity.tid, teacherEntity.tname, teacherEntity.specialization, teacherEntity.contactno])
             ctx.status = 200;
             ctx.body = "Data inserted successfully";
         }
         catch{
-            ctx.status = 400;
+            ctx.status = 500;
             ctx.body = message.errorMessage;
         }
 

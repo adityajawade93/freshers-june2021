@@ -14,12 +14,12 @@ export const insertClassScheduleInfo = async (ctx: koa.Context, next: koa.Next):
             endtime: classScheduleInfo.end
         }
         try{
-            classModel.insertClassScheduleInfoIntoDB([classScheduleEntity.cid, classScheduleEntity.ssid, classScheduleEntity.starttime, classScheduleEntity.endtime])
+            classModel.insertClassScheduleInfo([classScheduleEntity.cid, classScheduleEntity.ssid, classScheduleEntity.starttime, classScheduleEntity.endtime])
             ctx.status = 200;
             ctx.body = "Data inserted successfully";
         }
         catch{
-            ctx.status = 406;
+            ctx.status = 500;
             ctx.body = message.errorMessage;
         }
 

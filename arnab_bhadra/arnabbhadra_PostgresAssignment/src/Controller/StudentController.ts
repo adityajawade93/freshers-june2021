@@ -8,7 +8,7 @@ import {Student} from "../Services/Student";
 
 export const getStudentInfo = async (ctx: koa.Context, next: koa.Next):Promise<any> => {
     try{
-        const studentInfo:any = await studentModel.getStudentInfoFromDB();
+        const studentInfo:any = await studentModel.getStudentInfo();
         const pageSizeData: page = {
             page: Number(ctx.query.page),
             size: Number(ctx.query.size)
@@ -39,7 +39,7 @@ export const getStudentInfo = async (ctx: koa.Context, next: koa.Next):Promise<a
 export const getStudentInfoByStudentid = async (ctx: koa.Context, next: koa.Next) => {
     const id: string = ctx.params.id;
     try{
-        const studentInfo: any = await studentModel.getStudentInfobyStudentIdFromDB(id);
+        const studentInfo: any = await studentModel.getStudentInfobyStudentId(id);
         if (studentInfo.length === 0) {
             ctx.status = 204;
             ctx.body = "No data to send";
@@ -51,7 +51,7 @@ export const getStudentInfoByStudentid = async (ctx: koa.Context, next: koa.Next
 
     }
     catch{
-        ctx.status = 400;
+        ctx.status = 500;
         ctx.body = message.errorMessage;
     }
 
@@ -60,7 +60,7 @@ export const getStudentInfoByStudentid = async (ctx: koa.Context, next: koa.Next
 export const getStudentInfoByTeacherId = async (ctx: koa.Context, next: koa.Next) => {
     const id: string = ctx.params.id;
     try{
-        const studentInfo: any= await studentModel.getStudentInfobyTeacherIdFromDB(id);
+        const studentInfo: any= await studentModel.getStudentInfobyTeacherId(id);
         if(studentInfo.lenght==0){
             ctx.status = 204;
             ctx.body = "No data to send";
@@ -72,7 +72,7 @@ export const getStudentInfoByTeacherId = async (ctx: koa.Context, next: koa.Next
         
     }
     catch{
-        ctx.status = 400;
+        ctx.status = 500;
         ctx.body = message.errorMessage;
     }
 
@@ -81,7 +81,7 @@ export const getStudentInfoByTeacherId = async (ctx: koa.Context, next: koa.Next
 export const getStudentInfoByClassId = async (ctx: koa.Context, next: koa.Next) => {
     const id: string = ctx.params.id;
     try{
-        const studentInfo: any = await studentModel.getStudentInfobyClassIdFromDB(id);
+        const studentInfo: any = await studentModel.getStudentInfobyClassId(id);
         if(studentInfo.lenght==0){
             ctx.status = 204;
             ctx.body = "No data to send";
@@ -92,7 +92,7 @@ export const getStudentInfoByClassId = async (ctx: koa.Context, next: koa.Next) 
         }
     }
     catch{
-        ctx.status = 400;
+        ctx.status = 500;
         ctx.body = message.errorMessage;
     }
 
@@ -100,7 +100,7 @@ export const getStudentInfoByClassId = async (ctx: koa.Context, next: koa.Next) 
 
 export const insertStudentInfo = async (ctx: koa.Context, next: koa.Next) => {
     const studentInfo: any = ctx.request.body;
-    console.log(ctx);
+    //console.log(ctx);
     if (studentInfo !== undefined && studentInfo.name !== undefined && studentInfo.rollno !== undefined) {
         let address: string | null = null;
         if (studentInfo.address !== undefined) {
@@ -113,12 +113,12 @@ export const insertStudentInfo = async (ctx: koa.Context, next: koa.Next) => {
             address: address
         }
         try{
-            await studentModel.insertStudentInfoIntoDB([studentEntity.sid, studentEntity.sname, studentEntity.rollno, studentEntity.address]);
+            await studentModel.insertStudentInfo([studentEntity.sid, studentEntity.sname, studentEntity.rollno, studentEntity.address]);
             ctx.status = 200;
             ctx.body = "Data inserted successfully";
         }
         catch{
-            ctx.status = 406;
+            ctx.status = 500;
             ctx.body = message.errorMessage;
         }
     }
@@ -130,7 +130,7 @@ export const insertStudentInfo = async (ctx: koa.Context, next: koa.Next) => {
 export const getToperBySubject = async (ctx: koa.Context, next: koa.Next) => {
     const id: string = ctx.params.id;
     try{
-        let studentInfo: any=await studentModel.getTopperBySubjectIdFromDB(id);
+        const studentInfo: any=await studentModel.getTopperBySubjectId(id);
         if(studentInfo.lenght==0){
             ctx.status = 204;
             ctx.body = "No data to send";
@@ -141,7 +141,7 @@ export const getToperBySubject = async (ctx: koa.Context, next: koa.Next) => {
         }
     }
     catch{
-        ctx.status = 400;
+        ctx.status = 500;
         ctx.body = message.errorMessage;
     }
 
@@ -150,7 +150,7 @@ export const getToperBySubject = async (ctx: koa.Context, next: koa.Next) => {
 export const getTopperOftheClass = async (ctx: koa.Context, next: koa.Next) => {
     const id: string = ctx.params.id;
     try{
-        const studentInfo: any=await studentModel.getToppersFromDB(id);
+        const studentInfo: any=await studentModel.getToppers(id);
         if(studentInfo.lenght==0){
             ctx.status = 204;
             ctx.body = "No data to send";

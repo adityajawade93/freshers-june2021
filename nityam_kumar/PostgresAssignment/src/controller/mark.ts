@@ -3,7 +3,6 @@ import { Context } from "vm";
 import * as marksService from "../services/mark";
 
 import markSchema from "../db/validateSchema/markSchema";
-import AppError from "../utils/appError";
 
 import {
   classNoSchema,
@@ -24,10 +23,11 @@ interface IMark {
 export const createMarks = async (ctx: Context) => {
   const m1: IMark = ctx.request.body;
 
-  try {
-    await markSchema.validateAsync(m1);
-  } catch (err) {
-    throw new AppError(err.message, 400);
+  const reqData = await markSchema.validateAsync(m1);
+  if (reqData.error) {
+    ctx.status = 400;
+    ctx.body = reqData.error.details[0].message;
+    return;
   }
 
   const value = await Promise.all([
@@ -67,15 +67,24 @@ export const modifyMarks = async (ctx: Context) => {
   const subject_id = ctx.params.subjectId;
   const { marks } = ctx.request.body;
 
-  try {
-    await marksInputSchema.validateAsync({ student_id, subject_id, marks });
-  } catch (err) {
-    throw new AppError(err.message, 400);
+  const reqData = await marksInputSchema.validateAsync({
+    student_id,
+    subject_id,
+    marks,
+  });
+  if (reqData.error) {
+    ctx.status = 400;
+    ctx.body = reqData.error.details[0].message;
+    return;
   }
 
   const data = await marksService.checkExist(student_id, subject_id);
   if (data === 0) {
-    throw new AppError(`either subject or student id not available`, 401);
+    ctx.status = 401;
+    ctx.body = {
+      status: `either subject or student id not available`,
+    };
+    return;
   }
   await marksService.ModifyMarks(marks, student_id, subject_id);
   ctx.status = 200;
@@ -87,15 +96,20 @@ export const modifyMarks = async (ctx: Context) => {
 export const fetchMarks = async (ctx: Context) => {
   const student_id = ctx.params.studentId;
 
-  try {
-    await studentIDSchema.validateAsync({ student_id });
-  } catch (err) {
-    throw new AppError(err.message, 400);
+  const reqData = await studentIDSchema.validateAsync({ student_id });
+  if (reqData.error) {
+    ctx.status = 400;
+    ctx.body = reqData.error.details[0].message;
+    return;
   }
 
   const data = await marksService.fetchMarks(student_id);
   if (data.length === 0) {
-    throw new AppError("student id not found", 404);
+    ctx.status = 404;
+    ctx.body = {
+      status: "student id not found",
+    };
+    return;
   }
   ctx.status = 200;
   ctx.body = {
@@ -117,10 +131,12 @@ export const fetchHighestMarksPerSubjectWithSubjectID = async (
   ctx: Context
 ) => {
   const subject_id = ctx.params.subjectId;
-  try {
-    await subjectIDSchema.validateAsync({ subject_id });
-  } catch (err) {
-    throw new AppError(err.message, 400);
+
+  const reqData = await subjectIDSchema.validateAsync({ subject_id });
+  if (reqData.error) {
+    ctx.status = 400;
+    ctx.body = reqData.error.details[0].message;
+    return;
   }
 
   const data = await marksService.fetchHighestMarksPerSubjectWithSubjectID(
@@ -135,10 +151,12 @@ export const fetchHighestMarksPerSubjectWithSubjectID = async (
 
 export const fetchTopBYNumber = async (ctx: Context) => {
   let number = ctx.params.number;
-  try {
-    await fetchTopBYNumberSchema.validateAsync({ number });
-  } catch (err) {
-    throw new AppError(err.message, 400);
+
+  const reqData = await fetchTopBYNumberSchema.validateAsync({ number });
+  if (reqData.error) {
+    ctx.status = 400;
+    ctx.body = reqData.error.details[0].message;
+    return;
   }
 
   number = Number(number);
@@ -162,10 +180,11 @@ export const fetchTopperPerClass = async (ctx: Context) => {
 export const fetchTopperPerClassWithClassNumber = async (ctx: Context) => {
   let classNumber = ctx.params.classNumber;
 
-  try {
-    await classNoSchema.validateAsync({ classNumber });
-  } catch (err) {
-    throw new AppError(err.message, 400);
+  const reqData = await classNoSchema.validateAsync({ classNumber });
+  if (reqData.error) {
+    ctx.status = 400;
+    ctx.body = reqData.error.details[0].message;
+    return;
   }
 
   classNumber = Number(classNumber);

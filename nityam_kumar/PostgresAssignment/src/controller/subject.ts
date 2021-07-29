@@ -6,8 +6,6 @@ import * as teacherService from "../services/teacher";
 
 import { subjectIDSchema } from "../db/validateSchema/helperSchema";
 
-import AppError from "../utils/appError";
-
 import subjectSchema from "../db/validateSchema/subjectSchema";
 
 interface ISubject {
@@ -19,10 +17,12 @@ interface ISubject {
 
 export const createSubject = async (ctx: Context) => {
   const s1: ISubject = ctx.request.body;
-  try {
-    await subjectSchema.validateAsync(s1);
-  } catch (err) {
-    throw new AppError(err.message, 400);
+
+  const reqData = await subjectSchema.validateAsync(s1);
+  if (reqData.error) {
+    ctx.status = 400;
+    ctx.body = reqData.error.details[0].message;
+    return;
   }
 
   const data = await Promise.all([
@@ -67,15 +67,21 @@ export const getSubject = async (ctx: Context) => {
 
 export const fetchStudentsWithSub = async (ctx: Context) => {
   const subject_id = ctx.params.subjectId;
-  try {
-    await subjectIDSchema.validateAsync({ subject_id });
-  } catch (err) {
-    throw new AppError(err.message, 400);
+
+  const reqData = await subjectIDSchema.validateAsync({ subject_id });
+  if (reqData.error) {
+    ctx.status = 400;
+    ctx.body = reqData.error.details[0].message;
+    return;
   }
 
   const data = await subjectService.fetchStudentsWithSub(subject_id);
   if (data.length === 0) {
-    throw new AppError("id not found", 404);
+    ctx.status = 404;
+    ctx.body = {
+      status: "id NOT FOUND!!",
+    };
+    return;
   }
   ctx.status = 200;
   ctx.body = {

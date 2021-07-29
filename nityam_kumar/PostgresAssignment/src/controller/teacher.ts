@@ -8,7 +8,7 @@ import {
 } from "../db/validateSchema/helperSchema";
 import teacherSchema from "../db/validateSchema/teacherSchema";
 import paginationSchema from "../db/validateSchema/paginationSchema";
-import AppError from "../utils/appError";
+
 
 interface ITeacher {
   age: number;
@@ -22,10 +22,11 @@ interface ITeacher {
 export const createTeacher = async (ctx: Context) => {
   const t1: ITeacher = ctx.request.body;
 
-  try {
-    await teacherSchema.validateAsync(t1);
-  } catch (err) {
-    throw new AppError(err.message, 400);
+  const reqData = await teacherSchema.validateAsync(t1);
+  if (reqData.error) {
+    ctx.status = 400;
+    ctx.body = reqData.error.details[0].message;
+    return;
   }
 
   t1.teacher_id = uuid();
@@ -40,21 +41,26 @@ export const modifyTeacher = async (ctx: Context) => {
   const teacher_id = ctx.params.teacherId;
   const { fname, lname, age, dob } = ctx.request.body;
 
-  try {
-    await teacherModifySchema.validateAsync({
-      fname,
-      lname,
-      age,
-      teacher_id,
-      dob,
-    });
-  } catch (err) {
-    throw new AppError(err.message, 400);
+  const reqData = await teacherModifySchema.validateAsync({
+    fname,
+    lname,
+    age,
+    teacher_id,
+    dob,
+  });
+  if (reqData.error) {
+    ctx.status = 400;
+    ctx.body = reqData.error.details[0].message;
+    return;
   }
 
   const data = await teacherService.checkExists(teacher_id);
   if (data === 0) {
-    throw new AppError("ID NOT found", 404);
+    ctx.status = 404;
+    ctx.body = {
+      status: "id NOT FOUND!!",
+    };
+    return;
   }
   await teacherService.modifyTeacher(fname, lname, age, teacher_id, dob);
 
@@ -68,10 +74,11 @@ export const getTeachers = async (ctx: Context) => {
   let page = ctx.query.page;
   let size = ctx.query.size;
 
-  try {
-    await paginationSchema.validateAsync({ page, size });
-  } catch (err) {
-    throw new AppError(err.message, 400);
+  const reqData = await paginationSchema.validateAsync({ page, size });
+  if (reqData.error) {
+    ctx.status = 400;
+    ctx.body = reqData.error.details[0].message;
+    return;
   }
 
   page = Number(page);
@@ -81,7 +88,11 @@ export const getTeachers = async (ctx: Context) => {
   const max_page_limit = Math.ceil(teacher_table_size / size);
 
   if (page > max_page_limit) {
-    throw new AppError("NOT FOUND!!", 404);
+    ctx.status = 404;
+    ctx.body = {
+      status: "NOT FOUND",
+    };
+    return;
   }
 
   const start_index = (page - 1) * size;
@@ -101,10 +112,11 @@ export const getTeachersTeaching = async (ctx: Context) => {
   let page = ctx.query.page;
   let size = ctx.query.size;
 
-  try {
-    await paginationSchema.validateAsync({ page, size });
-  } catch (err) {
-    throw new AppError(err.message, 400);
+  const reqData = await paginationSchema.validateAsync({ page, size });
+  if (reqData.error) {
+    ctx.status = 400;
+    ctx.body = reqData.error.details[0].message;
+    return;
   }
 
   page = Number(page);
@@ -116,7 +128,11 @@ export const getTeachersTeaching = async (ctx: Context) => {
   const max_page_limit = Math.ceil(teacher_table_size / size);
 
   if (page > max_page_limit) {
-    throw new AppError("NOT FOUND!!", 404);
+    ctx.status = 404;
+    ctx.body = {
+      status: "NOT FOUND!!",
+    };
+    return;
   }
 
   const start_index = (page - 1) * size;
@@ -135,15 +151,21 @@ export const getTeachersTeaching = async (ctx: Context) => {
 
 export const fetchStudentsWithTeacher = async (ctx: Context) => {
   const teacher_id = ctx.params.teacherId;
-  try {
-    await teacherIDSchema.validateAsync({ teacher_id });
-  } catch (err) {
-    throw new AppError(err.message, 400);
+
+  const reqData = await teacherIDSchema.validateAsync({ teacher_id });
+  if (reqData.error) {
+    ctx.status = 400;
+    ctx.body = reqData.error.details[0].message;
+    return;
   }
 
   const data = await teacherService.fetchStudentWithTeacherID(teacher_id);
   if (data.length === 0) {
-    throw new AppError("ID NOT FOUND", 404);
+    ctx.status = 404;
+    ctx.body = {
+      status: "ID NOT FOUND",
+    };
+    return;
   }
   ctx.status = 200;
   ctx.body = {

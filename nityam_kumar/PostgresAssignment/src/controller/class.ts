@@ -3,8 +3,6 @@ import { Context } from "vm";
 
 import * as classService from "../services/classes";
 
-import AppError from "../utils/appError";
-
 import { classNoSchema } from "../db/validateSchema/helperSchema";
 
 export const getClasses = async (ctx: Context) => {
@@ -28,10 +26,12 @@ export const getSchedule = async (ctx: Context) => {
 export const getClassSchedule = async (ctx: Context) => {
   let classNumber = ctx.params.classNumber;
 
-  try {
-    await classNoSchema.validateAsync({ classNumber });
-  } catch (err) {
-    throw new AppError(err.message, 400);
+  const reqData = await classNoSchema.validateAsync({ classNumber });
+
+  if (reqData.error) {
+    ctx.status = 400;
+    ctx.body = reqData.error.details[0].message;
+    return;
   }
 
   classNumber = Number(classNumber);
@@ -45,15 +45,20 @@ export const getClassSchedule = async (ctx: Context) => {
 
 export const fetchStudentsWithClass = async (ctx: Context) => {
   const classNumber = ctx.params.classNumber;
-  try {
-    await classNoSchema.validateAsync({ classNumber });
-  } catch (err) {
-    throw new AppError(err.message, 400);
+
+  const reqData = await classNoSchema.validateAsync({ classNumber });
+  if (reqData.error) {
+    ctx.status = 400;
+    ctx.body = reqData.error.details[0].message;
+    return;
   }
 
   const data = await classService.fetchStudentsWithClass(classNumber);
   if (data.length === 0) {
-    throw new AppError("classNumber NOT FOUND", 404);
+    ctx.status = 404;
+    ctx.body = {
+      status: `classNumber NOT FOUND`,
+    };
   }
   ctx.status = 200;
   ctx.body = {

@@ -6,7 +6,6 @@ import * as studentService from "../services/student";
 import studentSchema from "../db/validateSchema/studentSchema";
 import paginationSchema from "../db/validateSchema/paginationSchema";
 
-import AppError from "../utils/appError";
 import {
   studentIDSchema,
   studentModifySchema,
@@ -25,10 +24,11 @@ interface IStudent {
 export const createStudent = async (ctx: Context) => {
   const s1: IStudent = ctx.request.body;
 
-  try {
-    await studentSchema.validateAsync(s1);
-  } catch (err) {
-    throw new AppError(err.message, 400);
+  const reqData = await studentSchema.validateAsync(s1);
+  if (reqData.error) {
+    ctx.status = 400;
+    ctx.body = reqData.error.details[0].message;
+    return;
   }
 
   s1.student_id = uuid();
@@ -43,22 +43,27 @@ export const modifyStudent = async (ctx: Context) => {
   const student_id = ctx.params.studentID;
   const { fname, lname, age, class_number, dob } = ctx.request.body;
 
-  try {
-    await studentModifySchema.validateAsync({
-      fname,
-      lname,
-      age,
-      class_number,
-      student_id,
-      dob,
-    });
-  } catch (err) {
-    throw new AppError(err.message, 400);
+  const reqData = await studentModifySchema.validateAsync({
+    fname,
+    lname,
+    age,
+    class_number,
+    student_id,
+    dob,
+  });
+  if (reqData.error) {
+    ctx.status = 400;
+    ctx.body = reqData.error.details[0].message;
+    return;
   }
 
   const data = await studentService.checkExists(student_id);
   if (data === 0) {
-    throw new AppError(`student with this id not found`, 404);
+    ctx.status = 404;
+    ctx.body = {
+      status: `student with this id not found`,
+    };
+    return;
   }
   await studentService.modifyStudent(
     fname,
@@ -79,10 +84,11 @@ export const getStudents = async (ctx: Context) => {
   let page = ctx.query.page;
   let size = ctx.query.size;
 
-  try {
-    await paginationSchema.validateAsync({ page, size });
-  } catch (err) {
-    throw new AppError(err.message, 400);
+  const reqData = await paginationSchema.validateAsync({ page, size });
+  if (reqData.error) {
+    ctx.status = 400;
+    ctx.body = reqData.error.details[0].message;
+    return;
   }
 
   page = Number(page);
@@ -90,10 +96,13 @@ export const getStudents = async (ctx: Context) => {
 
   const student_table_size: number = await studentService.countStudents();
   const max_page_limit: number = Math.ceil(student_table_size / size);
-  
 
   if (page > max_page_limit) {
-    throw new AppError("Page NOT FOUND!!", 404);
+    ctx.status = 404;
+    ctx.body = {
+      status: "Page NOT FOUND!!",
+    };
+    return;
   }
 
   const start_index = (page - 1) * size;
@@ -113,10 +122,13 @@ export const getStudents = async (ctx: Context) => {
 export const getStudentSchedule = async (ctx: Context) => {
   const student_id = ctx.params.studentID;
 
-  try {
-    await studentIDSchema.validateAsync({ student_id: student_id });
-  } catch (err) {
-    throw new AppError(err.message, 400);
+  const reqData = await studentIDSchema.validateAsync({
+    student_id: student_id,
+  });
+  if (reqData.error) {
+    ctx.status = 400;
+    ctx.body = reqData.error.details[0].message;
+    return;
   }
 
   const result = await studentService.getStudentSchedule(student_id);

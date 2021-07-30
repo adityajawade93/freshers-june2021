@@ -5,6 +5,7 @@ import * as koa from "koa";
 import * as uuid from 'uuid';
 import {Teacher} from "../Services/Teacher";
 import * as teacherModel from "../Services/TeacherModel";
+import { teacherSchema } from "../Database/Helper/validation";
 
 export const getTeacherInfo = async (ctx: koa.Context, next: koa.Next) : Promise<any>=> {
 
@@ -39,7 +40,9 @@ export const getTeacherInfo = async (ctx: koa.Context, next: koa.Next) : Promise
 
 export const insertTeacherInfo = async (ctx: koa.Context, next: koa.Next): Promise<any> => {
     const teacherInfo: any = ctx.request.body;
-    if (teacherInfo !== undefined && teacherInfo.name !== undefined && teacherInfo.contactno !== undefined) {
+
+    try{
+        await teacherSchema.validateAsync(teacherInfo);
         let specialization: null | string = null;
         if (teacherInfo.specialization !== undefined) {
             specialization = teacherInfo.specialization;
@@ -59,9 +62,8 @@ export const insertTeacherInfo = async (ctx: koa.Context, next: koa.Next): Promi
             ctx.status = 500;
             ctx.body = message.errorMessage;
         }
-
     }
-    else {
+    catch {
         ctx.status=406;
         ctx.body = message.invalidInputMessage;
     }

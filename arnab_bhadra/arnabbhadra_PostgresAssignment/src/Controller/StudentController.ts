@@ -5,7 +5,7 @@ import * as message from "../Middleware/message";
 import * as koa from "koa";
 import * as uuid from 'uuid';
 import {Student} from "../Services/Student";
-
+import { studentSchema} from "../Database/Helper/validation";
 export const getStudentInfo = async (ctx: koa.Context, next: koa.Next):Promise<any> => {
     try{
         const studentInfo:any = await studentModel.getStudentInfo();
@@ -101,7 +101,8 @@ export const getStudentInfoByClassId = async (ctx: koa.Context, next: koa.Next) 
 export const insertStudentInfo = async (ctx: koa.Context, next: koa.Next) => {
     const studentInfo: any = ctx.request.body;
     //console.log(ctx);
-    if (studentInfo !== undefined && studentInfo.name !== undefined && studentInfo.rollno !== undefined) {
+    try{
+        await studentSchema.validateAsync(studentInfo);
         let address: string | null = null;
         if (studentInfo.address !== undefined) {
             address = studentInfo.address;
@@ -122,9 +123,11 @@ export const insertStudentInfo = async (ctx: koa.Context, next: koa.Next) => {
             ctx.body = message.errorMessage;
         }
     }
-    else {
+    catch{
         ctx.body = message.invalidInputMessage;
     }
+    
+
 }
 
 export const getToperBySubject = async (ctx: koa.Context, next: koa.Next) => {

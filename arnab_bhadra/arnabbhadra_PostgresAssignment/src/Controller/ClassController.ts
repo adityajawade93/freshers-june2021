@@ -3,10 +3,11 @@ import * as koa from "koa";
 import * as uuid from 'uuid';
 import {ClassSchedule} from "../Services/ClassSchedule";
 import * as classModel from "../Services/ClassModel";
-
+import {classScheduleSchema} from "../Database/Helper/validation";
 export const insertClassScheduleInfo = async (ctx: koa.Context, next: koa.Next): Promise<any> => {
     const classScheduleInfo: any = ctx.request.body;
-    if (classScheduleInfo !== undefined && classScheduleInfo.ssid !== undefined && classScheduleInfo.start !== undefined && classScheduleInfo.end !== undefined) {
+    try{
+        await classScheduleSchema.validateAsync(classScheduleInfo);
         const classScheduleEntity: ClassSchedule = {
             cid: uuid.v4(),
             ssid: classScheduleInfo.ssid,
@@ -22,9 +23,8 @@ export const insertClassScheduleInfo = async (ctx: koa.Context, next: koa.Next):
             ctx.status = 500;
             ctx.body = message.errorMessage;
         }
-
     }
-    else {
+    catch {
         ctx.body = message.invalidInputMessage;
     }
 }

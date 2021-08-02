@@ -2,9 +2,11 @@ import * as studentController from "../Controller/StudentController";
 import * as teacherController from "../Controller/TeacherController";
 import * as subjectController from "../Controller/SubjectController";
 import * as classController from "../Controller/ClassController";
-import * as koaroute from '@koa/router';
-//@ts-ignore
-const router: koaroute<any> = new koaroute();
+//import * as koaroute from '@koa/router';
+const koaroute = require('@koa/router');
+
+const router: any = new koaroute();
+
 router.get("/student", studentController.getStudentInfo);
 router.get("/student/:id", studentController.getStudentInfoByStudentid);
 router.get("/student/teacher/:id", studentController.getStudentInfoByTeacherId);

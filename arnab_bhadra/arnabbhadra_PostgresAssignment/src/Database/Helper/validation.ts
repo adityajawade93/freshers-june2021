@@ -17,3 +17,7 @@ export const teacherSchema = Joi.object().keys({
     contactno: Joi.number().required(),
 });
 
+export const subjectSchema = Joi.object().keys({
+    name: Joi.string().required(),
+    
+});

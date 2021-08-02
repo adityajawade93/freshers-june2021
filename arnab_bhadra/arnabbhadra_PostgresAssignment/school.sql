@@ -2,46 +2,46 @@ CREATE SCHEMA school;
 SET search_path TO school;
 
 CREATE TABLE student(
-	sid TEXT PRIMARY KEY,
-	sname TEXT NOT NULL,
+	sid VARCHAR(50) PRIMARY KEY,
+	sname VARCHAR(50) NOT NULL,
 	rollno INT NOT NULL,
-	address TEXT
+	address VARCHAR(100)
 );
 
 CREATE TABLE teacher(
-	tid TEXT PRIMARY KEY,
-	tname TEXT NOT NULL,
-	specialzation TEXT,
+	tid VARCHAR(50) PRIMARY KEY,
+	tname VARCHAR(50) NOT NULL,
+	specialzation VARCHAR(100),
 	contactno INT NOT NULL
 );
 
 
 CREATE TABLE subject(
-	suid TEXT PRIMARY KEY,
-	sname TEXT NOT NULL,
-	tid TEXT ,
-	alternatetid TEXT
+	suid VARCHAR(50) PRIMARY KEY,
+	sname VARCHAR(50) NOT NULL,
+	tid VARCHAR(50) ,
+	alternatetid VARCHAR(50)
 );
 
 CREATE TABLE resultTable(
-	sid TEXT,
-	ssid TEXT,
+	sid VARCHAR(50),
+	ssid VARCHAR(50),
 	mark DECIMAL(3,2) NOT NULL,
 	PRIMARY KEY (sid,ssid)
 ); 
 DROP TABLE classschedule;
 CREATE TABLE classschedule (
-	cid TEXT,
-	ssid TEXT,
-	starttime TEXT,
-	endtime TEXT,
+	cid VARCHAR(50),
+	ssid VARCHAR(50),
+	starttime VARCHAR(50),
+	endtime VARCHAR(50),
 	PRIMARY KEY (cid)
 );
 
 
 CREATE TABLE studentclass (
-	sid TEXT,
-	cid TEXT,
+	sid VARCHAR(50),
+	cid VARCHAR(50),
 	PRIMARY KEY (sid,cid)
 );
 

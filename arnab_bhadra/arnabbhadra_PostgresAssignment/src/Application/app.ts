@@ -1,13 +1,15 @@
-import * as koa from 'koa';
+
+const koa = require('koa');
+const bodyparser = require('koa-bodyparser');
 import * as koaroute from '../Router/Router';
-import * as bodyparser from 'koa-bodyparser';
+
 import * as message from "../Middleware/message"
-//@ts-ignore
-const app: koa<koa.DefaultState, koa.DefaultContext> = new koa();
-//@ts-ignore
+
+const app :  any = new koa();
+
 app.use(bodyparser());
 app.use(koaroute.router.routes());
-app.use(async (ctx: koa.Context) => {
+app.use(async (ctx: any) => {
     ctx.status = 404;
     ctx.body = message.pageNotFoundMessage;
 });

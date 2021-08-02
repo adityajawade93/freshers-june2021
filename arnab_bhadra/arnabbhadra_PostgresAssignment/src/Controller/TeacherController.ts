@@ -8,33 +8,23 @@ import * as teacherModel from "../Services/TeacherModel";
 import { teacherSchema } from "../Database/Helper/validation";
 
 export const getTeacherInfo = async (ctx: koa.Context, next: koa.Next) : Promise<any>=> {
-
     const pageSizeData: page = {
         page: Number(ctx.query.page),
         size: Number(ctx.query.size)
     }
-    try{
-        const teacherinfo: any=teacherModel.getTeacherInfo();
-        if (teacherinfo.length === 0) {
-            ctx.status = 200;
-            ctx.body = "There is no teacher information.";
-        }
-        else{
-            const rangeOfInformation: boolean | Array<number> = validationPageAndPageSize(pageSizeData, teacherinfo.length);
-            if (rangeOfInformation === false) {
-                ctx.status = 406;
-                ctx.body = message.invalidPageMessage;
-            }
-            else {
-                ctx.status = 200;
-                const rangeNumber:any =rangeOfInformation;
-                ctx.body = teacherinfo.slice(rangeNumber[0], rangeNumber[1]);
-            }
-        }
+    
+    let noOfTeachers:any = await teacherModel.getNumberOfTeachers();
+    noOfTeachers = Number(noOfTeachers[0].count);
+    const rangeOfInformation: boolean | Array<number> = validationPageAndPageSize(pageSizeData, noOfTeachers);
+    if (rangeOfInformation === false) {
+         ctx.status = 406;
+         ctx.body = message.invalidPageMessage;
     }
-    catch{
-        ctx.status = 500;
-        ctx.body = message.errorMessage;
+    else {
+        const teacherInfo:any = await teacherModel.getTeacherInfo();
+        const rangeNumber:any =rangeOfInformation;
+        ctx.status = 200;
+        ctx.body = teacherInfo.slice(rangeNumber[0], rangeNumber[1]);
     }
 }
 

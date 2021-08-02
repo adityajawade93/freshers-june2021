@@ -5,10 +5,11 @@ import * as koa from "koa";
 import * as uuid from 'uuid';
 import * as subjectModel from "../Services/SubjectModel";
 import {Subject} from "../Services/Subject";
-
+import {subjectSchema} from "./../Database/Helper/validation";
 export const insertSubjectInfo = async (ctx: koa.Context, next: koa.Next): Promise<any> => {
     const subjectInfo: any = ctx.request.body;
-    if (subjectInfo.name !== undefined) {
+    try{
+        await subjectSchema.validateAsync(subjectInfo);
         const suid: string | null = uuid.v4();
         let alternatetid: any = null;
         let tid: any = null;
@@ -33,11 +34,12 @@ export const insertSubjectInfo = async (ctx: koa.Context, next: koa.Next): Promi
             ctx.status = 500;
             ctx.body = message.errorMessage;
         }
-
     }
-    else {
+    catch{
+        ctx.status=400;
         ctx.body = message.invalidInputMessage;
     }
+
 }
 
 export const getSubjectInfo = async (ctx: koa.Context, next: koa.Next): Promise<any> => {
@@ -45,27 +47,18 @@ export const getSubjectInfo = async (ctx: koa.Context, next: koa.Next): Promise<
         page: Number(ctx.query.page),
         size: Number(ctx.query.size)
     }
-    try{
-        const subjectinfo: any=subjectModel.getSubjectInfo();
-        if (subjectinfo.length === 0) {
-            ctx.status = 200;
-            ctx.body = "There is no subject information.";
-        }
-        else{
-            const rangeOfInformation: any = validationPageAndPageSize(pageSizeData, subjectinfo.length);
-            if (rangeOfInformation === false) {
-                ctx.status = 406;
-                ctx.body = message.invalidPageMessage;
-            }
-            else {
-                ctx.status = 200;
-                ctx.body = subjectinfo.slice(rangeOfInformation[0], rangeOfInformation[1]);
-            }
-        }
+    
+    let noOfSubjects:any = await subjectModel.getNumberOfSubjects();
+    noOfSubjects = Number(noOfSubjects[0].count);
+    const rangeOfInformation: boolean | Array<number> = validationPageAndPageSize(pageSizeData, noOfSubjects);
+    if (rangeOfInformation === false) {
+         ctx.status = 406;
+         ctx.body = message.invalidPageMessage;
     }
-    catch{
-        ctx.status = 400;
-        ctx.body = message.errorMessage;
+    else {
+        const subjectInfo:any = await subjectModel.getSubjectInfo();
+        const rangeNumber:any =rangeOfInformation;
+        ctx.status = 200;
+        ctx.body = subjectInfo.slice(rangeNumber[0], rangeNumber[1]);
     }
-
 }

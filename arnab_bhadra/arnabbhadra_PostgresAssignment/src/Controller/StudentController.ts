@@ -6,33 +6,26 @@ import * as koa from "koa";
 import * as uuid from 'uuid';
 import {Student} from "../Services/Student";
 import { studentSchema} from "../Database/Helper/validation";
+import { number } from "joi";
+
 export const getStudentInfo = async (ctx: koa.Context, next: koa.Next):Promise<any> => {
-    try{
-        const studentInfo:any = await studentModel.getStudentInfo();
-        const pageSizeData: page = {
-            page: Number(ctx.query.page),
-            size: Number(ctx.query.size)
-        }
-        if (studentInfo.length === 0) {
-            ctx.status = 200;
-            ctx.body = "There is no student information.";
-        }
-        else {
-            const rangeOfInformation: boolean | Array<number> = validationPageAndPageSize(pageSizeData, studentInfo.length);
-            if (rangeOfInformation === false) {
-                ctx.status = 406;
-                ctx.body = message.invalidPageMessage;
-            }
-            else {
-                ctx.status = 200;
-                const rangeNumber:any =rangeOfInformation;
-                ctx.body = studentInfo.slice(rangeNumber[0], rangeNumber[1]);
-            }
-        }
+    const pageSizeData: page = {
+        page: Number(ctx.query.page),
+        size: Number(ctx.query.size)
     }
-    catch(e){
-        ctx.status=400;
-        ctx.body=message.errorMessage;
+    
+    let noOfStudents= await studentModel.getStudentNumber();
+    noOfStudents=Number(noOfStudents[0].count);
+    const rangeOfInformation: boolean | Array<number> = validationPageAndPageSize(pageSizeData, noOfStudents);
+    if (rangeOfInformation === false) {
+         ctx.status = 406;
+         ctx.body = message.invalidPageMessage;
+    }
+    else {
+        const studentInfo:any = await studentModel.getStudentInfo();
+        const rangeNumber:any =rangeOfInformation;
+        ctx.status = 200;
+        ctx.body = studentInfo.slice(rangeNumber[0], rangeNumber[1]);
     }
 }
 
@@ -41,7 +34,7 @@ export const getStudentInfoByStudentid = async (ctx: koa.Context, next: koa.Next
     try{
         const studentInfo: any = await studentModel.getStudentInfobyStudentId(id);
         if (studentInfo.length === 0) {
-            ctx.status = 204;
+            ctx.status = 404;
             ctx.body = "No data to send";
         }
         else {
@@ -62,7 +55,7 @@ export const getStudentInfoByTeacherId = async (ctx: koa.Context, next: koa.Next
     try{
         const studentInfo: any= await studentModel.getStudentInfobyTeacherId(id);
         if(studentInfo.lenght==0){
-            ctx.status = 204;
+            ctx.status = 404;
             ctx.body = "No data to send";
         }
         else{
@@ -83,7 +76,7 @@ export const getStudentInfoByClassId = async (ctx: koa.Context, next: koa.Next) 
     try{
         const studentInfo: any = await studentModel.getStudentInfobyClassId(id);
         if(studentInfo.lenght==0){
-            ctx.status = 204;
+            ctx.status = 404;
             ctx.body = "No data to send";
         }
         else{
@@ -100,7 +93,7 @@ export const getStudentInfoByClassId = async (ctx: koa.Context, next: koa.Next) 
 
 export const insertStudentInfo = async (ctx: koa.Context, next: koa.Next) => {
     const studentInfo: any = ctx.request.body;
-    //console.log(ctx);
+    
     try{
         await studentSchema.validateAsync(studentInfo);
         let address: string | null = null;
@@ -126,16 +119,13 @@ export const insertStudentInfo = async (ctx: koa.Context, next: koa.Next) => {
     catch{
         ctx.body = message.invalidInputMessage;
     }
-    
-
 }
-
 export const getToperBySubject = async (ctx: koa.Context, next: koa.Next) => {
     const id: string = ctx.params.id;
     try{
         const studentInfo: any=await studentModel.getTopperBySubjectId(id);
         if(studentInfo.lenght==0){
-            ctx.status = 204;
+            ctx.status = 404;
             ctx.body = "No data to send";
         }
         else{
@@ -155,7 +145,7 @@ export const getTopperOftheClass = async (ctx: koa.Context, next: koa.Next) => {
     try{
         const studentInfo: any=await studentModel.getToppers(id);
         if(studentInfo.lenght==0){
-            ctx.status = 204;
+            ctx.status = 404;
             ctx.body = "No data to send";
         }
         else{
@@ -164,7 +154,7 @@ export const getTopperOftheClass = async (ctx: koa.Context, next: koa.Next) => {
         }
     }
     catch{
-        ctx.status = 400;
+        ctx.status = 500;
         ctx.body = message.errorMessage;
     }
     

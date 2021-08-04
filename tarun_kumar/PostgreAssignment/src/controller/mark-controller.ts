@@ -31,6 +31,7 @@ export async function updateMarks(ctx: Context): Promise<void> {
     try {
 
         await markService.updateMark(requestData);
+        ctx.status = 200;
         ctx.body = {
             message: `marks for student with ${requestData.studentid} is updated`,
         };

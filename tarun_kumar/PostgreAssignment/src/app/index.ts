@@ -19,7 +19,7 @@ async function databaseStart(): Promise<void> {
 async function serverStart(): Promise<void> {
     try {
 
-        app.listen(port, () => console.log("port on ", port));
+        await app.listen(port, () => console.log("port on ", port));
     } catch (er) {
         console.log(er);
     }
@@ -35,6 +35,4 @@ app.use(async (ctx: Context) => {
     ctx.status = 400;
 });
 
-
-
-//module.exports = server;
+export default app;

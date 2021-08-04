@@ -15,6 +15,10 @@ export const dbStart = async function (): Promise<void> {
 };
 
 
+export async function dbDisConnect(): Promise<void> {
+    await pool.end();
+}
+
 export const dbQuery = async function (query: string, data: any[] = []): Promise<any> {
     try {
         return pool.query(query, data);

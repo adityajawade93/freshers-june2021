@@ -18,10 +18,10 @@ interface ISubject {
 export const createSubject = async (ctx: Context) => {
   const s1: ISubject = ctx.request.body;
 
-  const reqData = await subjectSchema.validateAsync(s1);
-  if (reqData.error) {
+  const { error } = subjectSchema.validate(s1);
+  if (error) {
     ctx.status = 400;
-    ctx.body = reqData.error.details[0].message;
+    ctx.body = error.message;
     return;
   }
 
@@ -50,7 +50,7 @@ export const createSubject = async (ctx: Context) => {
   await subjectService.addTeaches(s1);
 
   await subjectService.addClass(s1);
-  ctx.status = 200;
+  ctx.status = 201;
   ctx.body = {
     status: `successfully created subject with ${s1.subject_id}`,
   };
@@ -68,10 +68,10 @@ export const getSubject = async (ctx: Context) => {
 export const fetchStudentsWithSub = async (ctx: Context) => {
   const subject_id = ctx.params.subjectId;
 
-  const reqData = await subjectIDSchema.validateAsync({ subject_id });
-  if (reqData.error) {
+  const { error } = subjectIDSchema.validate({ subject_id });
+  if (error) {
     ctx.status = 400;
-    ctx.body = reqData.error.details[0].message;
+    ctx.body = error.message;
     return;
   }
 

@@ -3,7 +3,7 @@ import { config } from "../config/config";
 
 let pool: Pool;
 
-(async function () {
+export async function pgConnect() {
   try {
     pool = new Pool({
       user: config.DBUser,
@@ -16,6 +16,7 @@ let pool: Pool;
     const client = await pool.connect();
     if (client) {
       console.log("database connection successful");
+      client.release();
     }
     pool.on("error", (err) => {
       console.error("Unexpected error on idle client", err);
@@ -24,7 +25,11 @@ let pool: Pool;
   } catch (err) {
     console.log("DB connection failed!!", err.stack, err.message);
   }
-})();
+}
+
+export async function pgDisConnect() {
+  await pool.end(() => {});
+}
 
 export default {
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types

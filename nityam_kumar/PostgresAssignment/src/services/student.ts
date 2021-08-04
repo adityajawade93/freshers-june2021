@@ -16,7 +16,7 @@ interface IStudent {
 
 export const addStudent = async (s1: IStudent) => {
   try {
-    const text = "INSERT INTO student VALUES($1,$2,$3,$4,$5,$6,$6)";
+    const text = "INSERT INTO student VALUES($1,$2,$3,$4,$5,$6,$7)";
     const values = [
       s1.student_id,
       s1.fname.trim(),

@@ -26,11 +26,11 @@ export const getSchedule = async (ctx: Context) => {
 export const getClassSchedule = async (ctx: Context) => {
   let classNumber = ctx.params.classNumber;
 
-  const reqData = await classNoSchema.validateAsync({ classNumber });
+  const { error } = classNoSchema.validate({ classNumber });
 
-  if (reqData.error) {
+  if (error) {
     ctx.status = 400;
-    ctx.body = reqData.error.details[0].message;
+    ctx.body = error.message;
     return;
   }
 
@@ -46,19 +46,21 @@ export const getClassSchedule = async (ctx: Context) => {
 export const fetchStudentsWithClass = async (ctx: Context) => {
   const classNumber = ctx.params.classNumber;
 
-  const reqData = await classNoSchema.validateAsync({ classNumber });
-  if (reqData.error) {
+  const { error } = classNoSchema.validate({ classNumber });
+  if (error) {
     ctx.status = 400;
-    ctx.body = reqData.error.details[0].message;
+    ctx.body = error.message;
     return;
   }
 
   const data = await classService.fetchStudentsWithClass(classNumber);
+
   if (data.length === 0) {
     ctx.status = 404;
     ctx.body = {
-      status: `classNumber NOT FOUND`,
+      status: `no student in class`,
     };
+    return;
   }
   ctx.status = 200;
   ctx.body = {

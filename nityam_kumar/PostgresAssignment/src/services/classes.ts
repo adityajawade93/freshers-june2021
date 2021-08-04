@@ -6,7 +6,7 @@ import AppError from "../utils/appError";
 export const getClasses = async () => {
   try {
     const data = await db.query(
-      "select distinct cl_no as class from student order by fname"
+      "select distinct cl_no as class from student order by cl_no"
     );
     return data.rows;
   } catch (err) {

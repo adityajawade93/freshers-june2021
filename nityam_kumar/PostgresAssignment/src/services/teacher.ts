@@ -130,7 +130,7 @@ export const getTeachersTeaching = async (
 export const fetchStudentWithTeacherID = async (teacher_id: string) => {
   try {
     const data = await db.query(
-      "select s1.st_id,s1.fname,s1.lname,s1.age,s1.cl_no from student as s1 where s1.cl_no in (select distinct cl_no from subject as sub where teacher_id=$1 order by s1.fname",
+      "select s1.st_id,s1.fname,s1.lname,s1.age,s1.cl_no from student as s1 where s1.cl_no in (select distinct cl_no from subject as sub where teacher_id=$1) order by s1.fname",
       [teacher_id]
     );
     return data.rows;

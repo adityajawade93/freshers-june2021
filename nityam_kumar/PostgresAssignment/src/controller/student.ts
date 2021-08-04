@@ -24,18 +24,20 @@ interface IStudent {
 export const createStudent = async (ctx: Context) => {
   const s1: IStudent = ctx.request.body;
 
-  const reqData = await studentSchema.validateAsync(s1);
-  if (reqData.error) {
+  const { error } = studentSchema.validate(s1);
+
+  if (error) {
     ctx.status = 400;
-    ctx.body = reqData.error.details[0].message;
+    ctx.body = error.message;
     return;
   }
 
   s1.student_id = uuid();
   await studentService.addStudent(s1);
-  ctx.status = 200;
+  ctx.status = 201;
   ctx.body = {
     status: `successfully created student with ${s1.student_id}`,
+    student_id: s1.student_id,
   };
 };
 
@@ -43,7 +45,7 @@ export const modifyStudent = async (ctx: Context) => {
   const student_id = ctx.params.studentID;
   const { fname, lname, age, class_number, dob } = ctx.request.body;
 
-  const reqData = await studentModifySchema.validateAsync({
+  const { error } = studentModifySchema.validate({
     fname,
     lname,
     age,
@@ -51,9 +53,10 @@ export const modifyStudent = async (ctx: Context) => {
     student_id,
     dob,
   });
-  if (reqData.error) {
+
+  if (error) {
     ctx.status = 400;
-    ctx.body = reqData.error.details[0].message;
+    ctx.body = error.message;
     return;
   }
 
@@ -61,7 +64,7 @@ export const modifyStudent = async (ctx: Context) => {
   if (data === 0) {
     ctx.status = 404;
     ctx.body = {
-      status: `student with this id not found`,
+      status: `student with ${student_id} does not exist`,
     };
     return;
   }
@@ -84,10 +87,11 @@ export const getStudents = async (ctx: Context) => {
   let page = ctx.query.page;
   let size = ctx.query.size;
 
-  const reqData = await paginationSchema.validateAsync({ page, size });
-  if (reqData.error) {
+  const { error } = paginationSchema.validate({ page, size });
+
+  if (error) {
     ctx.status = 400;
-    ctx.body = reqData.error.details[0].message;
+    ctx.body = error.message;
     return;
   }
 
@@ -122,16 +126,23 @@ export const getStudents = async (ctx: Context) => {
 export const getStudentSchedule = async (ctx: Context) => {
   const student_id = ctx.params.studentID;
 
-  const reqData = await studentIDSchema.validateAsync({
+  const { error } = studentIDSchema.validate({
     student_id: student_id,
   });
-  if (reqData.error) {
+
+  if (error) {
     ctx.status = 400;
-    ctx.body = reqData.error.details[0].message;
+    ctx.body = error.message;
     return;
   }
 
   const result = await studentService.getStudentSchedule(student_id);
+  if (result.length === 0) {
+    ctx.status = 404;
+    ctx.body = "student id not found";
+    return;
+  }
+
   ctx.status = 200;
   ctx.body = {
     status: `successfull`,

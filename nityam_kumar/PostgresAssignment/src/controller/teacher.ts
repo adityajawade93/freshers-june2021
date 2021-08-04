@@ -9,7 +9,6 @@ import {
 import teacherSchema from "../db/validateSchema/teacherSchema";
 import paginationSchema from "../db/validateSchema/paginationSchema";
 
-
 interface ITeacher {
   age: number;
   fname: string;
@@ -22,18 +21,19 @@ interface ITeacher {
 export const createTeacher = async (ctx: Context) => {
   const t1: ITeacher = ctx.request.body;
 
-  const reqData = await teacherSchema.validateAsync(t1);
-  if (reqData.error) {
+  const { error } = teacherSchema.validate(t1);
+  if (error) {
     ctx.status = 400;
-    ctx.body = reqData.error.details[0].message;
+    ctx.body = error.message;
     return;
   }
 
   t1.teacher_id = uuid();
   await teacherService.addTeacher(t1);
-  ctx.status = 200;
+  ctx.status = 201;
   ctx.body = {
     status: `successfully created teacher with ${t1.teacher_id}`,
+    teacher_id: t1.teacher_id,
   };
 };
 
@@ -41,16 +41,16 @@ export const modifyTeacher = async (ctx: Context) => {
   const teacher_id = ctx.params.teacherId;
   const { fname, lname, age, dob } = ctx.request.body;
 
-  const reqData = await teacherModifySchema.validateAsync({
+  const { error } = teacherModifySchema.validate({
     fname,
     lname,
     age,
     teacher_id,
     dob,
   });
-  if (reqData.error) {
+  if (error) {
     ctx.status = 400;
-    ctx.body = reqData.error.details[0].message;
+    ctx.body = error.message;
     return;
   }
 
@@ -58,7 +58,7 @@ export const modifyTeacher = async (ctx: Context) => {
   if (data === 0) {
     ctx.status = 404;
     ctx.body = {
-      status: "id NOT FOUND!!",
+      status: `teacher with ${teacher_id} does not exist`,
     };
     return;
   }
@@ -74,10 +74,11 @@ export const getTeachers = async (ctx: Context) => {
   let page = ctx.query.page;
   let size = ctx.query.size;
 
-  const reqData = await paginationSchema.validateAsync({ page, size });
-  if (reqData.error) {
+  const { error } = paginationSchema.validate({ page, size });
+
+  if (error) {
     ctx.status = 400;
-    ctx.body = reqData.error.details[0].message;
+    ctx.body = error.message;
     return;
   }
 
@@ -112,10 +113,10 @@ export const getTeachersTeaching = async (ctx: Context) => {
   let page = ctx.query.page;
   let size = ctx.query.size;
 
-  const reqData = await paginationSchema.validateAsync({ page, size });
-  if (reqData.error) {
+  const { error } = paginationSchema.validate({ page, size });
+  if (error) {
     ctx.status = 400;
-    ctx.body = reqData.error.details[0].message;
+    ctx.body = error.message;
     return;
   }
 
@@ -152,10 +153,10 @@ export const getTeachersTeaching = async (ctx: Context) => {
 export const fetchStudentsWithTeacher = async (ctx: Context) => {
   const teacher_id = ctx.params.teacherId;
 
-  const reqData = await teacherIDSchema.validateAsync({ teacher_id });
-  if (reqData.error) {
+  const { error } = teacherIDSchema.validate({ teacher_id });
+  if (error) {
     ctx.status = 400;
-    ctx.body = reqData.error.details[0].message;
+    ctx.body = error.message;
     return;
   }
 

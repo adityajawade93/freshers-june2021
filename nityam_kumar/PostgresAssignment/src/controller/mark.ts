@@ -23,10 +23,11 @@ interface IMark {
 export const createMarks = async (ctx: Context) => {
   const m1: IMark = ctx.request.body;
 
-  const reqData = await markSchema.validateAsync(m1);
-  if (reqData.error) {
+  const { error } = markSchema.validate(m1);
+
+  if (error) {
     ctx.status = 400;
-    ctx.body = reqData.error.details[0].message;
+    ctx.body = error.message;
     return;
   }
 
@@ -35,6 +36,7 @@ export const createMarks = async (ctx: Context) => {
     marksService.checkSubjectExist(m1),
     marksService.checkAlreadyExist(m1),
   ]);
+  // console.log(value[0], value[1], value[2]);
   if (value[0] === 0) {
     ctx.status = 401;
     ctx.body = {
@@ -56,7 +58,7 @@ export const createMarks = async (ctx: Context) => {
   }
 
   await marksService.addMark(m1);
-  ctx.status = 200;
+  ctx.status = 201;
   ctx.body = {
     status: `successfully created marks with ${m1.student_id} & ${m1.subject_id}`,
   };
@@ -67,14 +69,15 @@ export const modifyMarks = async (ctx: Context) => {
   const subject_id = ctx.params.subjectId;
   const { marks } = ctx.request.body;
 
-  const reqData = await marksInputSchema.validateAsync({
+  const { error } = marksInputSchema.validate({
     student_id,
     subject_id,
     marks,
   });
-  if (reqData.error) {
+
+  if (error) {
     ctx.status = 400;
-    ctx.body = reqData.error.details[0].message;
+    ctx.body = error.message;
     return;
   }
 
@@ -96,10 +99,11 @@ export const modifyMarks = async (ctx: Context) => {
 export const fetchMarks = async (ctx: Context) => {
   const student_id = ctx.params.studentId;
 
-  const reqData = await studentIDSchema.validateAsync({ student_id });
-  if (reqData.error) {
+  const { error } = studentIDSchema.validate({ student_id });
+
+  if (error) {
     ctx.status = 400;
-    ctx.body = reqData.error.details[0].message;
+    ctx.body = error.message;
     return;
   }
 
@@ -132,10 +136,10 @@ export const fetchHighestMarksPerSubjectWithSubjectID = async (
 ) => {
   const subject_id = ctx.params.subjectId;
 
-  const reqData = await subjectIDSchema.validateAsync({ subject_id });
-  if (reqData.error) {
+  const { error } = subjectIDSchema.validate({ subject_id });
+  if (error) {
     ctx.status = 400;
-    ctx.body = reqData.error.details[0].message;
+    ctx.body = error.message;
     return;
   }
 
@@ -152,10 +156,11 @@ export const fetchHighestMarksPerSubjectWithSubjectID = async (
 export const fetchTopBYNumber = async (ctx: Context) => {
   let number = ctx.params.number;
 
-  const reqData = await fetchTopBYNumberSchema.validateAsync({ number });
-  if (reqData.error) {
+  const { error } = fetchTopBYNumberSchema.validate({ number });
+
+  if (error) {
     ctx.status = 400;
-    ctx.body = reqData.error.details[0].message;
+    ctx.body = error.message;
     return;
   }
 
@@ -180,10 +185,11 @@ export const fetchTopperPerClass = async (ctx: Context) => {
 export const fetchTopperPerClassWithClassNumber = async (ctx: Context) => {
   let classNumber = ctx.params.classNumber;
 
-  const reqData = await classNoSchema.validateAsync({ classNumber });
-  if (reqData.error) {
+  const { error } = classNoSchema.validate({ classNumber });
+
+  if (error) {
     ctx.status = 400;
-    ctx.body = reqData.error.details[0].message;
+    ctx.body = error.message;
     return;
   }
 

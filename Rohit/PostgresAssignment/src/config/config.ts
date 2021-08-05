@@ -15,10 +15,6 @@ const envVarsSchema = Joi.object({
 
 const { value: envVars } = envVarsSchema.validate(process.env);
 
-if (envVars.error) {
-  throw new Error(`Config Validation Error`);
-}
-
 export const config = {
   dbPort: envVars.db_port,
   dbUser: envVars.user,

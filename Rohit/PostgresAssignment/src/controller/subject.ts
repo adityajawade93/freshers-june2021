@@ -39,7 +39,9 @@ exports.add_subject_in_table = async (ctx: Context) => {
 
     ctx.response.status = 201;
     ctx.response.type = "text/html";
-    ctx.body = "data is inserted in Subject table";
+    ctx.body = {
+      msg: "data is inserted in Subject table",
+    };
   } catch (err) {
     ctx.response.status = 500;
     ctx.response.type = "application/json";

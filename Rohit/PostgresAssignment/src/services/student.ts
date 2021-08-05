@@ -35,9 +35,8 @@ exports.add_student = async (
   dob: string,
   gender: string
 ) => {
-  const data = [studentId, name, dob, gender];
   return await studentSql.query(
     "insert into myschool.students values($1,$2,$3,$4)",
-    data
+    [studentId, name, dob, gender]
   );
 };

@@ -48,7 +48,9 @@ exports.add_class_schedule_in_table = async (ctx: Context) => {
 
     ctx.response.status = 201;
     ctx.response.type = "text/html";
-    ctx.body = "data is inserted in Class_schedule table";
+    ctx.body = {
+      msg: "data is inserted in Class_schedule table",
+    };
   } catch (err) {
     ctx.response.status = 500;
     ctx.response.type = "application/json";

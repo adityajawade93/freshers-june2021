@@ -5,9 +5,8 @@ exports.get_classes = async () => {
 };
 
 exports.add_student_to_class = async (classId: number, stId: number) => {
-  const data = [classId, stId];
   return await classSql.query(
     "insert into myschool.classes values($1,$2)",
-    data
+    [classId, stId]
   );
 };

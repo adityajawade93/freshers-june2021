@@ -52,7 +52,9 @@ exports.add_reasultData_in_table = async (ctx: Context) => {
 
     ctx.response.status = 201;
     ctx.response.type = "text/html";
-    ctx.body = "data is inserted in result table";
+    ctx.body = {
+      msg: "data is inserted in result table",
+    };
   } catch (err) {
     ctx.response.status = 500;
     ctx.response.type = "application/json";
@@ -80,7 +82,9 @@ exports.updateResult_by_studentId_and_subjectId = async (ctx: Context) => {
 
     ctx.response.status = 200;
     ctx.response.type = "text/html";
-    ctx.body = "marks are updated in result table";
+    ctx.body = {
+      msg: "marks are updated in result table",
+    };
   } catch (err) {
     ctx.response.status = 500;
     ctx.response.type = "application/json";

@@ -39,7 +39,9 @@ exports.addStudentInClass = async (ctx: Context) => {
 
     ctx.response.status = 201;
     ctx.response.type = "text/html";
-    ctx.body = "data is inserted in classes table";
+    ctx.body = {
+      msg: "data is inserted in classes table",
+    };
   } catch (err) {
     ctx.response.status = 500;
     ctx.response.type = "application/json";

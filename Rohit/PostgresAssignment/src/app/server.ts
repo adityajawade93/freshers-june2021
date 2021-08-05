@@ -14,10 +14,11 @@ app.use(json());
 app.use(router.routes());
 app.use(async (ctx: Context) => {
   ctx.response.status = 404;
-  ctx.body = "Not Found";
+  ctx.body = {
+    msg: "Not Found",
+  };
 });
 
-
-app.listen(port, () => {
+export var Test = app.listen(port, () => {
   console.log(`server is started at port ${port}`);
 });

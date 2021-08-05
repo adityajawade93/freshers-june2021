@@ -10,9 +10,8 @@ exports.add_teacher = async (
   teacher_lname: string,
   gender: string
 ) => {
-  const data = [teacherId, teacher_fname, teacher_lname, gender];
   return await teacherSql.query(
     "insert into myschool.teachers values($1,$2,$3,$4)",
-    data
+    [teacherId, teacher_fname, teacher_lname, gender]
   );
 };

@@ -13,9 +13,8 @@ exports.add_class_schedule = async (
   teach_Id: number,
   teacher_fname: string
 ) => {
-  const data = [cls_Id, subjId, subject_name, teach_Id, teacher_fname];
   return await scheduleSql.query(
     "insert into myschool.class_schedule(cls_Id, subjId, subject_name, teach_Id, teacher_fname) values($1,$2,$3,$4,$5)",
-    data
+    [cls_Id, subjId, subject_name, teach_Id, teacher_fname]
   );
 };

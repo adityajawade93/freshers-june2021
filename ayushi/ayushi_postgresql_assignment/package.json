@@ -1,0 +1,28 @@
+{
+  "name": "ayushi_postgresql_assignment",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "class-validator": "0.13.1",
+    "koa": "2.13.1",
+    "koa-bodyparser": "4.3.0",
+    "koa-combine-routers": "4.0.2",
+    "koa-json": "2.0.2",
+    "koa-router": "10.0.0",
+    "pg": "8.7.1",
+    "ts-node": "10.1.0",
+    "tsconfig-paths": "3.10.1"
+  },
+  "devDependencies": {
+    "@types/node": "16.4.10",
+    "nodemon": "2.0.12",
+    "typescript": "4.3.5"
+  }
+}

@@ -13,7 +13,7 @@ export async function updateResult(studentId:number, subjectId:number, marks:num
 }
 
 export async function checkSubject(studentId:number) {
-  const response = (await sqlclient.query(`SELECT subj_id FROM College.class_schedule,College.class_student WHERE studid=${studentId} AND classid=class_id ORDER BY subj_id`));
+  const response = (await sqlclient.query(`SELECT subj_id FROM College.class_schedule,College.class_student WHERE studid=${studentId} AND classid=class_id`));
   return response;
 }
 

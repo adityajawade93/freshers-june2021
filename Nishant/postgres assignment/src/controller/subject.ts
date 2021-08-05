@@ -26,12 +26,12 @@ export async function getSubject(ctx: Context) {
 export async function getStudentBySubjectId(ctx: Context) {
   let { subjectId }:{subjectId:number} = ctx.params;
   subjectId = Number(subjectId);
-  try {
-    await validatesubject.getStudentBySubjectIdSchema.validateAsync(subjectId);
-  } catch (e) {
+  const reqBody = validatesubject.getStudentBySubjectIdSchema.validate(ctx.params);
+  if (reqBody.error) {
     ctx.response.status = 400;
     ctx.response.type = 'text/html';
     ctx.body = 'Bad Request';
+    return;
   }
   try {
     const rows:QueryResult = await servicesubject.getStudentBySubjectId(subjectId);
@@ -48,7 +48,7 @@ export async function getStudentBySubjectId(ctx: Context) {
 export async function getSubjectMarksByStudentId(ctx: Context) {
   let { studentId }:{studentId:number} = ctx.params;
   studentId = Number(studentId);
-  const reqBody = await validatesubject.getSubjectMarksBySubjectIdSchema.validateAsync(studentId);
+  const reqBody = validatesubject.getSubjectMarksBySubjectIdSchema.validate(ctx.params);
   if (reqBody.error) {
     ctx.response.status = 400;
     ctx.response.type = 'text/html';
@@ -69,7 +69,7 @@ export async function getSubjectMarksByStudentId(ctx: Context) {
 
 export async function addSubject(ctx: Context) {
   const req:ISubject = ctx.request.body;
-  const reqBody = await validatesubject.addSubjectSchema.validateAsync(req);
+  const reqBody = validatesubject.addSubjectSchema.validate(req);
   if (reqBody.error) {
     ctx.response.status = 400;
     ctx.response.type = 'text/html';

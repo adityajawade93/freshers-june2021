@@ -19,7 +19,7 @@ interface IResultUpdate{
 
 export async function addResult(ctx: Context) {
   const req:IResult = ctx.request.body;
-  const reqBody = await validation.addResultSchema.validate(req);
+  const reqBody = validation.addResultSchema.validate(req);
   if (reqBody.error) {
     ctx.response.status = 400;
     ctx.response.type = 'text/html';
@@ -44,7 +44,7 @@ export async function updateResult(ctx: Context) {
   const req:IResultUpdate = ctx.request.body;
   let [rows]: Array<{rows: any}> = [];
   let flag = 0;
-  const reqBody = await validation.updateResultSchema.validate(req);
+  const reqBody = validation.updateResultSchema.validate(req);
   if (reqBody.error) {
     ctx.response.status = 400;
     ctx.response.type = 'text/html';

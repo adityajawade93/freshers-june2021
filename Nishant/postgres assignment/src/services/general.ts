@@ -1,7 +1,7 @@
 import sqlclient from '../database/db';
 
 export async function gettopperByclassIdAndSubjectId(classId:number, subjectId:number) {
-  const response = (await sqlclient.query(`SELECT student_id,fname,S.marks FROM (SELECT * FROM College.result WHERE clas_id=${classId} AND subjectid=${subjectId} ORDER BY marks DESC) AS S,College.Student WHERE S.studentid=student_id LIMIT 1 ORDER BY fname`));
+  const response = (await sqlclient.query('SELECT K.student_id,K.fname,S.marks FROM (SELECT * FROM College.result WHERE clas_id=104 AND subjectid=1 ORDER BY marks DESC LIMIT 1) AS S,College.student AS K WHERE S.studentid=K.student_id ORDER BY K.fname'));
   return response;
 }
 
@@ -19,6 +19,6 @@ export async function gettopstudent(classId:number, count:number) {
           ) a
           ON s.student_id = a.student_id
           ORDER BY total_marks DESC
-          LIMIT ${count} ORDER BY s.fname`));
+          LIMIT ${count}`));
   return response;
 }

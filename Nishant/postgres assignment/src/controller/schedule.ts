@@ -14,7 +14,7 @@ interface ISchedule{
 
 export default async function addClassSchedule(ctx: Context) {
   const req:ISchedule = ctx.request.body;
-  const reqBody = await addClassScheduleSchema.validateAsync(req);
+  const reqBody = addClassScheduleSchema.validate(req);
   if (reqBody.error) {
     ctx.response.status = 400;
     ctx.response.type = 'text/html';

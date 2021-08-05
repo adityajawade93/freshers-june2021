@@ -51,7 +51,7 @@ export async function getStudent(ctx: Context) {
 
 export async function addStudent(ctx: Context) {
   const req:IStudent = ctx.request.body;
-  const reqBody = await addStudentSchema.validateAsync(req);
+  const reqBody = addStudentSchema.validate(req);
   if (reqBody.error) {
     ctx.response.status = 400;
     ctx.response.type = 'text/html';

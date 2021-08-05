@@ -8,8 +8,7 @@ export async function gettopperByclassIdAndSubjectId(ctx: Context) {
   let { classId, subjectId }:{classId:number, subjectId:number} = ctx.params;
   classId = Number(classId);
   subjectId = Number(subjectId);
-  const data = [classId, subjectId];
-  const reqBody = await validategeneral.gettopperByclassIdAndSubjectIdSchema.validateAsync(data);
+  const reqBody = validategeneral.gettopperByclassIdAndSubjectIdSchema.validate(ctx.params);
   if (reqBody.error) {
     ctx.response.status = 400;
     ctx.response.type = 'text/html';
@@ -34,8 +33,7 @@ export async function gettopstudent(ctx: Context) {
   let { classId, count }:{classId:number, count:number} = ctx.params;
   classId = Number(classId);
   count = Number(count);
-  const data = [classId, count];
-  const reqBody = await validategeneral.getTopStudentSchema.validateAsync(data);
+  const reqBody = validategeneral.getTopStudentSchema.validate(ctx.params);
   if (reqBody.error) {
     ctx.response.status = 400;
     ctx.response.type = 'text/html';

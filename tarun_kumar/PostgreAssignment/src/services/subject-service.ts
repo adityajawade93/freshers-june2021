@@ -26,12 +26,14 @@ export async function getSubjects(): Promise<Array<string>> {
     }
 }
 
-export async function getSubjectId(subname: string): Promise<string> {
+export async function getSubjectByName(subname: string): Promise<string> {
     try {
-        const query = 'select id from subject where subname = $1';
+        const query = 'select * from subject where subname = $1';
         const res = await (dbQuery(query, [subname]));
-
-        return res.rows[0].id;
+        if (res.rowCount == 0) {
+            return "give correct name. This name dosent exist";
+        }
+        return res.rows;
     } catch (e) {
         throw new Error(e.message);
     }

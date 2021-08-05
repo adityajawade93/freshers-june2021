@@ -124,7 +124,6 @@ export async function getStudentByTeacherId(ctx: Context): Promise<void> {
     } catch (e) {
         ctx.status = 500;
         if (e.status) ctx.status = e.status;
-
         ctx.body = { error: e.message };
     }
 }
@@ -141,7 +140,6 @@ export async function getTopTenMarks(ctx: Context): Promise<void> {//given subje
     } catch (e) {
         ctx.status = 500;
         if (e.status) ctx.status = e.status;
-
         ctx.body = { error: e.message };
     }
 }
@@ -157,9 +155,6 @@ export async function getTopScorerEachSub(ctx: Context): Promise<void> {// list 
     } catch (e) {
         ctx.status = 500;
         if (e.status) ctx.status = e.status;
-
         ctx.body = { error: e.message };
     }
 }
-
-

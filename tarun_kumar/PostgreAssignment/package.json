@@ -3,7 +3,7 @@
   "jest": {
     "verbose": true,
     "roots": [
-      "<rootDir>/src"
+      "./src/test"
     ],
     "testMatch": [
       "**/__tests__/**/*.+(ts|tsx|js)",
@@ -11,14 +11,24 @@
     ],
     "transform": {
       "^.+\\.(ts|tsx)$": "ts-jest"
-    }
+    },
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ],
+    "testEnvironment": "node"
   },
   "version": "1.0.0",
   "description": "",
   "main": "src/app/index.ts",
   "scripts": {
     "dev": "nodemon  src/app/index.ts",
-    "test": "jest "
+    "test": "jest ",
+    "coverage": "jest --coverage"
   },
   "keywords": [],
   "author": "",

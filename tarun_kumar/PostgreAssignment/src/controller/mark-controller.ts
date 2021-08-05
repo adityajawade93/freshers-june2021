@@ -21,7 +21,7 @@ export async function addMarks(ctx: Context): Promise<void> {
             message: `marks for student with ${requestData.studentid} is added`,
         };
     } catch (e) {
-        ctx.status = 404;
+        ctx.status = 500;
         ctx.body = { error: e.message };
     }
 }
@@ -36,7 +36,7 @@ export async function updateMarks(ctx: Context): Promise<void> {
             message: `marks for student with ${requestData.studentid} is updated`,
         };
     } catch (e) {
-        ctx.status = 404;
+        ctx.status = 500;
         ctx.body = { error: e.message };
     }
 }

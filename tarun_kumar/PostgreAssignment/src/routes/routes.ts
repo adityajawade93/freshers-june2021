@@ -4,7 +4,7 @@ import koaRouter = require("koa-router");
 import { addClass, getClassId, getClasses } from '../controller/class-controller';
 import { addMarks, updateMarks } from '../controller/mark-controller';
 import { getStudents, addStudent, getStudentMarks, getStudentByClassId, getStudentBySubjectId, getStudentByTeacherId, getTopTenMarks, getTopScorerEachSub } from '../controller/student-controller';
-import { getSubjects, addSubject } from '../controller/subject-controller';
+import { getSubjects, addSubject, getSubjectByName } from '../controller/subject-controller';
 import { getTeachers, addTeacher } from '../controller/teacher-controller';
 
 
@@ -35,7 +35,7 @@ router.get('/student/subjecttopper', getTopScorerEachSub); // working
 //subject
 router.get('/subject', getSubjects);
 router.post('/subject', addSubject);
-
+router.get('/subject/:subname', getSubjectByName);
 //teacher
 router.get('/teacher', getTeachers);
 router.post('/teacher', addTeacher);

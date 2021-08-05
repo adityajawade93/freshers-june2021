@@ -19,7 +19,7 @@ export async function addSubject(ctx: Context): Promise<void> {
         await subjectService.addSubject(id, name);
         ctx.status = 201;
         ctx.body = {
-            message: `subject with ${id} is added`,
+            message: `subject with ${id} and name ${name} is added`,
         };
     } catch (e) {
         ctx.status = 500;
@@ -35,6 +35,25 @@ export async function getSubjects(ctx: Context): Promise<void> {
             count: allSubjects.length,
             data: allSubjects,
         };
+    } catch (e) {
+        ctx.status = 500;
+        ctx.body = { error: e.message };
+    }
+}
+
+export async function getSubjectByName(ctx: Context): Promise<void> {
+    const subname: string = ctx.params.subname;
+    // console.log(subname + "cc");
+    try {
+        const allSubjects = await subjectService.getSubjectByName(subname);
+        ctx.body = {
+            data: allSubjects
+        };
+        if (allSubjects === "give correct name. This name dosent exist") {
+            ctx.status = 400;
+
+        }
+
     } catch (e) {
         ctx.status = 500;
         ctx.body = { error: e.message };

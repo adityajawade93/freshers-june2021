@@ -1,0 +1,20 @@
+{
+  "name": "schoolAPI_postgreSQL",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon server.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@koa/router": "^10.0.0",
+    "@types/node": "^15.12.5",
+    "koa": "^2.13.1",
+    "koa-bodyparser": "^4.3.0",
+    "pg": "^8.6.0"
+  }
+}

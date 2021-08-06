@@ -8,12 +8,14 @@
     "lint": "eslint ./",
     "test": "jest",
     "start": "node dist/server.js",
-    "type":"module"
+    "type": "module",
+    "coverage": "jest --coverage"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@koa/router": "^10.0.0",
+    "babel-preset-env": "^1.7.0",
     "database": "^0.0.2",
     "dotenv": "^10.0.0",
     "joi": "^17.4.0",

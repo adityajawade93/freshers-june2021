@@ -30,7 +30,7 @@ export const getTeacherInfo = async (ctx: koa.Context, next: koa.Next) : Promise
 
 export const insertTeacherInfo = async (ctx: koa.Context, next: koa.Next): Promise<any> => {
     const teacherInfo: any = ctx.request.body;
-
+    
     try{
         await teacherSchema.validateAsync(teacherInfo);
         let specialization: null | string = null;
@@ -53,7 +53,8 @@ export const insertTeacherInfo = async (ctx: koa.Context, next: koa.Next): Promi
             ctx.body = message.errorMessage;
         }
     }
-    catch {
+    catch(e) {
+        //console.log(e.message);
         ctx.status=406;
         ctx.body = message.invalidInputMessage;
     }

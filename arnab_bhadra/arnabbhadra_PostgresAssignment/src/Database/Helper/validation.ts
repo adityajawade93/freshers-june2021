@@ -15,9 +15,12 @@ export const classScheduleSchema = Joi.object().keys({
 export const teacherSchema = Joi.object().keys({
     name: Joi.string().required(),
     contactno: Joi.number().required(),
+    specialization : Joi.string(),
 });
 
 export const subjectSchema = Joi.object().keys({
     name: Joi.string().required(),
+    tid : Joi.string(),
+    atid: Joi.string(),
     
 });

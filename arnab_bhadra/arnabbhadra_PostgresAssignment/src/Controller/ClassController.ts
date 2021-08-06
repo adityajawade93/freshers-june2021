@@ -15,7 +15,7 @@ export const insertClassScheduleInfo = async (ctx: koa.Context, next: koa.Next):
             endtime: classScheduleInfo.end
         }
         try{
-            classModel.insertClassScheduleInfo([classScheduleEntity.cid, classScheduleEntity.ssid, classScheduleEntity.starttime, classScheduleEntity.endtime])
+            await classModel.insertClassScheduleInfo([classScheduleEntity.cid, classScheduleEntity.ssid, classScheduleEntity.starttime, classScheduleEntity.endtime])
             ctx.status = 200;
             ctx.body = "Data inserted successfully";
         }
@@ -25,6 +25,7 @@ export const insertClassScheduleInfo = async (ctx: koa.Context, next: koa.Next):
         }
     }
     catch {
+        ctx.status =406;
         ctx.body = message.invalidInputMessage;
     }
 }

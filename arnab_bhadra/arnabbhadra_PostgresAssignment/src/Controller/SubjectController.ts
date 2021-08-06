@@ -6,8 +6,11 @@ import * as uuid from 'uuid';
 import * as subjectModel from "../Services/SubjectModel";
 import {Subject} from "../Services/Subject";
 import {subjectSchema} from "./../Database/Helper/validation";
+
+
 export const insertSubjectInfo = async (ctx: koa.Context, next: koa.Next): Promise<any> => {
     const subjectInfo: any = ctx.request.body;
+    //console.log(subjectInfo);
     try{
         await subjectSchema.validateAsync(subjectInfo);
         const suid: string | null = uuid.v4();
@@ -36,7 +39,7 @@ export const insertSubjectInfo = async (ctx: koa.Context, next: koa.Next): Promi
         }
     }
     catch{
-        ctx.status=400;
+        ctx.status=406;
         ctx.body = message.invalidInputMessage;
     }
 

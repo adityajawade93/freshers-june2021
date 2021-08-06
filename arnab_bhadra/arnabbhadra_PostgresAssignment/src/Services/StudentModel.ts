@@ -3,7 +3,7 @@ import { client } from "../Database/Client";
 
 export const insertStudentInfo = async (studentInfo: any) => {
 
-    return (await client.query("INSERT INTO school.student VALUES ($1,$2,$3,$4);", studentInfo));
+    return (await client.query("INSERT INTO school.student VALUES ($1,$2,$3,$4);", studentInfo)).rows;;
 }
 
 export const getStudentInfo= async (): Promise<any> => {

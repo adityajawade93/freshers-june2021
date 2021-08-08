@@ -8,18 +8,28 @@ beforeAll(async () => {
 
 test('get all standards', async () => {
    const response = await request(app.callback()).get('/school/standards')
-   console.log(response.body)
+   //console.log(response.body)
    expect(response.body.totalcount).toBe(3)
    expect(response.body.data[0].class_level).toBe(10)
    expect(response.body.data[1].class_level).toBe(11)
    expect(response.body.data[2].class_level).toBe(12)
 })
-test('', async () => {
+test('add standards', async () => {
    const data = {
       class_level: 9
    }
    const response = await request(app.callback()).post('/school/addstandards/standards').send(data)
    expect(response.status).toBe(200)
    expect(response.body).toStrictEqual({ "status": 200, "message": "class is successfully added" })
+})
+
+describe('errors', () => {
+   test('get error if string is given for class instead of number', async () => {
+      const data = {
+         class_level: "hdj"
+      }
+      const response = await request(app.callback()).post('/school/addstandards/standards').send(data)
+      expect(response.status).toBe(500)
+   })
 })
 

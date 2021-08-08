@@ -8,7 +8,7 @@ beforeAll(async () => {
 
 test('get subjects', async () => {
    const response = await request(app.callback()).get('/school/subjects')
-   console.log(response.body)
+   //console.log(response.body)
    expect(response.body.totalcount).toBe(5)
    expect(response.body.data[0].subname).toBe('physics')
    expect(response.body.data[1].subname).toBe('chemistry')
@@ -23,4 +23,14 @@ test('add subjects', async () => {
    const response = await request(app.callback()).post('/school/addsubject/subjects').send(data)
    expect(response.status).toBe(200)
    expect(response.body).toStrictEqual({ "status": 200, "message": "subject is successfully added" })
+})
+
+describe('errors', () => {
+   test('get error if subject is not a string', async () => {
+      const data = {
+         subname: 7
+      }
+      const response = await request(app.callback()).post('/school/addsubject/subjects').send(data)
+      expect(response.status).toBe(500)
+   })
 })

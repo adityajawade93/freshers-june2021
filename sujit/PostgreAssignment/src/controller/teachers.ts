@@ -17,6 +17,7 @@ export const getTeachers = async (ctx: any) => {
         let res = await teacherservice.getTeachers()
         ctx.body = dataoutput.outputData(res.rows.length, res.rows)
     } catch (e) {
+        ctx.response.status = 500
         ctx.body = messageoutput.costomError(500, e.message)
     }
 
@@ -39,6 +40,7 @@ export const getTeacherById = async (ctx: any) => {
             ctx.response.status = 200
             ctx.body = dataoutput.outputData(res.rows.length, res.rows)
         } catch (e) {
+            ctx.response.status = 500
             ctx.body = messageoutput.costomError(500, e.message)
         }
     }
@@ -54,6 +56,7 @@ export const addTeachers = async (ctx: any) => {
         ctx.body = messageoutput.costomMessage(200, "teacher is successfully added")
 
     } catch (e) {
+        ctx.response.status = 500
         ctx.body = messageoutput.costomError(500, e.message)
     }
 }

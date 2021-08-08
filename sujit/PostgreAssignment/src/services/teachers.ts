@@ -28,7 +28,7 @@ export const getTeacherById = async (teacherid: any) => {
 
 export const addTeachers = async (req:Iteacher) => {
     try {
-        let res = await query(`insert into teachers(tfname,tlname,tsubject,joindate) 
+        let res = await query(`insert into teachers(tfname,tlname,tsubject_id,joindate) 
                                                        values('${req.tfname}','${req.tlname}','${req.tsubject_id}','${req.joindate}')`)
         return res
     } catch (e) {

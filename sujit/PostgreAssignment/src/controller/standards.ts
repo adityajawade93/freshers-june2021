@@ -13,6 +13,7 @@ export const getstandard = async (ctx: any) => {
         let res = await standardservice.getStandard()
         ctx.body = dataoutput.outputData(res.rows.length, res.rows)
     } catch (e) {
+        ctx.response.status = 500
         ctx.body = messageoutput.costomError(500, e.message)
     }
 
@@ -28,6 +29,7 @@ export const addStandard = async (ctx: any) => {
         ctx.body = messageoutput.costomMessage(200, "class is successfully added")
 
     } catch (e) {
+        ctx.response.status = 500
         ctx.body = messageoutput.costomError(500, e.message)
     }
 }

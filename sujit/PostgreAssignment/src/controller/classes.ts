@@ -43,6 +43,7 @@ export const addStudentsToClass = async (ctx: any) => {
         ctx.response.status = 200
         ctx.body = messageoutput.costomMessage(200, 'added students to class successfully')
     } catch (e) {
+        ctx.response.status = 500
         ctx.body = messageoutput.costomError(500, e.message)
     }
 }

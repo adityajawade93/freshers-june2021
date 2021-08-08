@@ -28,6 +28,7 @@ export const getSechduleByClass = async (ctx: any) => {
             ctx.response.status = 200
             ctx.body = dataoutput.outputData(res.rows.length, res.rows)
         } catch (e) {
+            ctx.response.status = 500
             ctx.body = messageoutput.costomError(500, e.message)
         }
     }
@@ -42,6 +43,7 @@ export const addSechdule = async (ctx: any) => {
         ctx.body = messageoutput.costomMessage(200, 'sechdule created successfully')
 
     } catch (e) {
+        ctx.response.status = 500
         ctx.body = messageoutput.costomError(500, e.message)
     }
 

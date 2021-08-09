@@ -21,11 +21,10 @@ export async function getStudent(ctx: Context) {
     const page = parseInt(ctx.request.query.page);
     const size = parseInt(ctx.request.query.size);
     const totalPages = Math.ceil(length.rows[0].count / size);
+    
+    const reqBody = await validation.generalSchema.validate(page,size);
     if (
-      page === undefined ||
-      size === undefined ||
-      typeof page !== "number" ||
-      typeof size !== "number"
+     reqBody.error
     ) {
       ctx.response.status = 400;
       ctx.response.type = "text/html";

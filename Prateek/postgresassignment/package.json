@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc -p .",
     "start": "node ./src/app/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --coverage"
   },
   "author": "",
   "license": "ISC",
@@ -18,13 +18,18 @@
     "koa-bodyparser": "^4.3.0",
     "koa-combine-routers": "^4.0.2",
     "koa-json": "^2.0.2",
-    "pg": "^8.6.0"
+    "pg": "^8.6.0",
+    "supertest": "^6.1.4"
   },
   "devDependencies": {
+    "@types/jest": "^26.0.24",
     "@types/koa-bodyparser": "^4.3.2",
     "@types/koa-json": "^2.0.19",
     "@types/koa__router": "^8.0.5",
     "@types/node": "^15.12.5",
-    "dotenv": "^10.0.0"
+    "@types/pg": "^8.6.1",
+    "@types/supertest": "^2.0.11",
+    "dotenv": "^10.0.0",
+    "jest": "^27.0.6"
   }
 }

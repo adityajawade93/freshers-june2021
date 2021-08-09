@@ -31,7 +31,7 @@ export async function getTeacher(ctx: Context) {
 export async function getStudentByTeacherId(ctx: Context) {
   let { teacherId }:{teacherId:number} = ctx.params;
   teacherId = Number(teacherId);
-  const reqBody = await validateteacher.getStudentByTeacherIdSchema.validateAsync(teacherId);
+  const reqBody = validateteacher.getStudentByTeacherIdSchema.validate(ctx.params);
   if (reqBody.error) {
     ctx.response.status = 400;
     ctx.response.type = 'text/html';
@@ -53,7 +53,7 @@ export async function getStudentByTeacherId(ctx: Context) {
 
 export async function addTeacher(ctx: Context) {
   const req:ITeacher = ctx.request.body;
-  const reqBody = await validateteacher.addTeacherSchema.validateAsync(req);
+  const reqBody = validateteacher.addTeacherSchema.validate(req);
   if (reqBody.error) {
     ctx.response.status = 400;
     ctx.response.type = 'text/html';

@@ -24,9 +24,11 @@ export async function getClass(ctx: Context) {
 }
 
 export async function getStudentByClassId(ctx: Context) {
-  const classId:number = parseInt(ctx.params.classId);
-
-  const reqBody = await validateclass.getStudentByClassIdSchema.validateAsync(classId);
+  const Id:number = parseInt(ctx.params.classId);
+  const data = {
+    classId: Id,
+  };
+  const reqBody = await validateclass.getStudentByClassIdSchema.validateAsync(data);
   if (reqBody.error) {
     ctx.response.status = 400;
     ctx.response.type = 'text/html';
@@ -34,7 +36,7 @@ export async function getStudentByClassId(ctx: Context) {
     return;
   }
   try {
-    const rows:QueryResult = await serviceclass.getStudentByClassId(classId);
+    const rows:QueryResult = await serviceclass.getStudentByClassId(Id);
     ctx.response.status = 200;
     ctx.response.type = 'application/json';
     ctx.body = rows.rows;
@@ -47,7 +49,7 @@ export async function getStudentByClassId(ctx: Context) {
 
 export async function addStudentInClass(ctx: Context) {
   const req:IClass = ctx.request.body;
-  const reqBody = await validateclass.addStudentInClassSchema.validateAsync(req);
+  const reqBody = await validateclass.addStudentInClassSchema.validate(req);
   if (reqBody.error) {
     ctx.response.status = 400;
     ctx.response.type = 'text/html';
@@ -59,7 +61,7 @@ export async function addStudentInClass(ctx: Context) {
 
     ctx.response.status = 200;
     ctx.response.type = 'text/html';
-    ctx.body = 'data is inserted in Class_student table';
+    ctx.response.body = 'data is inserted in Class_student table';
   } catch (e) {
     ctx.response.status = 500;
     ctx.response.type = 'text/html';

@@ -1,7 +1,8 @@
 {
     "env": {
         "browser": true,
-        "es2021": true
+        "es2021": true,
+        "jest":true
     },
     "extends": [
         "airbnb-base"
@@ -24,7 +25,9 @@
         "import/extensions":"off",
         "new-cap":"off",
         "camelcase":"off",
-        "no-shadow":"off"
+        "no-shadow":"off",
+        "import/no-extraneous-dependencies": ["error", {"devDependencies": true}],
+        "max-len":"off"
         
     },
     "settings": {

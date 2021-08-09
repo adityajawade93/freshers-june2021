@@ -93,8 +93,8 @@ describe("Marks API", () => {
 
   const newMarks = {
     student_id: "123459",
-    subject_id: "8d0rgh2c4kqm88wx3",
-    marks: 97,
+    subject_id: "8d0rgh9s0kqm8noho",
+    marks: 67,
     teacher_id: "8d0rgh12ckqm32rcj",
     class_number: 11,
   };

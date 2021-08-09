@@ -21,6 +21,7 @@ describe("Test / error", () => {
     expect(t).toThrow(AppError);
     expect(t).toThrow("Internal Server Error");
   });
+
   test("it should catch error", () => {
     const t = () => {
       throw new AppError("Internal Error");
@@ -29,15 +30,7 @@ describe("Test / error", () => {
     expect(t).toThrow("Internal Error");
   });
 
-  test("it should catch error", () => {
-    const t = () => {
-      throw new Error("Error!!");
-    };
-    expect(t).toThrow(Error);
-    expect(t).toThrow("Error!!");
-  });
-
   test("it should catch error with 404 endpoint not found", async () => {
-    const respnse = await request(app.callback()).get("/error").expect(404);
+    const response = await request(app.callback()).get("/error").expect(404);
   });
 });

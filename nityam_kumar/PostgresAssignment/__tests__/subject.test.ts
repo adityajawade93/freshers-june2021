@@ -45,8 +45,8 @@ describe("Subject API", () => {
 
   describe("Test POST/Subject", () => {
     const newSubject = {
-      subject_name: "quantum Physics",
-      teacher_id: "8d0rghfq8krx97qbl",
+      subject_name: "quantum Physics advance",
+      teacher_id: "8d0rgh12ckqm32cqq",
       class_number: 9,
     };
     const newSubjectWithInvalidInput = {

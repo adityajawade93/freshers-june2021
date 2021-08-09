@@ -8,8 +8,8 @@ const client = new Client({
   database: process.env.db_name,
   port: config.dbPort,
 });
-client.connect().then(() => {
-  console.log("database connected successfully");
-});
+//client.connect().then(() => {
+ // console.log("database connected successfully");
+//});
 
 export { client };

@@ -39,18 +39,7 @@ export async function check_subject(roll_num: number) {
   try {
    
     return await sqlclient.query(
-      `SELECT cs.subcode FROM Class_schedule AS cs,Standards AS s WHERE cs.roll_num=${roll_num} AND cs.Standard=s.standard`
-    );
-  } catch (e) {
-    throw Error(e);
-  }
-}
-
-export async function subject_length(roll_num: number) {
-  try {
-   
-    return await sqlclient.query(
-      `SELECT COUNT(*) FROM (SELECT cs.subcode FROM Class_schedule AS cs,Standards AS s WHERE cs.roll_num=${roll_num} AND cs.Standard=s.standard) AS S`
+      `SELECT S.subcode FROM Students AS S,Standards AS st WHERE S.roll_num=${roll_num} AND S.standard=st.standard`
     );
   } catch (e) {
     throw Error(e);

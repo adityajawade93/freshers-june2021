@@ -1,9 +1,7 @@
 const Joi = require("joi");
 
 //Class
-const classSchema = Joi.object({
-  id: Joi.number().required(),
-});
+const classSchema = Joi.number().greater(0).required();
 
 //General
 const generalSchema = Joi.number().required();

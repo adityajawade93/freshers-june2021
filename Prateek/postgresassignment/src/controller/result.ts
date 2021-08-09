@@ -11,6 +11,12 @@ interface marks_data {
   marks: number;
 }
 
+interface marks_update {
+  roll_num: number;
+  subcode: number;
+  marks: number;
+}
+
 export async function addMarks(ctx: Context) {
   
     let req: marks_data = ctx.request.body;
@@ -45,7 +51,7 @@ export async function addMarks(ctx: Context) {
 
 export async function updateResult(ctx: Context) {
   
-    let req: marks_data = ctx.request.body;
+    let req: marks_update = ctx.request.body;
     let [rows]: Array<{ rows: any }> = [];
     const reqBody = await validation.updateresultSchema.validate(req);
     if(reqBody.error)
@@ -58,13 +64,14 @@ export async function updateResult(ctx: Context) {
     try {
     let flag = 0;
     rows = await serviceresult.check_subject(req.roll_num);
-    let length = await serviceresult.subject_length(req.roll_num);
-    for (let i = 0; i < length.rows[0].count; i++) {
-      if (req.subcode === rows.rows[i].subcode) {
+    
+    
+    //console.log('this',rows.rows[0].subcode);
+  
+    if (req.subcode === rows.rows[0].subcode) {
         flag = 1;
-        break;
       }
-    }
+  
 
     if (flag === 0) {
       ctx.response.status = 400;

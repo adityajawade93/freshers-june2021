@@ -21,8 +21,8 @@ app.use(async (ctx: any) => {
 const {port} = process.env;
 const{host}= process.env;
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`server is running at ${host} and at ${port}`);
 });
 
-module.exports = app;
+export default server;

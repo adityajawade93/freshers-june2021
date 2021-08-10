@@ -1,4 +1,3 @@
-import { validatePage } from "../helper/index";
 import { Context } from "vm";
 import {
 	getStudentCount,
@@ -30,17 +29,14 @@ export async function getStudent(ctx: Context): Promise<void> {
 		ctx.body = response.error.details[0].message;
 		return;
 	}
-	const validParams: boolean = validatePage(obj.page, obj.size);
 
 	try {
 		const totalStudent: number = await getStudentCount();
 		const boundary: IPagination = { offset: 0, limit: totalStudent };
 		// if the page and offset is not valid
 
-		if (validParams) {
-			boundary.offset = obj.size;
-			boundary.limit = obj.page * obj.size;
-		}
+		boundary.offset = obj.size;
+		boundary.limit = obj.page * obj.size;
 
 		const allstudent = await allStudents(boundary.offset, boundary.limit);
 

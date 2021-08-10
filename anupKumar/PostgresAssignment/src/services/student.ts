@@ -5,7 +5,7 @@ export async function allStudents(
 	offset: number
 ): Promise<Array<string> | never> {
 	const response = await query(
-		`SELECT * FROM school.student LIMIT ${limit} OFFSET ${offset} order by name`
+		`SELECT * FROM school.student LIMIT ${limit} OFFSET ${offset}`
 	);
 	return response.rows;
 }

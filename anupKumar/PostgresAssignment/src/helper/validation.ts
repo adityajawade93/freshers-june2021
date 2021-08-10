@@ -22,7 +22,7 @@ export const studentSchema = Joi.object({
 export const studentParamsSchema = Joi.object({
 	page: Joi.number()
 		.positive()
-		.required(), //min length max length
+		.required(), 
 	size: Joi.number()
 		.positive()
 		.required(),

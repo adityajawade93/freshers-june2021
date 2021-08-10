@@ -6,7 +6,7 @@ import { Pool } from 'pg';
 // dotenv.config();
 
 const pool = new Pool({
-  connectionString: "postgres://postgres:postgres@localhost:5432/postgres"
+  connectionString: 'postgres://postgres:postgres@localhost:5432/postgres'
 });
 
 pool.on('connect', () => {

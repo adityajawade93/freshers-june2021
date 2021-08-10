@@ -7,8 +7,4 @@ const router = new koarouter();
 
 router.get('/classes', classController.listAllClasses);
 
-// For Require somewhere
-// module.exports = router;
-
-// For import somewhere
 export default router;

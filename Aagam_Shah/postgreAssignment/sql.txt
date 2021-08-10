@@ -48,6 +48,8 @@ alter table marks add foreign key (subjectId) references subject(subjectId);
 alter table subject add foreign key (classId) references class(classId);
 alter table subject add foreign key (teacherId) references teacher(teacherId);
 
+alter table student add foreign key (classId) references class(classId);
+
 INSERT INTO school.class(name) VALUES (10);
 INSERT INTO school.class(name) VALUES (11);
 

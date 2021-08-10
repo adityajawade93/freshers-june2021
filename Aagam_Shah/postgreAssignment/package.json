@@ -5,22 +5,29 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon server.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@koa/router": "^10.0.0",
+    "@types/jest": "^26.0.24",
     "@types/node": "^15.12.5",
+    "jest": "^27.0.6",
+    "joi": "^17.4.2",
     "koa": "^2.13.1",
     "koa-bodyparser": "^4.3.0",
-    "pg": "^8.6.0"
+    "pg": "^8.6.0",
+    "supertest": "^6.1.4",
+    "ts-jest": "^27.0.4"
   },
   "devDependencies": {
     "@types/koa": "^2.13.4",
     "@types/koa-bodyparser": "^4.3.2",
     "@types/koa__router": "^8.0.7",
-    "@types/pg": "^8.6.1"
+    "@types/pg": "^8.6.1",
+    "@types/supertest": "^2.0.11",
+    "typescript": "^4.3.5"
   }
 }

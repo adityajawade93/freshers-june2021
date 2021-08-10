@@ -1,8 +1,5 @@
 const { Pool } = require("pg");
 const config = require("../config/config");
-// console.log(config.dbPassword);
-// config.dbPassword = "123445";
-// console.log(config.dbPassword);
 const pool = new Pool({
 	user: config.dbUser,
 	password: config.dbPassword,

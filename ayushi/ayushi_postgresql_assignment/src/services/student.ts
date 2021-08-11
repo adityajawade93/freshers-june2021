@@ -2,7 +2,7 @@
 import client from '../database/pg_client';
 
 async function getStudentList(){
-  const response = await client.query('SELECT * FROM SchoolSchema.students');
+  const response = await client.query('SELECT * FROM SchoolSchema.students ORDER BY student_id asc');
   console.log(response.rows);
   return response.rows;
 };

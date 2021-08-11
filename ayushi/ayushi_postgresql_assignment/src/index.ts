@@ -1,5 +1,5 @@
 const Koa = require('koa');
-const Router = require('./src/routes/main.ts');
+const Router = require('./routes/main.ts');
 const koaJson = require('koa-json');
 const koaBodyparser = require('koa-bodyparser');
 

@@ -2,7 +2,7 @@
 import client from '../database/pg_client';
 
 async function getTeacherList(){
-  const text = 'SELECT * from SchoolSchema.teachers';
+  const text = 'SELECT * from SchoolSchema.teachers ORDER BY teacher_id asc';
   const res = await client.query(text);
   console.log(res.rows);
   return res.rows;

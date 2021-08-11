@@ -18,7 +18,7 @@ export async function classByTeacher(teacher_id: number){
 
 export async function studentByClass(class_id: number){
   
-  const text = `SELECT student_id FROM SchoolSchema.student_class WHERE class_id = ${class_id}`;
+  const text = `SELECT student_id FROM SchoolSchema.student_class WHERE class_id = ${class_id} ORDER BY student_id asc`;
   const response = await client.query(text);
   console.log(response.rows);
   return response.rows;

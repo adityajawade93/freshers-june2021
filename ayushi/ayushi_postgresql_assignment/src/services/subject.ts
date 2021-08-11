@@ -2,7 +2,7 @@
 import client from '../database/pg_client';
 
 async function getSubjectList(){
-  const text = 'SELECT * from SchoolSchema.subjects';
+  const text = 'SELECT * from SchoolSchema.subjects ORDER BY subject_id asc';
   const res = await client.query(text);
   return res.rows;
 };

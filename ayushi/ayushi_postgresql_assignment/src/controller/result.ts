@@ -1,6 +1,7 @@
 import { Context } from "vm";
+const resultValidation = require('../validation/result_validation');
 
-const {subjectMarksByStudent, topStudentWithSubject, topScoreStudents} = require('../services/result');
+const {subjectMarksByStudent, topStudentWithSubject, topScoreStudents} = require('../services/result.ts');
 const {getStudentInfoByStudentId} = require('../services/student');
 
 interface results {
@@ -26,17 +27,17 @@ interface student{
 
 interface studentmarks {
   student_info:student;
-  subject_id:number;
+  subject_id?:number;
   marks:number;
 }
 
 class studentMarksBody implements studentmarks {
 
   student_info:student;
-  subject_id:number;
+  subject_id?:number;
   marks:number;
 
-  constructor(student_info:student,subject_id:number,marks:number) {
+  constructor(student_info:student,marks:number, subject_id?:number) {
     this.student_info = student_info;
     this.subject_id = subject_id;
     this.marks = marks;
@@ -44,67 +45,88 @@ class studentMarksBody implements studentmarks {
 }
 
 export async function subjectmarksByStudent(ctx: Context){
+  const studentId:number = ctx.request.params.studentId;
   try{
-    const studentId:number = ctx.request.params.studentId;
-    const subjectMarksInfo:subjectmarks[] = subjectMarksByStudent(studentId);
+    try{
+      await resultValidation.subjectmarksByStudentSchema.validateAsync(studentId);
+    } catch(err){
+      console.log(err.message);
+      ctx.response.type = 'text/html';
+      ctx.response.status = 400;
+      ctx.response.body = 'Invalid parameters passed';
+    }
+    const subjectMarksInfo:subjectmarks = await subjectMarksByStudent(studentId);
+    console.log(subjectMarksInfo);
 
     ctx.response.status = 200;
-    ctx.response.type = 'text/html';
-    ctx.body = JSON.stringify(subjectMarksInfo); 
+    ctx.body = {
+      data: subjectMarksInfo
+    }
     }catch(err){
-      ctx.response.status = 400;
-      ctx.response.type = 'text/html';
-      ctx.body = "could not get subject marks by student."; 
+      ctx.response.status = 500;
+      ctx.body = {
+        error: `Could not get subject marks by student. ${err.message}`
+      }
       return ;
     }
 }
 
 export async function topstudentWithSubject(ctx: Context){
+  const classId:number = ctx.request.params.classId;
   try{
-    const classId:number = ctx.request.params.classId;
-    const res:results[] = topStudentWithSubject(classId);
+    try{
+      await resultValidation.topstudentWithSubjectSchema.validateAsync(classId);
+    } catch(err){
+      console.log(err.message);
+      ctx.response.type = 'text/html';
+      ctx.response.status = 400;
+      ctx.response.body = 'Invalid parameters passed';
+    }
+    const res:results[] = await topStudentWithSubject(classId);
     let result:studentMarksBody[] = [];
 
     for(let i=0;i<res.length;i++) {
       let studentId = res[i].student_id;
-      let student:student = getStudentInfoByStudentId(studentId);
+      let student:student = await getStudentInfoByStudentId(studentId);
       let studentInfo = new studentMarksBody(student, res[i].subject_id, res[i].marks);
       result.push(studentInfo);
     }
     
     ctx.response.status = 200;
-    ctx.response.type = 'text/html';
-    ctx.body = JSON.stringify(result); 
+    ctx.body = {
+      data: result
+    } 
     }catch(err){
-      ctx.response.status = 400;
-      ctx.response.type = 'text/html';
-      ctx.body = "could not get top student with subjectid"; 
+      ctx.response.status = 500;
+      ctx.body = {
+      error: `Could not get top student with subjectid: ${err.message}`
+    } 
       return ;
     }
 }
 
 export async function topscoreStudents(ctx: Context){
   try{
-    const classId:number = ctx.request.query.classId;
-    const subjectId:number = ctx.request.query.subjectId;
-    const topStudents:results[] = topScoreStudents(classId, subjectId);
-
+    const topStudents:results[] = await topScoreStudents();
+    console.log(topStudents);
     let result:studentMarksBody[] = [];
 
     for(let i=0;i<topStudents.length;i++) {
       let studentId = topStudents[i].student_id;
-      let student:student = getStudentInfoByStudentId(studentId);
-      let studentInfo = new studentMarksBody(student, topStudents[i].subject_id, topStudents[i].marks);
+      let student:student = await getStudentInfoByStudentId(studentId);
+      let studentInfo = new studentMarksBody(student,topStudents[i].marks);
       result.push(studentInfo);
     }
-
+    console.log(result);
     ctx.response.status = 200;
-    ctx.response.type = 'text/html';
-    ctx.body = JSON.stringify(result); 
+    ctx.body = {
+      data: result
+    }
     }catch(err){
-      ctx.response.status = 400;
-      ctx.response.type = 'text/html';
-      ctx.body = "could not get top students."; 
+      ctx.response.status = 500;
+      ctx.body = {
+        error: `Could not get top students. ${err.message}`
+      }
       return ;
     }
 }

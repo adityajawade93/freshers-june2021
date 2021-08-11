@@ -1,35 +1,41 @@
-const {client} = require('database/pg_client');
+//const {client} = require('database/pg_client.ts');
+import client from '../database/pg_client';
 
 export async function subjectMarksByStudent(student_id:number){
-  try{
-    const text = 'SELECT subject_id, marks FROM results WHERE student_id = $1';
-    const response = await client.query(text, student_id);
-    return response;
-  }
-  catch (err) {
-    console.log(err.stack);
-  }
+  
+  const text = `SELECT subject_id, marks FROM SchoolSchema.results WHERE student_id = ${student_id}`;
+  const response = await client.query(text);
+  console.log(response.rows[0]);
+  return response.rows[0];
 };
 
 export async function topStudentWithSubject(class_id: number){
-  try{
-    const text = 'SELECT subject_id, student_id, max(marks) AS max_marks FROM results WHERE class_id = $1 GROUP BY subject_id';
-    const response = await client.query(text, class_id);
-    return response;
+
+  const text = `SELECT * FROM SchoolSchema.results WHERE class_id = ${class_id} ORDER BY marks desc`;
+  const response = await client.query(text);
+  console.log(response);
+  const mark = response.rows[0].marks;
+  let len = response.rows.length;
+  let i=1;
+  let num=0;
+  while(i<len){
+    if(response.rows[i].marks == mark){
+      num++;
+      i++;
+    }
+    else{
+      break;
+    }
   }
-  catch(err){
-    console.log(err.stack);
-  }
+
+  console.log(response.rows.slice(0,num+1));
+  return response.rows.slice(0,num+1);
 };
 
-export async function topScoreStudents(class_id: number, subject_id: number){
-  try{
-    const text = 'SELECT student_id, class_id, subject_id, SUM(marks) AS total_marks FROM results WHERE class_id = $1, subject_id = $2 GROUP BY student_id ORDER BY total_marks desc LIMIT 10';
-    const value = [class_id, subject_id];
-    const response = await client.query(text,value);
-    return response;
-  }
-  catch(err){
-    console.log(err.stack);
-  }
+export async function topScoreStudents(){
+  
+  const text = 'SELECT student_id, SUM(marks) AS marks FROM SchoolSchema.results GROUP BY student_id ORDER BY marks desc LIMIT 10';
+  const response = await client.query(text);
+  console.log(response.rows);
+  return response.rows;
 };

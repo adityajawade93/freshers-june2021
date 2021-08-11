@@ -1,6 +1,5 @@
 const Koa = require('koa');
-const router = require('./routes/main');
-//import router from '../routes/app';
+const Router = require('./src/routes/main.ts');
 const koaJson = require('koa-json');
 const koaBodyparser = require('koa-bodyparser');
 
@@ -10,7 +9,8 @@ const app = new Koa();
 
 app.use(koaJson());
 app.use(koaBodyparser());
-app.use(router());
+//app.use(Router.routes()).use(Router.allowedMethods());
+app.use(Router());
 
 app.listen(port,()=>{
   console.log(`The server is running at port number ${port}`);

@@ -1,10 +1,10 @@
 const combineRouters = require('koa-combine-routers');
-import * as studentRouter from './student';
-import * as teacherRouter from './teacher';
-import * as subjectRouter from './subject';
-import * as classRouter from './class';
-import * as resultRouter from './result';
-import * as scheduleRouter from './schedule';
+const studentRouter = require('./student.ts');
+const teacherRouter = require('./teacher.ts');
+const subjectRouter = require('./subject.ts');
+const classRouter = require('./class.ts');
+const resultRouter = require('./result.ts');
+const scheduleRouter = require('./schedule.ts');
 
 const router = combineRouters (
   studentRouter,
@@ -15,5 +15,4 @@ const router = combineRouters (
   scheduleRouter
 );
 
-//export default router;
 module.exports = router;

@@ -6,7 +6,7 @@ CREATE TYPE address AS (
 	street VARCHAR(40)
 );
 CREATE DOMAIN gender VARCHAR(15) 
-	CHECK (VALUE IN ('male','female','transgender'));
+	CHECK (VALUE IN ('male','female','others'));
 
 CREATE TABLE IF NOT EXISTS students (
 	student_id INT PRIMARY KEY,
@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS students (
 	student_dob DATE NOT NULL,
 	student_address address NOT NULL,
 	student_gender gender NOT NULL,
-	student_phone VARCHAR(10) NOT NULL
+	student_phone INT NOT NULL
 );
 CREATE TABLE IF NOT EXISTS teachers (
 	teacher_id INT PRIMARY KEY,
@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS teachers (
 	teacher_dob DATE NOT NULL,
 	teacher_address address NOT NULL,
 	teacher_gender gender NOT NULL,
-	teacher_phone VARCHAR(10) NOT NULL
+	teacher_phone INT NOT NULL
 );
 CREATE TABLE IF NOT EXISTS subjects (
 	subject_id INT PRIMARY KEY,
@@ -106,3 +106,11 @@ ALTER TABLE schedule ADD FOREIGN KEY(teacher_id) REFERENCES teachers(teacher_id)
 ALTER TABLE results ADD FOREIGN KEY(subject_id) REFERENCES subjects(subject_id);
 ALTER TABLE results ADD FOREIGN KEY(class_id) REFERENCES schedule(class_id);
 ALTER TABLE results ADD FOREIGN KEY(student_id) REFERENCES students(student_id);
+
+ALTER TABLE students 
+ALTER COLUMN student_phone TYPE BIGINT
+USING student_phone::bigint;
+
+ALTER TABLE teachers 
+ALTER COLUMN teacher_phone TYPE BIGINT
+USING teacher_phone::bigint;

@@ -35,9 +35,13 @@ test('add teacher', async () => {
 })
 
 describe('errors', () => {
-   test('get error if id is wrong', async () => {
-      const response = await request(app.callback()).get('/school/teacherid/9360ef49-47d7-489e-94e9-2867ad886ff7/teachers')
-      expect(response.status).toBe(404)
+   test('get error if id is wrong or null or undefined', async () => {
+      const response1 = await request(app.callback()).get('/school/teacherid/9360ef49-47d7-489e-94e9-2867ad886ff7/teachers')
+      const response2 = await request(app.callback()).get('/school/teacherid/null/teachers')
+      const response3 = await request(app.callback()).get('/school/teacherid/9360ef49-47d7-489e-94e9/teachers')
+      expect(response1.status).toBe(404)
+      expect(response2.status).toBe(400)
+      expect(response3.status).toBe(500)
    })
 
    test('get error if data not given properly', async () => {

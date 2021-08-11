@@ -27,10 +27,13 @@ test('add sechdule', async () => {
 })
 
 describe('errors', () => {
-    
+
    test('get error when classid id is given wrong', async () => {
-      const response = await request(app.callback()).get('/school/classid/f7999045-09f8-455d-a655/sechdule')
-      expect(response.status).toBe(500)
+      const response1 = await request(app.callback()).get('/school/classid/f7999045-09f8-455d-a655/sechdule')
+      const response2 = await request(app.callback()).get('/school/classid/null/sechdule')
+      expect(response1.status).toBe(500)
+      expect(response2.status).toBe(400)
+
    })
 
    test('get error whe the data is not given properly', async () => {

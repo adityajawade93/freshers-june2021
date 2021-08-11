@@ -50,12 +50,16 @@ describe('errors', () => {
 
         const response2 = await request(app.callback()).get('/school/students?size=3')
         expect(response2.status).toBe(500)
-    
+
     })
 
-    test('get error if teacher id is wrong', async () => {
-        const response = await request(app.callback()).get('/school/teacherid/9360ef49-47d7-489e-94e9-2867ad886678/students')
-        expect(response.status).toBe(404)
+    test('get error if  id is wrong', async () => {
+        const response1 = await request(app.callback()).get('/school/teacherid/9360ef49-47d7-489e-94e9-2867ad886678/students')
+        const response2 = await request(app.callback()).get('/school/studentid/9360ef49-47d7-489e-94e9-2867ad886679/students')
+        const response3 = await request(app.callback()).get('/school/subjectname/pyhsics/students')
+        expect(response1.status).toBe(404)
+        expect(response2.status).toBe(404)
+        expect(response3.status).toBe(404)
     })
 
     test('get error id student data is not given properly', async () => {
@@ -67,5 +71,22 @@ describe('errors', () => {
         const response = await request(app.callback()).post('/school/addstudent/students').send(data)
         expect(response.status).toBe(500)
     })
+
+    test('get error if id is null or undefined', async () => {
+        const response1 = await request(app.callback()).get('/school/teacherid/null/students')
+        const response2 = await request(app.callback()).get('/school/studentid/null/students')
+        const response3 = await request(app.callback()).get('/school/subjectname/null/students')
+        expect(response1.status).toBe(400)
+        expect(response2.status).toBe(400)
+        expect(response3.status).toBe(400)
+    })
+
+    test('get error if  id is not uuid', async () => {
+        const response1 = await request(app.callback()).get('/school/teacherid/9360ef49-47d7-489e-94e9/students')
+        const response2 = await request(app.callback()).get('/school/studentid/9360ef49-47d7-489e-94e9/students')
+        expect(response1.status).toBe(500)
+        expect(response2.status).toBe(500)
+    })
+
 
 })

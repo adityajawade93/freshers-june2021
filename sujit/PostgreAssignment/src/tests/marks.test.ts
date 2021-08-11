@@ -55,13 +55,48 @@ test('add marks', async () => {
 
 describe('errors', () => {
     test('get error when id is wrong ', async () => {
-        const response = await request(app.callback()).get('/school/studentid/56a6af4a-b323-450e-aaa0-04cfdab6fa58/marks')
-        expect(response.status).toBe(404)
+        const response1 = await request(app.callback()).get('/school/studentid/56a6af4a-b323-450e-aaa0-04cfdab6fa58/marks')
+        const response2 = await request(app.callback()).get('/school/highestmarks/marks?subject_id=c85f2e2d-4fd0-4309-8c62-8990c350d4f3&student_class_id=f7999045-09f8-455d-a655-a529a29b36d4')
+        const response3 = await request(app.callback()).get('/school/topten/f7999045-09f8-455d-a655-a529a29b36d4/marks')
+
+        expect(response1.status).toBe(404)
+        expect(response2.status).toBe(404)
+        expect(response3.status).toBe(404)
     })
 
     test('get error for highest marks with subject id and class id not given', async () => {
         const response = await request(app.callback()).get(`/school/highestmarks/marks?subject_id=8990c350d4fc&student_class_id=a529a29b36dd`)
         console.log(response.body)
         expect(response.status).toBe(500)
-    })    
+    })
+
+    test('get error when id is null or undefined ', async () => {
+        const response1 = await request(app.callback()).get('/school/studentid/null/marks')
+        const response2 = await request(app.callback()).get('/school/highestmarks/marks?subject_id=null&student_class_id=null')
+        const response3 = await request(app.callback()).get('/school/topten/null/marks')
+        expect(response1.status).toBe(400)
+        expect(response2.status).toBe(400)
+        expect(response3.status).toBe(400)
+    })
+
+    test('error data not there in update marks', async () => {
+        const data = {
+            rstudent_id: "56a6af4a-b323-450e-aaa0-04cfdab6fa59",
+            rstudent_class_id: "f7999045-09f8-455d-a655-a529a29b36dd",
+            rsubject_id: "c85f2e2d-4fd0-4309-8c62-8990c350d4fc"
+        }
+        const response = await request(app.callback()).put('/school/updateMarks/marks').send(data)
+        expect(response.status).toBe(500)
+    })
+
+    test('error if data missing in add marks', async () => {
+        const data = {
+            rstudent_id: "56a6af4a-b323-450e-aaa0-04cfdab6fa59",
+            rstudent_class_id: "f7999045-09f8-455d-a655-a529a29b36dd",
+            rsubject_id: "c85f2e2d-4fd0-4309-8c62-8990c350d4fc",
+
+        }
+        const response = await request(app.callback()).post('/school/addmarks/marks').send(data)
+        expect(response.status).toBe(500)
+    })
 })

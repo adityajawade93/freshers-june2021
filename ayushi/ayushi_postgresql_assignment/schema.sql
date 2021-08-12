@@ -114,3 +114,37 @@ USING student_phone::bigint;
 ALTER TABLE teachers 
 ALTER COLUMN teacher_phone TYPE BIGINT
 USING teacher_phone::bigint;
+
+ALTER TABLE students 
+ALTER COLUMN student_id TYPE SMALLINT
+USING student_id::smallint;
+ALTER TABLE teachers 
+ALTER COLUMN teacher_id TYPE SMALLINT
+USING teacher_id::smallint;
+ALTER TABLE subjects 
+ALTER COLUMN subject_id TYPE SMALLINT
+USING subject_id::smallint;
+ALTER TABLE schedule
+ALTER COLUMN subject_id TYPE SMALLINT
+USING subject_id::smallint;
+ALTER TABLE schedule
+ALTER COLUMN class_id TYPE SMALLINT
+USING class_id::smallint;
+ALTER TABLE schedule
+ALTER COLUMN teacher_id TYPE SMALLINT
+USING teacher_id::smallint;
+ALTER TABLE student_class
+ALTER COLUMN student_id TYPE SMALLINT
+USING student_id::smallint;
+ALTER TABLE student_class
+ALTER COLUMN class_id TYPE SMALLINT
+USING class_id::smallint;
+ALTER TABLE results
+ALTER COLUMN class_id TYPE SMALLINT
+USING class_id::smallint;
+ALTER TABLE results
+ALTER COLUMN student_id TYPE SMALLINT
+USING student_id::smallint;
+ALTER TABLE results
+ALTER COLUMN subject_id TYPE SMALLINT
+USING subject_id::smallint;

@@ -38,7 +38,7 @@ router.get('/todo/:id', (ctx) => {
   }
   if (obj === undefined) {
     ctx.response.type = 'text/html';
-    ctx.response.status = 400;
+    ctx.response.status = 500;
     ctx.body = 'id not found';
   } else {
     ctx.response.type = 'application/json';
@@ -58,11 +58,11 @@ router.post('/todo', (ctx) => {
 
   if (typeof (body.title) !== 'string' || typeof (body.completed) !== 'boolean') {
     ctx.response.type = 'text/html';
-    ctx.response.status = 400;
+    ctx.response.status = 500;
     ctx.body = 'invalid data in request';
   } else if (body.title === '') {
     ctx.response.type = 'text/html';
-    ctx.response.status = 400;
+    ctx.response.status = 500;
     ctx.body = 'please give a valid non-empty title';
   } else {
     const newtodo = new Todo(uuid(), Date.now(), body.title, body.completed);
@@ -81,7 +81,7 @@ router.put('/todo/:id', (ctx) => {
   const { body } = ctx.request;
   if (typeof (id) !== 'string' || typeof (body.title) !== 'string' || typeof (body.completed) !== 'boolean' || body.title.trim() === '') {
     ctx.response.type = 'text/html';
-    ctx.response.status = 400;
+    ctx.response.status = 500;
     ctx.body = 'invalid data in request';
   } else {
     let index = -1;
@@ -94,7 +94,7 @@ router.put('/todo/:id', (ctx) => {
     }
     if (index === -1) {
       ctx.response.type = 'text/html';
-      ctx.response.status = 400;
+      ctx.response.status = 500;
       ctx.body = 'id not found';
     } else {
       todoList[index].createdDate = Date.now();
@@ -113,7 +113,7 @@ router.delete('/todo/:id', (ctx) => {
 
   if (typeof (id) !== 'string') {
     ctx.response.type = 'text/html';
-    ctx.response.status = 400;
+    ctx.response.status = 500;
     ctx.body = 'invalid data in request';
   } else {
     let index = -1;
@@ -126,7 +126,7 @@ router.delete('/todo/:id', (ctx) => {
     }
     if (index === -1) {
       ctx.response.type = 'text/html';
-      ctx.response.status = 400;
+      ctx.response.status = 500;
       ctx.body = 'id not found';
     } else {
       todoList.splice(index, 1);

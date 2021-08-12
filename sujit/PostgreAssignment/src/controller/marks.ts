@@ -24,11 +24,13 @@ export const getStudentMarksById = async (ctx: any) => {
             if (res.rows.length == 0) {
                 ctx.response.status = 404
                 ctx.body = messageoutput.costomMessage(404, 'this student marks are not given yet')
+                return
             }
             ctx.response.status = 200
             ctx.body = dataoutput.outputData(res.rows.length, res.rows)
 
         } catch (e) {
+            ctx.response.status = 500
             ctx.body = messageoutput.costomError(500, e.message)
 
         }
@@ -55,6 +57,7 @@ export const getHighestMarks = async (ctx: any) => {
             ctx.body = dataoutput.outputData(res.rows.length, res.rows)
 
         } catch (e) {
+            ctx.response.status = 500
             ctx.body = messageoutput.costomError(500, e.message)
         }
 
@@ -98,6 +101,7 @@ export const topTenInClass = async (ctx: any) => {
             ctx.body = dataoutput.outputData(res.rows.length, res.rows)
 
         } catch (e) {
+            ctx.response.status = 500
             ctx.body = messageoutput.costomError(500, e.message)
         }
 

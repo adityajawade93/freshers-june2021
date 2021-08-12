@@ -244,3 +244,11 @@ alter table teachers
 alter column tfname type varchar(20),
 alter column tlname type varchar(20)
 
+delete from results where rstudent_id = '56a6af4a-b323-450e-aaa0-04cfdab6fa59' and rsubject_id ='c85f2e2d-4fd0-4309-8c62-8990c350d4fc';  
+delete from teachers where tfname = 'ross';
+delete from student_class where cstudentid ='035f2158-e850-4427-90f8-832b8effdfd5' and student_classid ='f7999045-09f8-455d-a655-a529a29b36dd';
+delete from students where fname = 'lenerd';
+delete from standards where class_level =9;
+delete from sechdule where subjectname ='geology';
+delete from subjects where subname = 'palentology';
+

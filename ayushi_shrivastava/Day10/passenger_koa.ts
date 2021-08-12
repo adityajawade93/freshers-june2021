@@ -74,7 +74,7 @@ router.post('/v1/passengers', async(ctx) => {
   try{
     let body:passenger=ctx.request.body;
     if(typeof body.name!=='string' || typeof body.trips!=='number' || body.name.trim()===""){
-      ctx.response.status = 400;
+      ctx.response.status = 500;
       ctx.response.type = 'text/html';
       ctx.body = "The Request is not valid"; 
       return ;
@@ -86,7 +86,7 @@ router.post('/v1/passengers', async(ctx) => {
      ctx.response.type = 'text/html';
       ctx.body = "passenger named " + passengerRequest.name + " inserted in the database."; 
      }catch(err){
-        ctx.response.status = 400;
+        ctx.response.status = 500;
         ctx.response.type = 'text/html';
         ctx.body = "could not write to the file"; 
         return ;
@@ -100,7 +100,7 @@ router.put('/v1/passengers', async(ctx) => {
     //console.log(passengers[1]["data"][499]._id);
     let body:passenger=ctx.request.body;
     if(typeof body.id!=='string'|| typeof body.name!=='string' || typeof body.trips!=='number' || body.name.trim()==="" || body.id.trim()===""){
-      ctx.response.status = 400;
+      ctx.response.status = 500;
       ctx.response.type = 'text/html';
       ctx.body = "The Request is not valid"; 
       return ;
@@ -126,7 +126,7 @@ router.put('/v1/passengers', async(ctx) => {
     }
     console.log(i);
      if(i===passengers.length){
-      ctx.response.status = 404;
+      ctx.response.status = 500;
       ctx.response.type = 'text/html';
       ctx.body = "The record not found"; 
       return ;
@@ -159,7 +159,7 @@ router.put('/v1/passengers', async(ctx) => {
      }
       
      }catch(err){
-        ctx.response.status = 400;
+        ctx.response.status = 500;
         ctx.response.type = 'text/html';
         ctx.body = "could not update to the file"; 
         return ;

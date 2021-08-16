@@ -28,6 +28,14 @@ export function setpath() {
     }
 }
 
+export function disconnect() {
+    try{
+        client.end();
+    } catch(er){
+        throw new Error(er);
+    }
+}
+
 export async function query(querystring: string, values: any[] = []) {
     return await client.query(querystring, values)
 }

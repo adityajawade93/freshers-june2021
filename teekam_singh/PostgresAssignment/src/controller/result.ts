@@ -24,7 +24,7 @@ export const createResult = async (ctx: Context): Promise<void> => {
     }
     catch (error) {
         ctx.status = 500;
-        if (error.status) { ctx.status = error.status; }
+        // if (error.status) { ctx.status = error.status; }
         ctx.body = error.message;
     }
 
@@ -45,7 +45,7 @@ export const updateResult = async (ctx: Context): Promise<void> => {
     }
     catch (error) {
         ctx.status = 500;
-        if (error.status) { ctx.status = error.status; }
+        // if (error.status) { ctx.status = error.status; }
         ctx.body = error.message;
     }
 }
@@ -71,7 +71,6 @@ export const marksByStudentId = async (ctx: Context): Promise<void> => {
     }
     catch (error) {
         ctx.status = 500;
-        if (error.status) { ctx.status = error.status; }
         ctx.body = error.message;
     }
 
@@ -99,7 +98,6 @@ export const highestMarks = async (ctx: Context): Promise<void> => {
     }
     catch (error) {
         ctx.status = 500;
-        if (error.status) { ctx.status = error.status; }
         ctx.body = error.message;
     }
 
@@ -120,7 +118,6 @@ export const topNstudents = async (ctx: Context): Promise<void> => {
     }
     catch (error) {
         ctx.status = 500;
-        if (error.status) { ctx.status = error.status; }
         ctx.body = error.message;
     }
 }

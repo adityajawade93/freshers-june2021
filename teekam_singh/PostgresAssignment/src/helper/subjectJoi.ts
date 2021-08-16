@@ -5,5 +5,5 @@ export const subjectSchema = Joi.object({
 })
 
 export const subjectIdSchema = Joi.object({
-    subjectId: Joi.string().required()
+    subjectId: Joi.string().length(17).required()
 })

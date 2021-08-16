@@ -5,5 +5,5 @@ export const classSchema = Joi.object({
 })
 
 export const classIdSchema = Joi.object({
-    classId: Joi.string().required()
+    classId: Joi.string().length(17).required()
 })

@@ -24,7 +24,7 @@ export const createTeacher = async (ctx: Context): Promise<void> => {
     }
     catch (error) {
         ctx.status = 500;
-        if (error.status) { ctx.status = error.status; }
+        // if (error.status) { ctx.status = error.status; }
         ctx.body = error.message;
     }
 }
@@ -32,18 +32,12 @@ export const createTeacher = async (ctx: Context): Promise<void> => {
 export const teacherList = async (ctx: Context): Promise<void> => {
     try {
         const res: any = await services.teacherList();
-        if (res.rows.length === 0) {
-            ctx.status = 200;
-            ctx.body = 'No teacher exists.';
-        }
-        else {
-            ctx.status = 200;
-            ctx.body = res.rows;
-        }
+        ctx.status = 200;
+        ctx.body = res.rows;
     }
     catch (error) {
         ctx.status = 500;
-        if (error.status) { ctx.status = error.status; }
+        // if (error.status) { ctx.status = error.status; }
         ctx.body = error.message;
     }
 }
@@ -69,7 +63,7 @@ export const studentListByTeacherid = async (ctx: Context): Promise<void> => {
     }
     catch (error) {
         ctx.status = 500;
-        if (error.status) { ctx.status = error.status; }
+        // if (error.status) { ctx.status = error.status; }
         ctx.body = error.message;
     }
 }

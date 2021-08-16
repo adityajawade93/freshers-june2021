@@ -1,7 +1,15 @@
 import app from "../app/app";
 import request from 'supertest';
-import { isJSDocNamepathType } from "typescript";
+import { setpath, start, disconnect } from "../db/database";
 
+beforeAll( () => {
+    start();
+    setpath();
+});
+
+afterAll( () => {
+    disconnect();
+});
 
 describe('student Api', () => {
 
@@ -28,6 +36,11 @@ describe('student Api', () => {
     test('getting student list ', async () => {
         const response = await request(app.callback()).get('/student?page=0&size=10');
         expect(response.body).toEqual(expect.arrayContaining([{ student_id: '103', student_name: 'anurag' }]));
+    })
+
+    test('error in getting student list ', async () => {
+        const response = await request(app.callback()).get('/student?page=0&size=0');
+        expect(response.status).toBe(422);
     })
 
     test('should get error message while getting student list  to class when page or size is not given ', async () => {

@@ -1,5 +1,15 @@
 import app from "../app/app";
 import request from 'supertest';
+import { setpath, start, disconnect } from "../db/database";
+
+beforeAll( () => {
+    start();
+    setpath();
+});
+
+afterAll( () => {
+    disconnect();
+});
 
 
 describe('Class Api', () => {
@@ -24,7 +34,7 @@ describe('Class Api', () => {
     })
 
     test('should get No student message by class id in which no student is registered ', async () => {
-        const response = await request(app.callback()).get('/class/1gnzihjx44hcssy3/students');
+        const response = await request(app.callback()).get('/class/1gnzihjx44hcssy3e/students');
         expect(response.text).toBe('No student exists in this class.');
     })
 

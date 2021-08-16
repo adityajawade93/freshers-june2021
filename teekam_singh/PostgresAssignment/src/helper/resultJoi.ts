@@ -8,14 +8,14 @@ export const resultSchema = Joi.object({
 })
 
 export const marksByStudentIdSchema = Joi.object({
-    studentId: Joi.string().required()
+    studentId: Joi.string().length(17).required()
 })
 
 export const highestMarksSchema = Joi.object({
-    classId: Joi.string().required(),
-    subjectId: Joi.string().required()
+    classId: Joi.string().length(17).required(),
+    subjectId: Joi.string().length(17).required()
 })
 
 export const topNstudentsSchema = Joi.object({
-    limit: Joi.number().integer().min(0).required()
+    limit: Joi.number().integer().min(1).required()
 })

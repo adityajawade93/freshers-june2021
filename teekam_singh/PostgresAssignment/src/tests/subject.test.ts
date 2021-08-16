@@ -1,5 +1,15 @@
 import app from "../app/app";
 import request from 'supertest';
+import { setpath, start, disconnect } from "../db/database";
+
+beforeAll( () => {
+    start();
+    setpath();
+});
+
+afterAll( () => {
+    disconnect();
+});
 
 
 describe('subject Api', () => {
@@ -19,13 +29,13 @@ describe('subject Api', () => {
     })
 
     test('should get student list with subject id', async () => {
-        const response = await request(app.callback()).get('/subject/m10/students');
-        expect(response.body.length).toBeGreaterThan(0);
+        const response = await request(app.callback()).get('/subject/1gntjsamwkqvywg1o/students');
+        expect(response.status).toBe(200);
     })
 
-    test('should get error message when no student is present in given class ', async () => {
-        const response = await request(app.callback()).get('/subject/m20/students');
-        expect(response.text).toBe('No student exists in this subject.');
+    test('error in getting student list with subject id', async () => {
+        const response = await request(app.callback()).get('/subject/1gntjsamwkqvyw/students');
+        expect(response.status).toBe(422);
     })
 
 })

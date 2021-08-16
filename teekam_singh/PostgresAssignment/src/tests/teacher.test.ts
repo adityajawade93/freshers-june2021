@@ -1,5 +1,15 @@
 import app from "../app/app";
 import request from 'supertest';
+import { setpath, start, disconnect } from "../db/database";
+
+beforeAll( () => {
+    start();
+    setpath();
+});
+
+afterAll( () => {
+    disconnect();
+});
 
 
 describe('teacher Api', () => {

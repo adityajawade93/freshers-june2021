@@ -19,7 +19,7 @@ export const createSubject = async (ctx: Context): Promise<void> => {
     }
     catch (error) {
         ctx.status = 500;
-        if (error.status) { ctx.status = error.status; }
+        // if (error.status) { ctx.status = error.status; }
         ctx.body = error.message;
     }
 }
@@ -27,25 +27,19 @@ export const createSubject = async (ctx: Context): Promise<void> => {
 export const subjectList = async (ctx: Context): Promise<void> => {
     try {
         const res: any = await services.subjectList();
-        if (res.rows.length === 0) {
-            ctx.status = 200;
-            ctx.body = 'No subject exists.';
-        }
-        else {
-            ctx.status = 200;
-            ctx.body = res.rows;
-        }
+        ctx.status = 200;
+        ctx.body = res.rows;
     }
     catch (error) {
         ctx.status = 500;
-        if (error.status) { ctx.status = error.status; }
+        // if (error.status) { ctx.status = error.status; }
         ctx.body = error.message;
     }
 }
 
 export const studentListBySubjectId = async (ctx: Context): Promise<void> => {
     const subjectId: string = ctx.params.id;
-    const result = Joi.subjectIdSchema.validate({subjectId});
+    const result = Joi.subjectIdSchema.validate({ subjectId });
     if (result.error) {
         ctx.status = 422;
         ctx.body = result.error.details[0].message;
@@ -53,18 +47,12 @@ export const studentListBySubjectId = async (ctx: Context): Promise<void> => {
     }
     try {
         const res: any = await services.studentListBySubjectId(subjectId);
-        if (res.rows.length === 0) {
-            ctx.status = 200;
-            ctx.body = 'No student exists in this subject.';
-        }
-        else {
-            ctx.status = 200;
-            ctx.body = res.rows;
-        }
+        ctx.status = 200;
+        ctx.body = res.rows;
     }
     catch (error) {
         ctx.status = 500;
-        if (error.status) { ctx.status = error.status; }
+        // if (error.status) { ctx.status = error.status; }
         ctx.body = error.message;
     }
 }

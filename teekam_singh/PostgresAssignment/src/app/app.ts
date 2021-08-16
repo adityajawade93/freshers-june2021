@@ -3,12 +3,9 @@ import koaBody from 'koa-body';
 import combineRouters from 'koa-combine-routers';
 import { setpath, start } from "../db/database";
 
-const help = () => {
-    start();
-    setpath();
-}
+// start();
+// setpath();
 
-help();
 
 const app = new Koa();
 

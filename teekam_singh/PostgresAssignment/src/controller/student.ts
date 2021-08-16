@@ -19,7 +19,7 @@ export const createStudent = async (ctx: Context): Promise<void> => {
     }
     catch (error) {
         ctx.status = 500;
-        if (error.status) { ctx.status = error.status; }
+        // if (error.status) { ctx.status = error.status; }
         ctx.body = error.message;
     }
 
@@ -40,7 +40,7 @@ export const AddStudentToClass = async (ctx: Context): Promise<void> => {
     }
     catch (error) {
         ctx.status = 500;
-        if (error.status) { ctx.status = error.status; }
+        // if (error.status) { ctx.status = error.status; }
         ctx.body = error.message;
     }
 }
@@ -62,7 +62,7 @@ export const studentList = async (ctx: Context): Promise<void> => {
     }
     catch (error) {
         ctx.status = 500;
-        if (error.status) { ctx.status = error.status; }
+        // if (error.status) { ctx.status = error.status; }
         ctx.body = error.message;
     }
 }

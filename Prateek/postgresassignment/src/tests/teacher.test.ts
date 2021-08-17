@@ -2,7 +2,9 @@ import request = require("supertest");
 import app from "../app/index";
 import { client as sqlclient } from "../database/db";
 
-describe("subject routes tests", () => {
+jest.setTimeout(15000);
+
+describe("teacher routes tests", () => {
   beforeAll(async () => {
     sqlclient.connect().then(() => {
       console.log("database connected successfully");
@@ -37,6 +39,19 @@ describe("subject routes tests", () => {
   });
 
   test("test case 4", async () => {
+    // server error
+    const data = {
+      staffid: 105,
+      fname: "Vishal",
+      lname: "Deka",
+      subcode: 901,
+    };
+    const res = await request(app).post("/createteacher").send(data);
+    expect(res.status).toBe(500);
+    expect(res.text).toBe("Server error");
+  });
+
+  test("test case 5", async () => {
     // add teacher
     const data = {
       staffid: 55,
@@ -49,7 +64,7 @@ describe("subject routes tests", () => {
     expect(res.text).toBe("data inserted into teacher table");
   });
 
-  test("test case 5", async () => {
+  test("test case 6", async () => {
     // add teacher but with already present id
     const data = {
       staffid: 55,
@@ -61,7 +76,7 @@ describe("subject routes tests", () => {
     expect(res.status).toBe(500);
   });
 
-  test("test case 6", async () => {
+  test("test case 7", async () => {
     // when input is in wrong format
     const data = {
       staffid: "abcd",

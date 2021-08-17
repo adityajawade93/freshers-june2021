@@ -2,7 +2,9 @@ import request = require("supertest");
 import app from "../app/index";
 import { client as sqlclient } from "../database/db";
 
-describe("subject routes tests", () => {
+jest.setTimeout(15000);
+
+describe("student routes tests", () => {
   beforeAll(async () => {
     sqlclient.connect().then(() => {
       console.log("database connected successfully");
@@ -35,6 +37,20 @@ describe("subject routes tests", () => {
   });
 
   test("test case 3", async () => {
+    // server error
+    const data = {
+      roll_num: 1186,
+      fname: "Sailesh",
+      lname: "Thakur",
+      standard: 11,
+      subcode: 901,
+    };
+    const res = await request(app).post("/createstudent").send(data);
+    expect(res.status).toBe(500);
+    expect(res.text).toBe("Server error");
+  });  
+
+  test("test case 4", async () => {
     // add student in the list
     const data = {
       roll_num: 1186,
@@ -48,7 +64,7 @@ describe("subject routes tests", () => {
     expect(res.text).toBe("data inserted into student table");
   });
 
-  test("test case 4", async () => {
+  test("test case 5", async () => {
     //one of the input data is in incorrect format
     const data = {
       roll_num: "abcd",
@@ -61,7 +77,7 @@ describe("subject routes tests", () => {
     expect(res.status).toBe(422);
     expect(res.text).toBe("Please enter valid details");
   });
-  test("test case 5", async () => {
+  test("test case 6", async () => {
     // undefined data
     const page = "abcd" ;
     const size = 3;

@@ -39,7 +39,8 @@ exports.__esModule = true;
 var request = require("supertest");
 var index_1 = require("../app/index");
 var db_1 = require("../database/db");
-describe("subject routes tests", function () {
+jest.setTimeout(15000);
+describe("student routes tests", function () {
     beforeAll(function () { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
             db_1.client.connect().then(function () {
@@ -99,6 +100,27 @@ describe("subject routes tests", function () {
                         fname: "Sailesh",
                         lname: "Thakur",
                         standard: 11,
+                        subcode: 901
+                    };
+                    return [4 /*yield*/, request(index_1["default"]).post("/createstudent").send(data)];
+                case 1:
+                    res = _a.sent();
+                    expect(res.status).toBe(500);
+                    expect(res.text).toBe("Server error");
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    test("test case 4", function () { return __awaiter(void 0, void 0, void 0, function () {
+        var data, res;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    data = {
+                        roll_num: 1186,
+                        fname: "Sailesh",
+                        lname: "Thakur",
+                        standard: 11,
                         subcode: 301
                     };
                     return [4 /*yield*/, request(index_1["default"]).post("/createstudent").send(data)];
@@ -110,7 +132,7 @@ describe("subject routes tests", function () {
             }
         });
     }); });
-    test("test case 4", function () { return __awaiter(void 0, void 0, void 0, function () {
+    test("test case 5", function () { return __awaiter(void 0, void 0, void 0, function () {
         var data, res;
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -131,7 +153,7 @@ describe("subject routes tests", function () {
             }
         });
     }); });
-    test("test case 5", function () { return __awaiter(void 0, void 0, void 0, function () {
+    test("test case 6", function () { return __awaiter(void 0, void 0, void 0, function () {
         var page, size, res;
         return __generator(this, function (_a) {
             switch (_a.label) {

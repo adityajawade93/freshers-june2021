@@ -2,7 +2,9 @@ import request = require("supertest");
 import app from "../app/index";
 import { client as sqlclient } from "../database/db";
 
-describe("subject routes tests", () => {
+jest.setTimeout(15000);
+
+describe("schedule routes tests", () => {
   beforeAll(async () => {
     sqlclient.connect().then(() => {
       console.log("database connected successfully");
@@ -16,6 +18,22 @@ describe("subject routes tests", () => {
   });
 
   test("test case 1", async () => {
+    // server error
+    const data = {
+      uniclassid: "9C5",
+      Standard: 9,
+      classno: 5,
+      subcode: 657,
+      subject: "History",
+      staffid: 55,
+      T_fname: "Vishal",
+    };
+    const res = await request(app).post("/createclass_schedule").send(data);
+    expect(res.status).toBe(500);
+    expect(res.text).toBe("Server error");
+  });
+
+  test("test case 2", async () => {
     // add schedule
     const data = {
       uniclassid: "9C5",
@@ -30,7 +48,7 @@ describe("subject routes tests", () => {
     expect(res.status).toBe(200);
     expect(res.text).toBe("data inserted into Class_schedule table");
   });
-  test("test case 2", async () => {
+  test("test case 3", async () => {
     // invalid input format
     const data = {
       uniclassid: "9C5",

@@ -39,7 +39,8 @@ exports.__esModule = true;
 var request = require("supertest");
 var index_1 = require("../app/index");
 var db_1 = require("../database/db");
-describe("subject routes tests", function () {
+jest.setTimeout(15000);
+describe("teacher routes tests", function () {
     beforeAll(function () { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
             db_1.client.connect().then(function () {
@@ -103,16 +104,16 @@ describe("subject routes tests", function () {
             switch (_a.label) {
                 case 0:
                     data = {
-                        staffid: 55,
+                        staffid: 105,
                         fname: "Vishal",
                         lname: "Deka",
-                        subcode: 701
+                        subcode: 901
                     };
                     return [4 /*yield*/, request(index_1["default"]).post("/createteacher").send(data)];
                 case 1:
                     res = _a.sent();
-                    expect(res.status).toBe(200);
-                    expect(res.text).toBe("data inserted into teacher table");
+                    expect(res.status).toBe(500);
+                    expect(res.text).toBe("Server error");
                     return [2 /*return*/];
             }
         });
@@ -131,12 +132,32 @@ describe("subject routes tests", function () {
                     return [4 /*yield*/, request(index_1["default"]).post("/createteacher").send(data)];
                 case 1:
                     res = _a.sent();
-                    expect(res.status).toBe(500);
+                    expect(res.status).toBe(200);
+                    expect(res.text).toBe("data inserted into teacher table");
                     return [2 /*return*/];
             }
         });
     }); });
     test("test case 6", function () { return __awaiter(void 0, void 0, void 0, function () {
+        var data, res;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    data = {
+                        staffid: 55,
+                        fname: "Vishal",
+                        lname: "Deka",
+                        subcode: 701
+                    };
+                    return [4 /*yield*/, request(index_1["default"]).post("/createteacher").send(data)];
+                case 1:
+                    res = _a.sent();
+                    expect(res.status).toBe(500);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    test("test case 7", function () { return __awaiter(void 0, void 0, void 0, function () {
         var data, res;
         return __generator(this, function (_a) {
             switch (_a.label) {

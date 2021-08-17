@@ -39,7 +39,8 @@ exports.__esModule = true;
 var request = require("supertest");
 var index_1 = require("../app/index");
 var db_1 = require("../database/db");
-describe("subject routes tests", function () {
+jest.setTimeout(15000);
+describe("schedule routes tests", function () {
     beforeAll(function () { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
             db_1.client.connect().then(function () {
@@ -65,6 +66,29 @@ describe("subject routes tests", function () {
                         uniclassid: "9C5",
                         Standard: 9,
                         classno: 5,
+                        subcode: 657,
+                        subject: "History",
+                        staffid: 55,
+                        T_fname: "Vishal"
+                    };
+                    return [4 /*yield*/, request(index_1["default"]).post("/createclass_schedule").send(data)];
+                case 1:
+                    res = _a.sent();
+                    expect(res.status).toBe(500);
+                    expect(res.text).toBe("Server error");
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    test("test case 2", function () { return __awaiter(void 0, void 0, void 0, function () {
+        var data, res;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    data = {
+                        uniclassid: "9C5",
+                        Standard: 9,
+                        classno: 5,
                         subcode: 701,
                         subject: "History",
                         staffid: 55,
@@ -79,7 +103,7 @@ describe("subject routes tests", function () {
             }
         });
     }); });
-    test("test case 2", function () { return __awaiter(void 0, void 0, void 0, function () {
+    test("test case 3", function () { return __awaiter(void 0, void 0, void 0, function () {
         var data, res;
         return __generator(this, function (_a) {
             switch (_a.label) {

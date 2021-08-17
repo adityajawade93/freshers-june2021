@@ -39,6 +39,7 @@ exports.__esModule = true;
 var request = require("supertest");
 var index_1 = require("../app/index");
 var db_1 = require("../database/db");
+jest.setTimeout(15000);
 describe("subject routes tests", function () {
     beforeAll(function () { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
@@ -64,6 +65,28 @@ describe("subject routes tests", function () {
                     data = {
                         resultsid: 345,
                         roll_num: 1186,
+                        subcode: 5467,
+                        staffid: 15,
+                        standard: 11,
+                        marks: 66
+                    };
+                    return [4 /*yield*/, request(index_1["default"]).post("/createresult").send(data)];
+                case 1:
+                    res = _a.sent();
+                    expect(res.status).toBe(500);
+                    expect(res.text).toBe("Server error");
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    test("test case 2", function () { return __awaiter(void 0, void 0, void 0, function () {
+        var data, res;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    data = {
+                        resultsid: 345,
+                        roll_num: 1186,
                         subcode: 301,
                         staffid: 15,
                         standard: 11,
@@ -78,7 +101,7 @@ describe("subject routes tests", function () {
             }
         });
     }); });
-    test("test case 2", function () { return __awaiter(void 0, void 0, void 0, function () {
+    test("test case 3", function () { return __awaiter(void 0, void 0, void 0, function () {
         var data, res;
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -100,7 +123,7 @@ describe("subject routes tests", function () {
             }
         });
     }); });
-    test("test case 3", function () { return __awaiter(void 0, void 0, void 0, function () {
+    test("test case 4", function () { return __awaiter(void 0, void 0, void 0, function () {
         var data, res;
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -113,12 +136,12 @@ describe("subject routes tests", function () {
                     return [4 /*yield*/, request(index_1["default"]).put("/result").send(data)];
                 case 1:
                     res = _a.sent();
-                    expect(res.status).toBe(500);
+                    expect(res.status).toBe(400);
                     return [2 /*return*/];
             }
         });
     }); });
-    test("test case 4", function () { return __awaiter(void 0, void 0, void 0, function () {
+    test("test case 5", function () { return __awaiter(void 0, void 0, void 0, function () {
         var data, res;
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -137,7 +160,7 @@ describe("subject routes tests", function () {
             }
         });
     }); });
-    test("test case 5", function () { return __awaiter(void 0, void 0, void 0, function () {
+    test("test case 6", function () { return __awaiter(void 0, void 0, void 0, function () {
         var data, res;
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -156,7 +179,7 @@ describe("subject routes tests", function () {
             }
         });
     }); });
-    test("test case 6", function () { return __awaiter(void 0, void 0, void 0, function () {
+    test("test case 7", function () { return __awaiter(void 0, void 0, void 0, function () {
         var data, res;
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -171,6 +194,25 @@ describe("subject routes tests", function () {
                     res = _a.sent();
                     expect(res.status).toBe(400);
                     expect(res.text).toBe("This subject is not opted by the student");
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    test("test case 8", function () { return __awaiter(void 0, void 0, void 0, function () {
+        var data, res;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    data = {
+                        roll_num: 111111,
+                        subcode: 201,
+                        marks: 87
+                    };
+                    return [4 /*yield*/, request(index_1["default"]).put("/result").send(data)];
+                case 1:
+                    res = _a.sent();
+                    expect(res.status).toBe(500);
+                    expect(res.text).toBe("Server error");
                     return [2 /*return*/];
             }
         });

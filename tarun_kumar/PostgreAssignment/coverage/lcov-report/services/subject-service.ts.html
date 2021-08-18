@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">17.39% </span>
+                <span class="strong">78.26% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>4/23</span>
+                <span class='fraction'>18/23</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">33.33% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/6</span>
+                <span class='fraction'>2/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/3</span>
+                <span class='fraction'>3/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">17.39% </span>
+                <span class="strong">78.26% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>4/23</span>
+                <span class='fraction'>18/23</span>
             </div>
         
             
@@ -55,7 +55,7 @@
             Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
         </p>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -97,82 +97,82 @@
 <a name='L38'></a><a href='#L38'>38</a>
 <a name='L39'></a><a href='#L39'>39</a>
 <a name='L40'></a><a href='#L40'>40</a>
-<a name='L41'></a><a href='#L41'>41</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L41'></a><a href='#L41'>41</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { dbQuery } from "../db/db";
 &nbsp;
-export async function <span class="fstat-no" title="function not covered" >addSubject(</span>subid: string, subname: string): Promise&lt;boolean&gt; {
-<span class="cstat-no" title="statement not covered" >    try {</span>
-        const query = <span class="cstat-no" title="statement not covered" >'insert into subject (subid, subname) values ($1, $2)';</span>
-        const res = <span class="cstat-no" title="statement not covered" >await (dbQuery(query, [subid, subname]));</span>
+export async function addSubject(subid: string, subname: string): Promise&lt;boolean&gt; {
+    try {
+        const query = 'insert into subject (subid, subname) values ($1, $2)';
+        const res = await (dbQuery(query, [subid, subname]));
 &nbsp;
 <span class="cstat-no" title="statement not covered" >        if (res &amp;&amp; res.command === 'INSERT')</span>
 <span class="cstat-no" title="statement not covered" >            return true;</span>
+        else
+<span class="cstat-no" title="statement not covered" >            return false;</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >        return false;</span>
+    } catch (e) {
+        throw new Error(e.message);
+    }
+}
 &nbsp;
+export async function getSubjects(): Promise&lt;Array&lt;string&gt;&gt; {
+    try {
+        const query = 'select * from subject';
+        const res = await (dbQuery(query));
+&nbsp;
+        return res.rows;
     } catch (e) {
 <span class="cstat-no" title="statement not covered" >        throw new Error(e.message);</span>
     }
 }
 &nbsp;
-export async function <span class="fstat-no" title="function not covered" >getSubjects(</span>): Promise&lt;Array&lt;string&gt;&gt; {
-<span class="cstat-no" title="statement not covered" >    try {</span>
-        const query = <span class="cstat-no" title="statement not covered" >'select * from subject';</span>
-        const res = <span class="cstat-no" title="statement not covered" >await (dbQuery(query));</span>
-&nbsp;
-<span class="cstat-no" title="statement not covered" >        return res.rows;</span>
-    } catch (e) {
-<span class="cstat-no" title="statement not covered" >        throw new Error(e.message);</span>
-    }
-}
-&nbsp;
-export async function <span class="fstat-no" title="function not covered" >getSubjectByName(</span>subname: string): Promise&lt;string&gt; {
-<span class="cstat-no" title="statement not covered" >    try {</span>
-        const query = <span class="cstat-no" title="statement not covered" >'select * from subject where subname = $1';</span>
-        const res = <span class="cstat-no" title="statement not covered" >await (dbQuery(query, [subname]));</span>
-<span class="cstat-no" title="statement not covered" >        if (res.rowCount == 0) {</span>
-<span class="cstat-no" title="statement not covered" >            return "give correct name. This name dosent exist";</span>
+export async function getSubjectByName(subname: string): Promise&lt;string&gt; {
+    try {
+        const query = 'select * from subject where subname = $1';
+        const res = await (dbQuery(query, [subname]));
+        if (res.rowCount == 0) {
+            return "give correct name. This name dosent exist";
         }
-<span class="cstat-no" title="statement not covered" >        return res.rows;</span>
+        return res.rows;
     } catch (e) {
 <span class="cstat-no" title="statement not covered" >        throw new Error(e.message);</span>
     }
@@ -184,7 +184,7 @@ export async function <span class="fstat-no" title="function not covered" >getSu
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Aug 05 2021 19:49:19 GMT+0530 (India Standard Time)
+                at Wed Aug 18 2021 07:06:22 GMT+0530 (India Standard Time)
             </div>
         </div>
         <script src="../prettify.js"></script>

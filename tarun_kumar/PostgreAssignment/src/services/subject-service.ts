@@ -7,8 +7,8 @@ export async function addSubject(subid: string, subname: string): Promise<boolea
 
         if (res && res.command === 'INSERT')
             return true;
-
-        return false;
+        else
+            return false;
 
     } catch (e) {
         throw new Error(e.message);

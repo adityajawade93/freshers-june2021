@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">17.65% </span>
+                <span class="strong">76.47% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>3/17</span>
+                <span class='fraction'>13/17</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">37.5% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/8</span>
+                <span class='fraction'>3/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/2</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">17.65% </span>
+                <span class="strong">76.47% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>3/17</span>
+                <span class='fraction'>13/17</span>
             </div>
         
             
@@ -55,7 +55,7 @@
             Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
         </p>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -93,7 +93,7 @@
 <a name='L34'></a><a href='#L34'>34</a>
 <a name='L35'></a><a href='#L35'>35</a>
 <a name='L36'></a><a href='#L36'>36</a>
-<a name='L37'></a><a href='#L37'>37</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L37'></a><a href='#L37'>37</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -102,32 +102,32 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { dbQuery } from "../db/db";
 &nbsp;
@@ -139,31 +139,31 @@ interface markSchemaI {
     marks: number,
 }
 &nbsp;
-export async function <span class="fstat-no" title="function not covered" >addMark(</span>requestData: markSchemaI): Promise&lt;boolean | Error&gt; {
-<span class="cstat-no" title="statement not covered" >    try {</span>
-        const query = <span class="cstat-no" title="statement not covered" >'insert into mark (studentid, subid, marks) values ($1, $2, $3)';</span>
-        const res = <span class="cstat-no" title="statement not covered" >await (dbQuery(query, [requestData.studentid, requestData.subid, requestData.marks]));</span>
+export async function addMark(requestData: markSchemaI): Promise&lt;boolean | Error&gt; {
+    try {
+        const query = 'insert into mark (studentid, subid, marks) values ($1, $2, $3)';
+        const res = await (dbQuery(query, [requestData.studentid, requestData.subid, requestData.marks]));
 &nbsp;
 <span class="cstat-no" title="statement not covered" >        if (res &amp;&amp; res.command === 'INSERT')</span>
 <span class="cstat-no" title="statement not covered" >            return true;</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >        return false;</span>
     } catch (e) {
-<span class="cstat-no" title="statement not covered" >        throw new Error(e.message);</span>
+        throw new Error(e.message);
     }
 }
 &nbsp;
-export async function <span class="fstat-no" title="function not covered" >updateMark(</span>requestData: markSchemaI): Promise&lt;boolean | Error&gt; {
-<span class="cstat-no" title="statement not covered" >    try {</span>
-        const query = <span class="cstat-no" title="statement not covered" >'update mark set marks = $1 where studentid = $2 and subid = $3';</span>
-        const res = <span class="cstat-no" title="statement not covered" >await (dbQuery(query, [requestData.marks, requestData.studentid, requestData.subid]));</span>
+export async function updateMark(requestData: markSchemaI): Promise&lt;boolean | Error&gt; {
+    try {
+        const query = 'update mark set marks = $1 where studentid = $2 and subid = $3';
+        const res = await (dbQuery(query, [requestData.marks, requestData.studentid, requestData.subid]));
 &nbsp;
-<span class="cstat-no" title="statement not covered" >        if (res &amp;&amp; res.command === 'INSERT')</span>
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (res &amp;&amp; res.command === 'INSERT')
 <span class="cstat-no" title="statement not covered" >            return true;</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >        return false;</span>
+        return false;
     } catch (e) {
-<span class="cstat-no" title="statement not covered" >        throw new Error(e.message);</span>
+        throw new Error(e.message);
     }
 }</pre></td></tr></table></pre>
 
@@ -172,7 +172,7 @@ export async function <span class="fstat-no" title="function not covered" >updat
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Aug 05 2021 19:49:19 GMT+0530 (India Standard Time)
+                at Wed Aug 18 2021 07:06:22 GMT+0530 (India Standard Time)
             </div>
         </div>
         <script src="../prettify.js"></script>

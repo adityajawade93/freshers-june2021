@@ -23,7 +23,8 @@ describe("student routes tests", () => {
 
     test("checking POST subject ", async () => {
         const name = {
-            name: "financeology"
+            name: "financeolnjogy"
+
         }
         const getRes = await request(app.callback()).post("/subject").send(name).expect(201);
         //console.log(getRes.body.data);
@@ -33,6 +34,16 @@ describe("student routes tests", () => {
     test("checking POST subject wrong name ", async () => {
         const name = {
             name: 123456
+        }
+        const getRes = await request(app.callback()).post("/subject").send(name).expect(500);
+        //console.log(getRes.body.data);
+        //console.log();
+    });
+
+    test("checking POST subject wrong name2 ", async () => {
+        const name = {
+            name: 123456,
+            hash: 12
         }
         const getRes = await request(app.callback()).post("/subject").send(name).expect(500);
         //console.log(getRes.body.data);

@@ -32,15 +32,11 @@ async function getStudentListByStudentId(...arr:any) {
 
 async function addStudentToList(student_id:number, student_name: string, 
 student_dob: Date, student_address: string,gender: string, phone: number){
-  try{
     const text = 'INSERT INTO SchoolSchema.students VALUES($1,$2,$3,$4,$5,$6)';
     const value = [student_id, student_name, student_dob, student_address, gender, phone];
     const response = await client.query(text, value);
+    console.log(response);
     return response.rows[0];
-  }
-  catch (err) {
-    console.log(err.stack);
-  }
 };
 
 async function updateStudentToList(student_id:number, student_name: string,
@@ -49,7 +45,8 @@ async function updateStudentToList(student_id:number, student_name: string,
     const text = 'UPDATE SchoolSchema.students SET student_name = $2,student_dob = $3,student_address = $4, student_gender = $5, student_phone = $6 WHERE student_id = $1';
     const value = [student_id,student_name, student_dob, student_address, gender, phone];
     const response = await client.query(text,value);
-    return response.rows[0];
+    console.log(response);
+    return response;
 };
 
 module.exports = {getStudentList,getStudentInfoByStudentId,getStudentListByStudentId,addStudentToList,updateStudentToList};

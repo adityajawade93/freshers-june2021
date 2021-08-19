@@ -9,4 +9,4 @@ const topstudentWithSubjectSchema = Joi.object({
   class_id: Joi.number().integer().required()
 });
 
-exports.modules = {subjectmarksByStudentSchema, topstudentWithSubjectSchema};
+module.exports = {subjectmarksByStudentSchema, topstudentWithSubjectSchema};

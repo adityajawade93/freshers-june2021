@@ -10,4 +10,4 @@ const getstudentsByClassSchema = Joi.object({
   class_id: Joi.number().integer().required()
 });
 
-exports.modules = {addstudentToClassListSchema, getstudentsByClassSchema};
+module.exports = {addstudentToClassListSchema, getstudentsByClassSchema};

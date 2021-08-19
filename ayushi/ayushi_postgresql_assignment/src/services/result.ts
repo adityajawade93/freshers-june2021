@@ -14,6 +14,9 @@ export async function topStudentWithSubject(class_id: number){
   const text = `SELECT * FROM SchoolSchema.results WHERE class_id = ${class_id} ORDER BY marks desc`;
   const response = await client.query(text);
   console.log(response);
+  if(response.rows.length == 0){
+    return [];
+  }
   const mark = response.rows[0].marks;
   let len = response.rows.length;
   let i=1;

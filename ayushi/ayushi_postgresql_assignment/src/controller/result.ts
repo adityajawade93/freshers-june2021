@@ -47,17 +47,19 @@ class studentMarksBody implements studentmarks {
 export async function subjectmarksByStudent(ctx: Context){
   const studentId:number = ctx.request.params.studentId;
   try{
-    try{
-      await resultValidation.subjectmarksByStudentSchema.validateAsync(studentId);
-    } catch(err){
-      console.log(err.message);
+      const value = await resultValidation.subjectmarksByStudentSchema.validate({student_id: studentId});
+      if(value.error){
+      console.log(value.error);
       ctx.response.type = 'text/html';
       ctx.response.status = 400;
       ctx.response.body = 'Invalid parameters passed';
+      return;
     }
     const subjectMarksInfo:subjectmarks = await subjectMarksByStudent(studentId);
     console.log(subjectMarksInfo);
-
+    if(subjectMarksInfo == undefined){
+      throw new Error('No student exists with given student ID.')
+    }
     ctx.response.status = 200;
     ctx.body = {
       data: subjectMarksInfo
@@ -74,15 +76,18 @@ export async function subjectmarksByStudent(ctx: Context){
 export async function topstudentWithSubject(ctx: Context){
   const classId:number = ctx.request.params.classId;
   try{
-    try{
-      await resultValidation.topstudentWithSubjectSchema.validateAsync(classId);
-    } catch(err){
-      console.log(err.message);
+      const value = await resultValidation.topstudentWithSubjectSchema.validate({class_id: classId});
+      if(value.error){
+      console.log(value.error);
       ctx.response.type = 'text/html';
       ctx.response.status = 400;
       ctx.response.body = 'Invalid parameters passed';
+      return;
     }
     const res:results[] = await topStudentWithSubject(classId);
+    if(res.length == 0){
+      throw new Error('Given class ID does not exist.');
+    }
     let result:studentMarksBody[] = [];
 
     for(let i=0;i<res.length;i++) {

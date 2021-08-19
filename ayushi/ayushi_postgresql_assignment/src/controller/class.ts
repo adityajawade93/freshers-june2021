@@ -25,13 +25,13 @@ async function getclassList(ctx: Context){
 async function addstudentToClassList(ctx: Context){
   const classInfo:student_class = ctx.request.body;
   try{
-    try{
-      await classValidation.addstudentToClassListSchema.validateAsync(classInfo);
-    } catch(err){
-      console.log(err.message);
+      const value = await classValidation.addstudentToClassListSchema.validate(classInfo);
+      if(value.error){
+      console.log(value.error);
       ctx.response.type = 'text/html';
       ctx.response.status = 400;
       ctx.response.body = 'Invalid parameters passed';
+      return;
     }
     const res = await addStudentToClassList(classInfo.student_id,classInfo.class_id);
     
@@ -51,15 +51,18 @@ async function addstudentToClassList(ctx: Context){
 async function getstudentsByClass(ctx: Context){
   const classId:number = ctx.request.params.classId;
   try {
-    try{
-      await classValidation.getstudentsByClassSchema.validateAsync(classId);
-    } catch(err){
-      console.log(err.message);
+      const value = await classValidation.getstudentsByClassSchema.validate({class_id: classId});
+      if(value.error){
+      console.log(value.error);
       ctx.response.type = 'text/html';
       ctx.response.status = 400;
       ctx.response.body = 'Invalid parameters passed';
+      return;
     }
     const classList = await getStudentsByClass(classId);
+    if(classList.length == 0){
+      throw new Error('No student exists having given class ID');
+    }
     ctx.response.status = 200;
     ctx.response.body = {
       data: classList
@@ -67,7 +70,7 @@ async function getstudentsByClass(ctx: Context){
   } catch (e) {
     ctx.response.status = 500;
     ctx.response.body = {
-      error: `data not fetched: ${e.message}`
+      error: `${e.message}`
     }
   }
 };

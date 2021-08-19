@@ -14,28 +14,33 @@ interface student{
 }
 
 async function getstudentList(ctx: Context){
-  const page: number = parseInt(ctx.request.query.page);
-  const limit: number = parseInt(ctx.request.query.size);
+  const page = ctx.request.query.page;
+  const limit = ctx.request.query.size;
+  console.log(page);
+  console.log(limit);
 
   try{
     const studentList = await getStudentList();
     
-    try{
-      await studentValidation.getStudentListSchema.validateAsync({page,limit});
-    } catch(err){
-      console.log(err.message);
+      const value = await studentValidation.getStudentListSchema.validate({page,limit});
+      if(value.error){
+      console.log(value.error);
       ctx.response.type = 'text/html';
       ctx.response.status = 400;
       ctx.response.body = 'Invalid parameters passed';
+      return;
     }
     const startIndex: number = (page - 1) * limit;
     const endIndex: number = page * limit;
 
-    let results: object = {};
+    let results;
 
     try {
       results = await studentList.slice(startIndex, endIndex);
       console.log(results);
+      if(results.length == 0){
+        throw new Error('page no. or size is out of range');
+      }
       ctx.response.status = 200;
       ctx.response.body = {
         message: 'Student list for given page and size',
@@ -44,8 +49,9 @@ async function getstudentList(ctx: Context){
     } catch (e) {
       ctx.response.status = 500;
       ctx.response.body = {
-        error: `data not fetched: + ${e.message}`
+        error: `data not fetched: ${e.message}`
       }
+      return;
     }
   }
   catch (err){
@@ -57,27 +63,28 @@ async function getstudentList(ctx: Context){
 };
 
 async function getstudentInfoByStudentId(ctx: Context){
-  const studentId:number = parseInt(ctx.request.params.studentId);
+  const studentId:number = ctx.request.params.studentId;
   try{
-    try{
-      await studentValidation.getstudentInfoByStudentIdSchema.validateAsync({studentId});
-    } catch(err){
-      console.log(err.message);
+      const value = await studentValidation.getstudentInfoByStudentIdSchema.validate({studentId});
+      if(value.error){
+      console.log(value.error);
       ctx.response.type = 'text/html';
       ctx.response.status = 400;
       ctx.response.body = 'Invalid parameters passed';
+      return;
     }
     const studentInfo:student = await getStudentInfoByStudentId(studentId);
     
-    console.log(typeof(studentInfo));
-    console.log(studentInfo);
-    try{
-      await studentValidation.addOrUpdateStudentToListSchema.validateAsync(studentInfo);
-    } catch(err){
-      console.log(err.message);
+    //console.log(typeof(studentInfo));
+    //console.log(studentInfo);
+    
+      const val = await studentValidation.addOrUpdateStudentToListSchema.validate(studentInfo);
+      console.log(val);
+      if(val.value === undefined){
       //ctx.response.type = 'text/html';
       ctx.response.status = 500;
       ctx.response.body = {error:"The Request is not valid"};
+      return;
     }
     /*if(typeof studentInfo.student_id!=='number' || typeof studentInfo.student_name!=='string' || studentInfo.student_name.trim()===""|| typeof studentInfo.student_gender!=='string' || typeof studentInfo.student_phone!=='string'|| typeof studentInfo.student_address!=='string'){
       ctx.response.status = 400;
@@ -99,16 +106,16 @@ async function getstudentInfoByStudentId(ctx: Context){
 async function addstudentToList(ctx: Context){
   const studentInfo:student = ctx.request.body;
   try{
-    try{
-      await studentValidation.addOrUpdateStudentToListSchema.validateAsync(studentInfo);
-    } catch(err){
-      console.log(err.message);
+      const value = await studentValidation.addOrUpdateStudentToListSchema.validate(studentInfo);
+      if(value.error){
+      console.log(value.error);
       ctx.response.type = 'text/html';
       ctx.response.status = 400;
       ctx.response.body = 'Invalid parameters passed';
+      return;
     }
-    const res = addStudentToList(studentInfo.student_id,studentInfo.student_name,studentInfo.student_dob,studentInfo.student_address,studentInfo.student_gender,studentInfo.student_phone);
-   
+    const res = await addStudentToList(studentInfo.student_id,studentInfo.student_name,studentInfo.student_dob,studentInfo.student_address,studentInfo.student_gender,studentInfo.student_phone);
+    console.log(res);
     ctx.response.status = 200;
     ctx.body = {
       message: 'Student inserted into students table',
@@ -126,20 +133,23 @@ async function addstudentToList(ctx: Context){
 async function updatestudentToList(ctx: Context){
   const studentInfo:student = ctx.request.body;
   try{
-    try{
-      await studentValidation.addOrUpdateStudentToListSchema.validateAsync(studentInfo);
-    } catch(err){
-      console.log(err.message);
+      const value = await studentValidation.addOrUpdateStudentToListSchema.validate(studentInfo);
+      if(value.error){
+      console.log(value.error);
       ctx.response.type = 'text/html';
       ctx.response.status = 400;
       ctx.response.body = 'Invalid parameters passed';
+      return;
     }
-    const res = updateStudentToList(studentInfo.student_id,studentInfo.student_name,studentInfo.student_dob,studentInfo.student_address,studentInfo.student_gender,studentInfo.student_phone);
-   
+    const res = await updateStudentToList(studentInfo.student_id,studentInfo.student_name,studentInfo.student_dob,studentInfo.student_address,studentInfo.student_gender,studentInfo.student_phone);
+    console.log(res);
+    if(res.rowCount == 0){
+      throw new Error('0 rows updated');
+    }
     ctx.response.status = 200;
     ctx.body = {
       message: 'Student updated in students table',
-      result: `${res} + Student updated into students table`
+      result: `${res.resCount} + Student updated into students table`
     }
     }catch(err){
       ctx.response.status = 500;

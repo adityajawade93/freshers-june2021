@@ -16,16 +16,18 @@ interface studentid_object{
 export async function addschedule(ctx: Context){
   const scheduleInfo:schedule = ctx.request.body;
   try{
-    try{
-      await scheduleValidation.addScheduleSchema.validateAsync(scheduleInfo);
-    } catch(err){
-      console.log(err.message);
+      const value = await scheduleValidation.addScheduleSchema.validate(scheduleInfo);
+      if(value.error){
+      console.log(value.error);
       ctx.response.type = 'text/html';
       ctx.response.status = 400;
       ctx.response.body = 'Invalid parameters passed';
+      return;
     }
     const res = await addSchedule(scheduleInfo.class_id,scheduleInfo.subject_id,scheduleInfo.teacher_id);
-    
+    if(res.length == 0){
+      throw new Error('cannot insert duplicate entry');
+    }
     ctx.response.status = 200;
     ctx.body = {
       message: ` Entry successful into schedule table`,
@@ -43,16 +45,19 @@ export async function addschedule(ctx: Context){
 export async function studentsbyClass(ctx: Context){
   const classId:number = ctx.request.params.classId;
   try{
-    try{
-      await scheduleValidation.studentsbyClassSchema.validateAsync({classId});
-    } catch(err){
-      console.log(err.message);
+      const value = await scheduleValidation.studentsbyClassSchema.validate({class_id: classId});
+      if(value.error){
+      console.log(value.error);
       ctx.response.type = 'text/html';
       ctx.response.status = 400;
       ctx.response.body = 'Invalid parameters passed';
+      return;
     }
     const studentId:studentid_object[] = await studentByClass(classId);
     console.log(studentId);
+    if(studentId.length == 0){
+      throw new Error('No student exists with given class ID');
+    }
     const arr:number[] = [];
     for(let i=0;i<studentId.length;i++){
       console.log(studentId[i].student_id);
@@ -82,19 +87,27 @@ export async function studentsbyClass(ctx: Context){
 export async function studentsByTeacher(ctx: Context){
   const teacherId:number = ctx.request.params.teacherId;
   try{
-    try{
-      await scheduleValidation.studentsbyTeacherSchema.validateAsync(teacherId);
-    } catch(err){
-      console.log(err.message);
+      const value = await scheduleValidation.studentsbyTeacherSchema.validate({teacher_id: teacherId});
+      if(value.error){
+      console.log(value.error);
       ctx.response.type = 'text/html';
       ctx.response.status = 400;
       ctx.response.body = 'Invalid parameters passed';
+      return;
     }
-  const classId:number = (await classByTeacher(teacherId)).class_id;
+    const res = await classByTeacher(teacherId);
+    if(res == undefined){
+      throw new Error('No class exists with given Teacher ID ,hence no Student.');
+    }
+  const classId:number = res.class_id;
     //console.log((await classByTeacher(teacherId)).class_id);
-    console.log(classId);
+    console.log("classId"+ classId);
     const studentId:studentid_object[] = await studentByClass(classId);
     console.log(studentId);
+    
+    if(studentId.length == 0){
+      throw new Error('Student with given teacher ID does not exist.');
+    }
     const arr:number[] = [];
     for(let i=0;i<studentId.length;i++){
       console.log(studentId[i].student_id);
@@ -124,17 +137,24 @@ export async function studentsByTeacher(ctx: Context){
 export async function studentsBySubject(ctx: Context){
   const subjectId:number = ctx.request.params.subjectId;
   try{
-    try{
-      await scheduleValidation.studentsbySubjectSchema.validateAsync(subjectId);
-    } catch(err){
-      console.log(err.message);
+      const value = await scheduleValidation.studentsbySubjectSchema.validate({subject_id: subjectId});
+      if(value.error){
+      console.log(value.error);
       ctx.response.type = 'text/html';
       ctx.response.status = 400;
       ctx.response.body = 'Invalid parameters passed';
+      return;
     }
-    const classId:number = (await classBySubject(subjectId)).class_id;
+    const res = await classBySubject(subjectId);
+    if(res == undefined){
+      throw new Error('No class exists with given subject ID, hence Student also does not exist.')
+    }
+    const classId:number = res.class_id;
     const studentId:studentid_object[] = await studentByClass(classId);
     console.log(studentId);
+    if(studentId.length == 0){
+      throw new Error('Student with given subject ID does not exist.')
+    }
     const arr:number[] = [];
     for(let i=0;i<studentId.length;i++){
       console.log(studentId[i].student_id);

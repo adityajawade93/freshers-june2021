@@ -2,7 +2,7 @@ export{};
 const Joi = require('joi');
 
 const addOrUpdateTeacherToListSchema = Joi.object({
-  teacher_id: Joi.number().integer().required(),
+  teacher_id: Joi.number().required(),
   teacher_name: Joi.string().trim().required(),
   teacher_dob: Joi.date().required(),
   teacher_address: Joi.string().trim().required(),
@@ -10,4 +10,4 @@ const addOrUpdateTeacherToListSchema = Joi.object({
   teacher_phone: Joi.number().integer().required()
 });
 
-exports.modules = {addOrUpdateTeacherToListSchema};
+module.exports = {addOrUpdateTeacherToListSchema};

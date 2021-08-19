@@ -6,4 +6,4 @@ const addOrUpdateSubjectToListSchema = Joi.object({
   subject_name: Joi.string().trim().required(),
 });
 
-exports.modules = {addOrUpdateSubjectToListSchema};
+module.exports = {addOrUpdateSubjectToListSchema};

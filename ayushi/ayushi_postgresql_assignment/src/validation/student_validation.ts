@@ -18,4 +18,4 @@ const addOrUpdateStudentToListSchema = Joi.object({
   student_phone: Joi.number().integer().required()
 });
 
-exports.modules = {getStudentListSchema, getstudentInfoByStudentIdSchema, addOrUpdateStudentToListSchema};
+module.exports = {getStudentListSchema, getstudentInfoByStudentIdSchema, addOrUpdateStudentToListSchema};

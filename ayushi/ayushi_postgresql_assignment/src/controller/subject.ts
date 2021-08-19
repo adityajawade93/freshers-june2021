@@ -25,16 +25,16 @@ async function getsubjectList(ctx: Context){
 async function addsubjectToList(ctx: Context){
   const subjectInfo:subject = ctx.request.body;
   try{
-    try{
-      await subjectValidation.addOrUpdateSubjectToListSchema.validateAsync(subjectInfo);
-    } catch(err){
-      console.log(err.message);
+      const value = await subjectValidation.addOrUpdateSubjectToListSchema.validate(subjectInfo);
+      if(value.error){
+      console.log(value.error);
       ctx.response.type = 'text/html';
       ctx.response.status = 400;
       ctx.response.body = 'Invalid parameters passed';
+      return;
     }
     const res = await addSubjectToList(subjectInfo.subject_id,subjectInfo.subject_name);
-    // var passengerRequest = new studentInfoBody(studentInfo.student_id,studentInfo.student_name,studentInfo.student_address,studentInfo.student_dob,studentInfo.student_gender,studentInfo.student_phone);
+    
     ctx.response.status = 200;
     ctx.body = {
       message: `Subject inserted into subjects table`,
@@ -52,16 +52,18 @@ async function addsubjectToList(ctx: Context){
 async function updateSubjectToList(ctx: Context){
   const subjectInfo:subject = ctx.request.body;
   try{
-    try{
-      await subjectValidation.addOrUpdateSubjectToListSchema.validateAsync(subjectInfo);
-    } catch(err){
-      console.log(err.message);
+      const value = await subjectValidation.addOrUpdateSubjectToListSchema.validate(subjectInfo);
+      if(value.error){
+      console.log(value.error);
       ctx.response.type = 'text/html';
       ctx.response.status = 400;
       ctx.response.body = 'Invalid parameters passed';
+      return;
     }
     const res = await updateSubjectInList(subjectInfo.subject_id,subjectInfo.subject_name);
-    
+    if(res.rowCount == 0){
+      throw new Error('0 rows updated');
+    }
     ctx.response.status = 200;
     ctx.body = {
       message: `Subject updated in subjects table`,

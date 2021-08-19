@@ -4,15 +4,35 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --coverage",
     "start": "node dist/index.js"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "ts-jest"
+    },
+    "globals": {
+      "ts-jest": {
+        "tsConfigFile": "tsconfig.json"
+      }
+    },
+    "testMatch": [
+      "**/testing/*.+(ts|tsx|js)"
+    ]
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "babel": "6.23.0",
     "class-validator": "0.13.1",
     "dotenv": "10.0.0",
-    "joi": "17.4.2",
+    "esm": "3.2.25",
+    "joi": "6.16.6",
     "koa": "2.13.1",
     "koa-bodyparser": "4.3.0",
     "koa-combine-routers": "4.0.2",
@@ -20,12 +40,18 @@
     "koa-router": "10.0.0",
     "path": "0.12.7",
     "pg": "8.7.1",
+    "supertest": "6.1.6",
     "ts-node": "10.1.0",
     "tsconfig-paths": "3.10.1"
   },
   "devDependencies": {
+    "@babel/preset-env": "7.15.0",
+    "@types/jest": "27.0.1",
     "@types/node": "16.4.10",
+    "@types/supertest": "2.0.11",
+    "jest": "27.0.6",
     "nodemon": "2.0.12",
+    "ts-jest": "27.0.5",
     "typescript": "4.3.5"
   }
 }

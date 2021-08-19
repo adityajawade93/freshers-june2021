@@ -1,5 +1,5 @@
 import { Context } from "vm";
-const teacherValidation = require('../validation/teacher_validation');
+const teacherValidation = require('../validation/teacher_validation.ts');
 const {getTeacherList,addTeacherToList, updateTeacherInList} = require('../services/teacher.ts');
 
 interface teacher{
@@ -27,18 +27,21 @@ export async function getteacherList(ctx: Context){
 };
 
 export async function addteacherToList(ctx: Context){
-  const teacherInfo:teacher = ctx.request.body;
+  const teacherInfo: teacher = ctx.request.body;
+  //console.log(teacherInfo);
   try{
-    try{
-      await teacherValidation.addOrUpdateTeacherToListSchema.validateAsync(teacherInfo);
-    } catch(err){
-      console.log(err.message);
+      const value = await teacherValidation.addOrUpdateTeacherToListSchema.validate(teacherInfo);
+      //console.log(value);
+      //console.log(error);
+      if(value.error){
+      console.log(value.error);
       ctx.response.type = 'text/html';
       ctx.response.status = 400;
       ctx.response.body = 'Invalid parameters passed';
+      return;
     }
     const res = await addTeacherToList(teacherInfo.teacher_id,teacherInfo.teacher_name,teacherInfo.teacher_dob,teacherInfo.teacher_address,teacherInfo.teacher_gender,teacherInfo.teacher_phone);
-    
+    console.log(res);
     ctx.response.status = 200;
     ctx.body = {
       message: `Teacher inserted into teachers table`,
@@ -56,16 +59,20 @@ export async function addteacherToList(ctx: Context){
 export async function updateTeacherToList(ctx: Context){
   const teacherInfo:teacher = ctx.request.body;
   try{
-    try{
-      await teacherValidation.addOrUpdateTeacherToListSchema.validateAsync(teacherInfo);
-    } catch(err){
-      console.log(err.message);
+      const value = await teacherValidation.addOrUpdateTeacherToListSchema.validate(teacherInfo);
+      // console.log(value);
+      if(value.error){
+      console.log(value.error);
       ctx.response.type = 'text/html';
       ctx.response.status = 400;
       ctx.response.body = 'Invalid parameters passed';
+      return;
     }
     const res = await updateTeacherInList(teacherInfo.teacher_id,teacherInfo.teacher_name,teacherInfo.teacher_dob,teacherInfo.teacher_address,teacherInfo.teacher_gender,teacherInfo.teacher_phone);
-    
+    console.log(res);
+    if(res.length == 0){
+      throw new Error("0 rows returned on updation");
+    }
     ctx.response.status = 200;
     ctx.body = {
       message: `Teacher updated in teachers table`,

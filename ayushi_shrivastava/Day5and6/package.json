@@ -1,0 +1,16 @@
+{
+  "name": "day5",
+  "version": "1.0.0",
+  "description": "",
+  "main": "csvtojson_assignment.js",
+  "dependencies": {
+    "csvtojson": "2.0.10",
+    "uniqid": "5.3.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

@@ -1,5 +1,8 @@
 export{};
-const app = require('../index.ts');
+//const app = require('../index.ts');
+const makeapp = require('../index.ts');
+const Router = require('../routes/main.ts');
+const app = makeapp(Router);
 const { test, expect, describe } = require('@jest/globals');
 const request = require('supertest');
 

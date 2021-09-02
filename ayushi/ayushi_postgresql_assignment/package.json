@@ -22,7 +22,7 @@
       }
     },
     "testMatch": [
-      "**/testing/*.+(ts|tsx|js)"
+      "**/unitTesting/*.+(ts|tsx|js)"
     ]
   },
   "author": "",
